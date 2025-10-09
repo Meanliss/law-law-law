@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chatbot Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <button id="new-chat">+ Cuộc trò chuyện mới</button>
+      <ul id="chat-list"></ul>
+    </div>
+
+    <!-- Chat main -->
+    <div class="chatbot-container">
+      <div class="header">
+        <h2 id="chat-title">AI Chatbot</h2>
+        <button id="theme-toggle">🌙</button>
+      </div>
+
+      <div class="chat-display" id="chat-display"></div>
+
+      <!-- Input area với wrapper mới -->
+      <div class="input-area">
+        <div class="input-wrapper">
+          <textarea id="user-input" placeholder="Nhập câu hỏi của bạn..." rows="1"></textarea>
+          <button id="send-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

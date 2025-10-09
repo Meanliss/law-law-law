@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+pydantic
+rank-bm25
+sentence-transformers
+underthesea
+faiss-cpu
+google-generativeai
+numpy
+python-dotenv
