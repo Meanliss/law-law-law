@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+
+# Backend
+backend/.env
+backend/cache/*.pkl
+backend/cache/*.idx
+backend/cache/*.hash
+!backend/cache/.gitkeep
+*.backup
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.cache/
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Data (uncomment if data files are too large)
+# backend/data/*.zip
+
+# Temporary files
+*.tmp
+temp/
+tmp/
+
+# Coverage & Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Scripts (temporary directories created by scripts)
+scripts/frontend/
+scripts/backend/
+scripts/docs/
+scripts/scripts/

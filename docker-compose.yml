@@ -1,0 +1,57 @@
+# Docker Compose for Legal Q&A System
+
+services:
+  # Backend FastAPI Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: legal-qa-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount code for hot reload (development)
+      - ./backend:/app
+      # Persist cache between restarts
+      - legal-qa-cache:/app/cache
+      # Mount data folder
+      - ./backend/data:/app/data:ro
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+    networks:
+      - legal-qa-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Nginx Service
+  frontend:
+    image: nginx:alpine
+    container_name: legal-qa-frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - legal-qa-network
+
+# Volumes for persistent data
+volumes:
+  legal-qa-cache:
+    driver: local
+
+# Network
+networks:
+  legal-qa-network:
+    driver: bridge
