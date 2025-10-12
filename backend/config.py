@@ -13,8 +13,11 @@ GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 # Model Names
 GEMINI_FULL_MODEL = 'gemini-2.5-flash'
 GEMINI_LITE_MODEL = 'gemini-2.5-flash-lite'
-# EMBEDDING_MODEL = 'paraphrase-multilingual-MiniLM-L12-v2'  # Old: Multilingual generic
-EMBEDDING_MODEL = 'vinai/phobert-base'  # NEW: Vietnamese-optimized (PhoBERT)
+
+# Embedding Model
+# PhoBERT requires special handling, use multilingual model optimized for Vietnamese
+# EMBEDDING_MODEL = 'vinai/phobert-base'  # PhoBERT (not compatible with SentenceTransformers directly)
+EMBEDDING_MODEL = 'keepitreal/vietnamese-sbert'  # Vietnamese-optimized SBERT (768-dim, better than MiniLM)
 
 # Search Parameters
 DEFAULT_TOP_K = 8
