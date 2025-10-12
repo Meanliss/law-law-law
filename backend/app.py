@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from collections import defaultdict
 import os
+import time  # For performance timing
 import google.generativeai as genai
 from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
@@ -23,6 +24,7 @@ from core.intent_detection import get_cache_size, enhanced_decompose_query
 # Import utilities
 from utils.cache import get_data_hash, build_or_load_bm25, build_or_load_faiss
 from utils.tokenizer import tokenize_vi
+from config import EMBEDDING_MODEL  # Import embedding model name
 
 
 # ============================================================================
@@ -86,9 +88,10 @@ async def startup_event():
     print('  - gemini-2.5-flash-lite (intent detection, decomposition)')
     
     # 3. Load embedding model
-    print('[INFO] Dang tai SentenceTransformer model...')
-    embedder = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
-    print('[OK] Embedding model da san sang')
+    print(f'[INFO] Dang tai embedding model: {EMBEDDING_MODEL}...')
+    embedder = SentenceTransformer(EMBEDDING_MODEL)
+    print(f'[OK] Embedding model {EMBEDDING_MODEL} da san sang')
+    print(f'     Model info: Vietnamese-optimized PhoBERT (vinai/phobert-base)')
     
     # 4. Load legal documents
     data_folder = 'data'
@@ -141,10 +144,19 @@ async def health_check():
 @app.post("/ask", response_model=AnswerResponse)
 async def ask_question(request: QuestionRequest):
     """Main Q&A endpoint with advanced search and intent detection"""
+    # ===== START TIMING =====
+    start_time = time.time()
+    timing = {}
+    
     if not all_chunks:
         raise HTTPException(status_code=503, detail="System not ready")
     
+    print(f'\n{"="*70}')
     print(f'[INFO] Question: {request.question}')
+    print(f'{"="*70}')
+    
+    # ===== PHASE 1: INTENT DETECTION & QUERY EXPANSION =====
+    intent_start = time.time()
     
     # Search with selected mode
     if request.use_advanced:
@@ -175,16 +187,38 @@ async def ask_question(request: QuestionRequest):
         )
         mode = "simple"
     
+    timing['search_ms'] = round((time.time() - intent_start) * 1000, 2)
+    print(f'[TIMING] Search completed in {timing["search_ms"]}ms')
+    
     # Check if query was rejected by intent detection
     if not relevant_chunks:
+        total_time = round((time.time() - start_time) * 1000, 2)
+        print(f'[TIMING] Total time (rejected): {total_time}ms')
+        print(f'{"="*70}\n')
         return {
             "answer": get_rejection_message(),
             "sources": [],
-            "search_mode": mode
+            "search_mode": mode,
+            "timing": {
+                "total_ms": total_time,
+                "search_ms": timing['search_ms'],
+                "generation_ms": 0,
+                "status": "rejected"
+            }
         }
     
-    # Generate answer
+    # ===== PHASE 2: ANSWER GENERATION =====
+    gen_start = time.time()
     answer = generate_answer(request.question, relevant_chunks, gemini_model)
+    timing['generation_ms'] = round((time.time() - gen_start) * 1000, 2)
+    print(f'[TIMING] Answer generation completed in {timing["generation_ms"]}ms')
+    
+    # Total time
+    timing['total_ms'] = round((time.time() - start_time) * 1000, 2)
+    print(f'[TIMING] ⚡ TOTAL TIME: {timing["total_ms"]}ms')
+    print(f'  ├─ Search: {timing["search_ms"]}ms ({round(timing["search_ms"]/timing["total_ms"]*100, 1)}%)')
+    print(f'  └─ Generation: {timing["generation_ms"]}ms ({round(timing["generation_ms"]/timing["total_ms"]*100, 1)}%)')
+    print(f'{"="*70}\n')
     
     # Format sources
     sources = [
@@ -195,7 +229,13 @@ async def ask_question(request: QuestionRequest):
     return {
         "answer": answer,
         "sources": sources,
-        "search_mode": mode
+        "search_mode": mode,
+        "timing": {
+            "total_ms": timing['total_ms'],
+            "search_ms": timing['search_ms'],
+            "generation_ms": timing['generation_ms'],
+            "status": "success"
+        }
     }
 
 
@@ -211,7 +251,7 @@ async def get_stats():
         "total_chunks": len(all_chunks),
         "laws": dict(laws),
         "models": {
-            "embedder": "paraphrase-multilingual-MiniLM-L12-v2",
+            "embedder": EMBEDDING_MODEL,
             "llm_full": "gemini-2.5-flash (answer generation)",
             "llm_lite": "gemini-2.5-flash-lite (intent detection, decomposition)"
         },

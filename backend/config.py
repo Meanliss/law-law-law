@@ -13,7 +13,8 @@ GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 # Model Names
 GEMINI_FULL_MODEL = 'gemini-2.5-flash'
 GEMINI_LITE_MODEL = 'gemini-2.5-flash-lite'
-EMBEDDING_MODEL = 'paraphrase-multilingual-MiniLM-L12-v2'
+# EMBEDDING_MODEL = 'paraphrase-multilingual-MiniLM-L12-v2'  # Old: Multilingual generic
+EMBEDDING_MODEL = 'vinai/phobert-base'  # NEW: Vietnamese-optimized (PhoBERT)
 
 # Search Parameters
 DEFAULT_TOP_K = 8

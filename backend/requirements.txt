@@ -3,8 +3,11 @@ uvicorn[standard]
 pydantic
 rank-bm25
 sentence-transformers
+transformers  # For PhoBERT
+torch  # Required by PhoBERT
 underthesea
 faiss-cpu
 google-generativeai
 numpy
 python-dotenv
+scikit-learn  # For cosine_similarity in reranking

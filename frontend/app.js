@@ -117,16 +117,17 @@ document.addEventListener('DOMContentLoaded', () => {
     sendButton.disabled = true;
     userInput.disabled = true;
 
-    // Hiển thị typing indicator (nhỏ gọn hơn)
+    // Hiển thị typing indicator (compact version)
     const typingDiv = document.createElement('div');
     typingDiv.classList.add('message', 'bot');
-    typingDiv.style.maxWidth = 'fit-content'; // Thu nhỏ lại
+    typingDiv.style.maxWidth = 'fit-content';
+    typingDiv.style.padding = '8px 12px'; // Padding nhỏ hơn
     typingDiv.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <div class="typing-dots">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <div class="typing-dots" style="transform: scale(0.7);">
           <span></span><span></span><span></span>
         </div>
-        <span style="font-style: italic; opacity: 0.7; font-size: 13px; white-space: nowrap;">Đang phân tích...</span>
+        <span style="font-style: italic; opacity: 0.6; font-size: 12px; white-space: nowrap;">Đang suy luận...</span>
       </div>
     `;
     chatDisplay.appendChild(typingDiv);
@@ -160,6 +161,20 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Hiển thị câu trả lời
       addMessage(data.answer, 'bot');
+      
+      // Hiển thị performance timing (nếu có)
+      if (data.timing) {
+        const timingText = `⚡ Performance: ${data.timing.total_ms}ms (Search: ${data.timing.search_ms}ms + Generation: ${data.timing.generation_ms}ms)`;
+        
+        const timingDiv = document.createElement('div');
+        timingDiv.classList.add('message', 'bot');
+        timingDiv.style.fontSize = '0.75em';
+        timingDiv.style.opacity = '0.5';
+        timingDiv.style.fontStyle = 'italic';
+        timingDiv.style.padding = '4px 12px';
+        timingDiv.textContent = timingText;
+        chatDisplay.appendChild(timingDiv);
+      }
       
       // Hiển thị nguồn tham khảo (optional)
       if (data.sources && data.sources.length > 0) {
