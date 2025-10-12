@@ -82,9 +82,9 @@ function Rebuild-FaissCache {
     Remove-Item "$CacheDir\embeddings.pkl*" -Force -ErrorAction SilentlyContinue
     
     Write-Host "✅ FAISS cache cleared" -ForegroundColor Green
-    Write-Host "   Reason: Embedding model changed (MiniLM → PhoBERT)" -ForegroundColor Gray
-    Write-Host "   Old dimension: 384" -ForegroundColor Gray
-    Write-Host "   New dimension: 768 (PhoBERT)" -ForegroundColor Green
+    Write-Host "   Reason: Embedding model changed" -ForegroundColor Gray
+    Write-Host "   Old dimension: 384 (MiniLM)" -ForegroundColor Gray
+    Write-Host "   New dimension: 768 (Vietnamese-SBERT)" -ForegroundColor Green
     Write-Host "`n⚠️  Restart backend to rebuild with new model" -ForegroundColor Yellow
     Write-Host "=" * 70
 }

@@ -6,12 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const newChatBtn = document.getElementById('new-chat');
   const chatList = document.getElementById('chat-list');
   const chatTitle = document.getElementById('chat-title');
+  const modeFast = document.getElementById('mode-fast');
+  const modeQuality = document.getElementById('mode-quality');
 
   // QUAN TRỌNG: Đang sử dụng biến JavaScript (lưu trong RAM)
   // Nếu muốn lưu vĩnh viễn, uncomment các dòng localStorage bên dưới
   let chats = [];
   let currentChatId = null;
   let isDark = false;
+  let modelMode = 'quality'; // 'fast' hoặc 'quality'
 
   // ===== CÁCH DÙNG localStorage (Chỉ khi chạy local) =====
   // Bước 1: Comment 3 dòng trên
@@ -117,11 +120,9 @@ document.addEventListener('DOMContentLoaded', () => {
     sendButton.disabled = true;
     userInput.disabled = true;
 
-    // Hiển thị typing indicator (compact version)
+    // Hiển thị typing indicator (fixed width to prevent bubble resize)
     const typingDiv = document.createElement('div');
-    typingDiv.classList.add('message', 'bot');
-    typingDiv.style.maxWidth = 'fit-content';
-    typingDiv.style.padding = '8px 12px'; // Padding nhỏ hơn
+    typingDiv.classList.add('message', 'bot', 'typing-indicator');
     typingDiv.innerHTML = `
       <div style="display: flex; align-items: center; gap: 6px;">
         <div class="typing-dots" style="transform: scale(0.7);">
@@ -147,7 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         body: JSON.stringify({
           question: messageText,
-          use_advanced: true
+          use_advanced: true,
+          model_mode: modelMode  // Send selected mode: 'fast' or 'quality'
         })
       });
 
@@ -226,6 +228,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   newChatBtn.addEventListener('click', createNewChat);
+
+  // Model mode selector
+  modeFast.addEventListener('change', () => {
+    if (modeFast.checked) {
+      modelMode = 'fast';
+      console.log('✅ Switched to FAST mode (all Flash Lite)');
+    }
+  });
+
+  modeQuality.addEventListener('change', () => {
+    if (modeQuality.checked) {
+      modelMode = 'quality';
+      console.log('✅ Switched to QUALITY mode (Flash Lite for intent, Flash for answer)');
+    }
+  });
 
   // Theme toggle
   themeToggle.addEventListener('click', () => {

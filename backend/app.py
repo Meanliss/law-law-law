@@ -153,16 +153,29 @@ async def ask_question(request: QuestionRequest):
     
     print(f'\n{"="*70}')
     print(f'[INFO] Question: {request.question}')
+    print(f'[INFO] Model Mode: {request.model_mode.upper()} {"(all Flash Lite)" if request.model_mode == "fast" else "(Flash Lite for intent, Flash for answer)"}')
     print(f'{"="*70}')
+    
+    # Select models based on mode
+    if request.model_mode == "fast":
+        # Fast mode: Use Flash Lite for everything
+        intent_model = gemini_lite_model
+        answer_model = gemini_lite_model
+        print('[MODE] ⚡ FAST - Using Flash Lite for all operations')
+    else:
+        # Quality mode: Use Flash Lite for intent, Flash for answer
+        intent_model = gemini_lite_model
+        answer_model = gemini_model
+        print('[MODE] 🎯 QUALITY - Using Flash Lite (intent) + Flash (answer)')
     
     # ===== PHASE 1: INTENT DETECTION & QUERY EXPANSION =====
     intent_start = time.time()
     
     # Search with selected mode
     if request.use_advanced:
-        # Create enhanced_decompose function with gemini_lite_model closure
+        # Create enhanced_decompose function with intent_model closure
         def enhanced_decompose_fn(query):
-            return enhanced_decompose_query(query, gemini_lite_model)
+            return enhanced_decompose_query(query, intent_model)
         
         relevant_chunks = advanced_hybrid_search(
             query=request.question,
@@ -209,7 +222,7 @@ async def ask_question(request: QuestionRequest):
     
     # ===== PHASE 2: ANSWER GENERATION =====
     gen_start = time.time()
-    answer = generate_answer(request.question, relevant_chunks, gemini_model)
+    answer = generate_answer(request.question, relevant_chunks, answer_model)
     timing['generation_ms'] = round((time.time() - gen_start) * 1000, 2)
     print(f'[TIMING] Answer generation completed in {timing["generation_ms"]}ms')
     

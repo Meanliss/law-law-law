@@ -183,6 +183,13 @@ body {
   white-space: pre-wrap; /* Giữ xuống dòng và khoảng trắng */
 }
 
+/* Fix typing indicator bubble size */
+.message.typing-indicator {
+  min-width: 160px; /* Fixed width cho "Đang suy luận..." */
+  max-width: 160px;
+  padding: 8px 12px;
+}
+
 .message.bot {
   background-color: var(--bot-msg-bg);
   color: var(--text-color);
@@ -202,10 +209,54 @@ body {
 /* === INPUT AREA === */
 .input-area {
   display: flex;
-  justify-content: center;
-  padding: 20px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px 20px;
   background: linear-gradient(to top, var(--bg-color), var(--chat-bg));
   border-top: 1px solid var(--border-color);
+}
+
+/* Model Selector - Now at bottom */
+.model-selector {
+  display: flex;
+  gap: 8px;
+  background-color: var(--input-bg);
+  padding: 4px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  align-self: flex-start;
+  margin-left: 4px;
+}
+
+.mode-label {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.mode-label input[type="radio"] {
+  display: none;
+}
+
+.mode-label:hover {
+  background-color: var(--hover-bg);
+}
+
+.mode-label input[type="radio"]:checked + span {
+  color: white;
+}
+
+.mode-label:has(input[type="radio"]:checked) {
+  background-color: var(--gemini-blue);
+  color: white;
 }
 
 .input-wrapper {

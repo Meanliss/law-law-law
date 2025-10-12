@@ -9,6 +9,7 @@ from typing import List, Dict, Optional
 class QuestionRequest(BaseModel):
     question: str
     use_advanced: bool = True
+    model_mode: str = "quality"  # "fast" or "quality"
 
 
 class TimingInfo(BaseModel):

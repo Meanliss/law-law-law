@@ -24,8 +24,20 @@
 
       <div class="chat-display" id="chat-display"></div>
 
-      <!-- Input area với wrapper mới -->
+      <!-- Input area với model selector bên dưới -->
       <div class="input-area">
+        <!-- Model selector ở trên input -->
+        <div class="model-selector">
+          <label class="mode-label">
+            <input type="radio" name="model-mode" value="fast" id="mode-fast">
+            <span>⚡ Fast</span>
+          </label>
+          <label class="mode-label">
+            <input type="radio" name="model-mode" value="quality" id="mode-quality" checked>
+            <span>🎯 Quality</span>
+          </label>
+        </div>
+        
         <div class="input-wrapper">
           <textarea id="user-input" placeholder="Nhập câu hỏi của bạn..." rows="1"></textarea>
           <button id="send-button">

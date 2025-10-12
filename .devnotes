@@ -1,0 +1,11 @@
+⚠️ DO NOT CREATE README FILES
+
+User preference: No documentation files in this project.
+Only keep essential docs in docs/ folder (API.md, DOCKER.md).
+
+Changes made:
+- Model selector moved from header to bottom (above input area)
+- Layout follows ChatGPT/Claude style
+- All README/CHANGELOG/GUIDE files deleted
+
+Last update: January 12, 2025
