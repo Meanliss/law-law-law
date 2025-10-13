@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatDisplay.appendChild(timingDiv);
       }
       
-      // Hiển thị nguồn tham khảo (optional)
+      // Hiển thị nguồn tham khảo và nút xem PDF
       if (data.sources && data.sources.length > 0) {
         const sourcesText = `\n\n📚 Nguồn tham khảo:\n${data.sources.slice(0, 3).map((s, i) => 
           `${i + 1}. ${s.source}`
@@ -191,6 +191,39 @@ document.addEventListener('DOMContentLoaded', () => {
         sourcesDiv.style.whiteSpace = 'pre-wrap';
         sourcesDiv.textContent = sourcesText;
         chatDisplay.appendChild(sourcesDiv);
+        
+        // Thêm nút xem PDF với highlight nếu có pdf_sources
+        if (data.pdf_sources && data.pdf_sources.length > 0) {
+          const pdfButtonsDiv = document.createElement('div');
+          pdfButtonsDiv.style.marginTop = '12px';
+          pdfButtonsDiv.style.display = 'flex';
+          pdfButtonsDiv.style.flexWrap = 'wrap';
+          pdfButtonsDiv.style.gap = '8px';
+          
+          // Group by PDF file
+          const pdfGroups = {};
+          data.pdf_sources.forEach(source => {
+            if (!pdfGroups[source.pdf_file]) {
+              pdfGroups[source.pdf_file] = [];
+            }
+            pdfGroups[source.pdf_file].push(source.highlight_text);
+          });
+          
+          // Create button for each PDF
+          Object.entries(pdfGroups).forEach(([pdfFile, highlightTexts]) => {
+            const btn = document.createElement('button');
+            btn.classList.add('view-pdf-btn');
+            btn.textContent = `📄 Xem ${pdfFile}`;
+            btn.onclick = () => {
+              if (window.PDFViewer) {
+                window.PDFViewer.open(pdfFile, highlightTexts);
+              }
+            };
+            pdfButtonsDiv.appendChild(btn);
+          });
+          
+          chatDisplay.appendChild(pdfButtonsDiv);
+        }
       }
       
     } catch (error) {

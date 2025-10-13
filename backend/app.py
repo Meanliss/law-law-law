@@ -3,8 +3,9 @@ Legal Document Q&A API - FastAPI Application
 Modular architecture with clean separation of concerns
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, StreamingResponse
 from collections import defaultdict
 import os
 import time  # For performance timing
@@ -13,7 +14,7 @@ from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 
 # Import models
-from models import QuestionRequest, AnswerResponse, HealthResponse
+from models import QuestionRequest, AnswerResponse, HealthResponse, PDFSource
 
 # Import core functions
 from core.document_processor import xu_ly_van_ban_phap_luat_json
@@ -132,6 +133,7 @@ async def startup_event():
 # ============================================================================
 
 @app.get("/", response_model=HealthResponse)
+@app.get("/health", response_model=HealthResponse)
 async def health_check():
     """Health check endpoint"""
     return {
@@ -233,15 +235,19 @@ async def ask_question(request: QuestionRequest):
     print(f'  └─ Generation: {timing["generation_ms"]}ms ({round(timing["generation_ms"]/timing["total_ms"]*100, 1)}%)')
     print(f'{"="*70}\n')
     
-    # Format sources
+    # Format sources (original format)
     sources = [
         {"source": chunk["source"], "content": chunk["content"][:200]} 
         for chunk in relevant_chunks
     ]
     
+    # Extract PDF metadata
+    pdf_sources = [extract_pdf_metadata(chunk) for chunk in relevant_chunks]
+    
     return {
         "answer": answer,
         "sources": sources,
+        "pdf_sources": pdf_sources,
         "search_mode": mode,
         "timing": {
             "total_ms": timing['total_ms'],
@@ -273,9 +279,80 @@ async def get_stats():
 
 
 # ============================================================================
+# PDF Serving Endpoint
+# ============================================================================
+
+@app.post("/api/get-document")
+async def get_document(request: dict):
+    """Serve PDF as base64 via POST to avoid IDM detection"""
+    import base64
+    
+    filename = request.get('filename')
+    if not filename:
+        raise HTTPException(status_code=400, detail="Filename required")
+    
+    # Get absolute path
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    pdf_path = os.path.join(current_dir, 'data', filename)
+    
+    print(f"[PDF] Requested: {filename}")
+    print(f"[PDF] Looking at: {pdf_path}")
+    print(f"[PDF] Exists: {os.path.exists(pdf_path)}")
+    
+    if not os.path.exists(pdf_path):
+        raise HTTPException(status_code=404, detail=f"Document not found")
+    
+    # Read and encode to base64
+    with open(pdf_path, 'rb') as f:
+        pdf_bytes = f.read()
+        pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
+    
+    # Return JSON with base64 data
+    return {
+        "filename": filename,
+        "data": pdf_base64,
+        "size": len(pdf_bytes),
+        "type": "application/pdf"
+    }
+
+
+# ============================================================================
+# Helper Functions
+# ============================================================================
+
+def map_json_to_pdf(json_filename: str) -> str:
+    """Map JSON filename to corresponding PDF filename"""
+    json_to_pdf_map = {
+        'luat_hon_nhan_hopnhat.json': 'luat_hon_nhan.pdf',
+        'luat_dat_dai_hopnhat.json': 'luat_dat_dai.pdf',
+        'luat_lao_donghopnhat.json': 'luat_lao_dong.pdf',
+        'luat_dauthau_hopnhat.json': 'luat_dau_thau.pdf',
+        'chuyen_giao_cong_nghe_hopnhat.json': 'luat_chuyen_giao_cong_nghe.pdf',
+        'nghi_dinh_214_2025.json': 'nghi_dinh_214_2025.pdf',
+    }
+    return json_to_pdf_map.get(json_filename, 'unknown.pdf')
+
+
+def extract_pdf_metadata(chunk: dict) -> PDFSource:
+    """Extract PDF metadata from chunk"""
+    metadata = chunk.get('metadata', {})
+    json_file = metadata.get('json_file', '')
+    pdf_file = map_json_to_pdf(json_file) if json_file else 'unknown.pdf'
+    
+    return PDFSource(
+        pdf_file=pdf_file,
+        page_num=metadata.get('page_num'),  # Will be None for now
+        content=chunk['content'][:200],
+        highlight_text=chunk['content'],  # Full content for highlighting
+        json_file=json_file,
+        article_num=metadata.get('article_num')
+    )
+
+
+# ============================================================================
 # Main Entry Point
 # ============================================================================
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run('app:app', host='0.0.0.0', port=8000, reload=True)
+    uvicorn.run('app:app', host='0.0.0.0', port=8000, reload=False)

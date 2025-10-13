@@ -20,9 +20,20 @@ class TimingInfo(BaseModel):
     status: str  # "success" or "rejected"
 
 
+class PDFSource(BaseModel):
+    """PDF source with location information"""
+    pdf_file: str
+    page_num: Optional[int] = None
+    content: str
+    highlight_text: str  # Text to highlight in PDF
+    json_file: Optional[str] = None
+    article_num: Optional[str] = None
+
+
 class AnswerResponse(BaseModel):
     answer: str
-    sources: List[Dict[str, str]]
+    sources: List[Dict[str, str]]  # Original sources for backward compatibility
+    pdf_sources: Optional[List[PDFSource]] = []  # Enhanced PDF metadata
     search_mode: str
     timing: Optional[TimingInfo] = None  # Performance metrics
 

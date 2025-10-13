@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Chatbot Demo</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pdf-viewer.css">
+  <!-- PDF.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- PDF.js Text Layer CSS (REQUIRED for proper text alignment) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
 </head>
 <body>
   <div class="app-container">
@@ -48,8 +53,28 @@
         </div>
       </div>
     </div>
+
+    <!-- PDF Viewer Panel -->
+    <div class="pdf-viewer-panel" id="pdf-viewer-panel">
+      <div class="pdf-viewer-header">
+        <h3 id="pdf-title">PDF Viewer</h3>
+        <button id="close-pdf" class="close-btn">✕</button>
+      </div>
+      <div class="pdf-viewer-controls">
+        <button id="prev-page">◀ Trang trước</button>
+        <span id="page-info">Trang <span id="current-page">1</span> / <span id="total-pages">1</span></span>
+        <button id="next-page">Trang sau ▶</button>
+      </div>
+      <div class="pdf-canvas-container">
+        <div class="pdf-page-wrapper">
+          <canvas id="pdf-canvas"></canvas>
+          <div id="text-layer" class="textLayer"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>
+  <script src="pdf-viewer.js"></script>
 </body>
 </html>

@@ -3,6 +3,7 @@ Document Processor - Load and process legal JSON documents
 """
 
 import json
+import os
 from typing import List, Dict, Tuple
 
 
@@ -28,6 +29,9 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
         return [], ''
 
     nguon_luat = data.get('nguon', 'Khong ro nguon')
+    
+    # Extract filename for tracking
+    json_filename = os.path.basename(file_path)
 
     for dieu in data.get('du_lieu', []):
         dieu_so = dieu.get('dieu_so')
@@ -40,7 +44,8 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
         base_metadata = {
             'law_name': nguon_luat,
             'article_num': dieu_so,
-            'level': 'article'
+            'level': 'article',
+            'json_file': json_filename  # Add JSON filename for tracking
         }
         
         if 'nguon_sua_doi' in dieu:
