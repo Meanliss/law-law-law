@@ -137,9 +137,16 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       // Gọi API backend
       // Auto-detect: Nếu chạy qua Nginx (Docker) dùng /api/, ngược lại dùng :8000
-      const API_BASE = window.location.port === '80' || window.location.port === '' 
-        ? '/api' 
-        : 'http://localhost:8000';
+     // 🌍 Auto-detect environment and set API base URL
+      const API_BASE = (() => {
+        if (window.location.hostname.includes('onrender.com')) {
+          return 'https://legal-qa-backend.onrender.com'; // ⚠️ Update after deploying backend
+        } else if (window.location.port === '80' || window.location.port === '') {
+          return '/api';
+        } else {
+          return 'http://localhost:8000';
+        }
+      })();
       
       const response = await fetch(`${API_BASE}/ask`, {
         method: 'POST',
@@ -227,18 +234,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
     } catch (error) {
-      typingDiv.remove();
-      
-      let errorMessage = '⚠️ Xin lỗi, đã có lỗi xảy ra. ';
-      
-      if (error.message.includes('Failed to fetch')) {
-        const backendUrl = window.location.port === '80' || window.location.port === '' 
-          ? 'Backend API (qua Nginx)' 
-          : 'http://localhost:8000';
-        errorMessage += `Không thể kết nối đến server. Vui lòng đảm bảo backend đang chạy tại ${backendUrl}`;
-      } else {
-        errorMessage += 'Vui lòng thử lại sau. Chi tiết: ' + error.message;
-      }
+  typingDiv.remove();
+  
+  let errorMessage = '⚠️ Xin lỗi, đã có lỗi xảy ra. ';
+  
+  if (error.message.includes('Failed to fetch')) {
+    // Detect which environment and show appropriate error message
+    let backendUrl;
+    if (window.location.hostname.includes('onrender.com')) {
+      backendUrl = 'https://legal-qa-backend.onrender.com';
+    } else if (window.location.port === '80' || window.location.port === '') {
+      backendUrl = 'Backend API (qua Nginx)';
+    } else {
+      backendUrl = 'http://localhost:8000';
+    }
+    
+    errorMessage += `Không thể kết nối đến server. Vui lòng đảm bảo backend đang chạy tại ${backendUrl}`;
+  } else {
+    errorMessage += 'Vui lòng thử lại sau. Chi tiết: ' + error.message;
+  }
       
       addMessage(errorMessage, 'bot');
       console.error('Error calling API:', error);
