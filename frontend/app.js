@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Production: Cloudflare Pages → Hugging Face backend
         if (window.location.hostname.includes('pages.dev') || 
             window.location.hostname.includes('cloudflare')) {
-          return 'https://eddietrantkt-legal-qa-backend.hf.space';  // 👈 Your HF backend URL
+          return 'https://eddiethewall-legal-qa-backend.hf.space';  // 👈 Your HF backend URL
         }
         // Local development
         else if (window.location.hostname === 'localhost' || 
