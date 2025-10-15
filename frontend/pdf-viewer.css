@@ -148,48 +148,57 @@
   color: rgba(0, 0, 0, 0.8);
 }
 
-/* Highlighted spans - Professional style */
+/* Highlighted spans - PRECISE and VISIBLE */
 .textLayer span.highlight {
   /* Bright yellow background */
   background-color: rgba(255, 255, 0, 0.7) !important;
   
-  /* Black text */
-  color: rgba(0, 0, 0, 1) !important;
+  /* Black text for contrast */
+  color: rgba(0, 0, 0, 0.9) !important;
   
-  /* Red underline emphasis */
-  border-bottom: 4px solid #ff0000;
-  border-top: 2px solid rgba(255, 200, 0, 0.8);
+  /* Red border for emphasis */
+  border: 2px solid #ff0000 !important;
+  border-radius: 3px;
   
-  /* Rounded corners */
-  border-radius: 2px;
+  /* MINIMAL padding to avoid layout issues */
+  padding: 2px 4px !important;
   
-  /* Padding */
-  padding: 4px 6px;
-  margin: -1px 0;
-  
-  /* Glow effect */
+  /* Shadow for visibility */
   box-shadow: 
     0 0 15px rgba(255, 255, 0, 0.8),
-    0 2px 6px rgba(255, 0, 0, 0.4);
+    0 0 25px rgba(255, 0, 0, 0.5) !important;
   
   /* Bold text */
   font-weight: 700 !important;
   
-  /* Smooth pulse */
-  animation: smooth-highlight 2s ease-in-out infinite;
+  /* Smooth pulse animation */
+  animation: highlight-glow 2s ease-in-out infinite !important;
   
-  z-index: 100;
-  position: relative;
+  /* Always on top */
+  z-index: 100 !important;
+  position: relative !important;
+  
+  /* IMPORTANT: Don't scale or transform - causes misalignment */
+  transform: none !important;
+  
+  /* Force visibility */
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
-@keyframes smooth-highlight {
+/* Gentler animation without scaling */
+@keyframes highlight-glow {
   0%, 100% {
     background-color: rgba(255, 255, 0, 0.65);
-    border-bottom-color: #ff0000;
+    box-shadow: 
+      0 0 10px rgba(255, 255, 0, 0.6),
+      0 0 20px rgba(255, 0, 0, 0.3);
   }
   50% {
     background-color: rgba(255, 255, 0, 0.85);
-    border-bottom-color: #ff6600;
+    box-shadow: 
+      0 0 20px rgba(255, 255, 0, 1),
+      0 0 35px rgba(255, 0, 0, 0.6);
   }
 }
 /* Button to open PDF viewer */
