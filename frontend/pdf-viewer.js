@@ -173,7 +173,7 @@ const PDFViewer = {
     setTimeout(() => this.applyHighlights(textLayer), 500);
   },
 
-  applyHighlights(textLayer) {
+   applyHighlights(textLayer) {
     console.log('🎨 [Highlight] Starting highlight process...');
     
     const spans = textLayer.querySelectorAll('span');
@@ -185,92 +185,105 @@ const PDFViewer = {
     }
     
     let highlightCount = 0;
+    const highlightedSpans = new Set(); // Track already highlighted spans
     
-    // Build full page text for better matching
-    const fullText = Array.from(spans).map(s => s.textContent || '').join(' ');
-    const normalizedFullText = this.normalizeText(fullText);
-    
-    console.log('📄 [Highlight] Page text preview:', normalizedFullText.substring(0, 200));
-    
-    // Strategy 1: Highlight by article numbers (e.g., "Điều 8")
+    // Strategy 1: Highlight by EXACT article numbers (most precise)
     if (this.articleNumbers && this.articleNumbers.length > 0) {
       console.log('🔍 [Strategy 1] Looking for articles:', this.articleNumbers);
       
       this.articleNumbers.forEach(articleNum => {
-        const searchTerms = [
-          this.normalizeText(articleNum),
-          this.normalizeText(articleNum).replace(/\s+/g, ''),
-          articleNum.toLowerCase().trim()
-        ];
+        const normalizedArticle = this.normalizeText(articleNum);
         
-        spans.forEach(span => {
-          const spanText = this.normalizeText(span.textContent || '');
+        // Look for exact matches like "Điều 8" or "Dieu 8"
+        spans.forEach((span, index) => {
+          const spanText = span.textContent || '';
+          const normalizedSpan = this.normalizeText(spanText);
           
-          searchTerms.forEach(term => {
-            if (spanText.includes(term) || term.includes(spanText)) {
-              span.classList.add('highlight');
-              highlightCount++;
-              console.log(`✅ [Highlight] Article match: "${span.textContent}"`);
-              
-              // Highlight next 5-10 spans for context
-              let nextSpan = span.nextElementSibling;
-              let contextCount = 0;
-              while (nextSpan && contextCount < 10) {
+          // Match patterns like "Điều 8." or "Điều 8:" or "Điều 8 "
+          const patterns = [
+            normalizedArticle + '.',
+            normalizedArticle + ':',
+            normalizedArticle + ' ',
+            normalizedArticle + ','
+          ];
+          
+          const isMatch = patterns.some(pattern => 
+            normalizedSpan.includes(pattern) || 
+            normalizedSpan === normalizedArticle
+          );
+          
+          if (isMatch && !highlightedSpans.has(index)) {
+            span.classList.add('highlight');
+            highlightedSpans.add(index);
+            highlightCount++;
+            console.log(`✅ [Highlight] Found article: "${spanText}"`);
+            
+            // Highlight the TITLE of the article (next 3-5 spans)
+            for (let i = 1; i <= 5 && index + i < spans.length; i++) {
+              const nextSpan = spans[index + i];
+              if (!highlightedSpans.has(index + i)) {
                 nextSpan.classList.add('highlight');
-                nextSpan = nextSpan.nextElementSibling;
-                contextCount++;
+                highlightedSpans.add(index + i);
+                highlightCount++;
+              }
+              // Stop at the end of the title (when we hit content)
+              const nextText = nextSpan.textContent || '';
+              if (nextText.trim().length > 50) break;
+            }
+            
+            // Highlight content below (next 15 spans for the article body)
+            for (let i = 6; i <= 20 && index + i < spans.length; i++) {
+              const nextSpan = spans[index + i];
+              const nextText = this.normalizeText(nextSpan.textContent || '');
+              
+              // Stop if we hit another article
+              if (nextText.match(/^dieu\s+\d+/) || nextText.match(/^chuong\s+/)) {
+                break;
+              }
+              
+              if (!highlightedSpans.has(index + i)) {
+                nextSpan.classList.add('highlight');
+                highlightedSpans.add(index + i);
+                highlightCount++;
               }
             }
-          });
-        });
-      });
-    }
-    
-    // Strategy 2: Highlight by content keywords
-    if (this.highlightTexts && this.highlightTexts.length > 0) {
-      console.log('🔍 [Strategy 2] Looking for content:', this.highlightTexts);
-      
-      this.highlightTexts.forEach(text => {
-        // Extract important keywords (words > 4 characters)
-        const keywords = text
-          .split(/[\s,.:;!?()]+/)
-          .map(w => this.normalizeText(w))
-          .filter(w => w.length > 4);
-        
-        console.log('🔑 [Highlight] Keywords:', keywords);
-        
-        spans.forEach(span => {
-          const spanText = this.normalizeText(span.textContent || '');
-          
-          keywords.forEach(keyword => {
-            if (spanText.includes(keyword) && keyword.length > 4) {
-              span.classList.add('highlight');
-              highlightCount++;
-            }
-          });
-        });
-      });
-    }
-    
-    console.log(`🎯 [Highlight] Applied ${highlightCount} highlights`);
-    
-    // Strategy 3: Fallback - highlight common legal terms if nothing matched
-    if (highlightCount === 0) {
-      console.warn('⚠️ [Highlight] No matches! Using fallback...');
-      
-      const legalTerms = ['điều', 'khoản', 'điểm', 'chương', 'mục', 'tuổi', 'năm', 'tháng'];
-      
-      spans.forEach(span => {
-        const spanText = this.normalizeText(span.textContent || '');
-        legalTerms.forEach(term => {
-          if (spanText.includes(term)) {
-            span.classList.add('highlight');
-            highlightCount++;
           }
         });
       });
+    }
+    
+    // Strategy 2: Highlight by SPECIFIC content phrases (only if strategy 1 found nothing)
+    if (highlightCount === 0 && this.highlightTexts && this.highlightTexts.length > 0) {
+      console.log('🔍 [Strategy 2] Looking for specific content phrases');
       
-      console.log(`📍 [Highlight] Fallback highlighted ${highlightCount} spans`);
+      this.highlightTexts.forEach(text => {
+        // Only use longer, specific phrases (> 20 characters)
+        if (text.length < 20) return;
+        
+        const firstChunk = this.normalizeText(text.substring(0, 30));
+        
+        spans.forEach((span, index) => {
+          const spanText = this.normalizeText(span.textContent || '');
+          
+          if (spanText.includes(firstChunk) && !highlightedSpans.has(index)) {
+            // Highlight this span and next few
+            for (let i = 0; i < 8 && index + i < spans.length; i++) {
+              if (!highlightedSpans.has(index + i)) {
+                spans[index + i].classList.add('highlight');
+                highlightedSpans.add(index + i);
+                highlightCount++;
+              }
+            }
+          }
+        });
+      });
+    }
+    
+    console.log(`🎯 [Highlight] Applied ${highlightCount} highlights to ${highlightedSpans.size} spans`);
+    
+    // NO FALLBACK - if nothing matches, show nothing highlighted
+    if (highlightCount === 0) {
+      console.warn('⚠️ [Highlight] No matches found. PDF will open without highlights.');
     }
   },
 
