@@ -110,7 +110,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Text Layer for highlighting and selection */
+/* Text Layer - Visible text overlay on PDF */
 .textLayer {
   position: absolute;
   left: 0;
@@ -119,56 +119,52 @@
   bottom: 0;
   overflow: hidden;
   line-height: 1.0;
-  /* Make text selectable */
   pointer-events: auto;
   user-select: text;
-  -webkit-user-select: text;
-  -moz-user-select: text;
 }
 
 .textLayer > span {
-  /* Make text transparent but selectable */
-  color: transparent;
+  /* Show text in semi-transparent black */
+  color: rgba(0, 0, 0, 0.1);  /* Very subtle text overlay */
   position: absolute;
   white-space: pre;
   cursor: text;
   transform-origin: 0% 0%;
-  /* Mix blend mode to allow selection while keeping background visible */
-  mix-blend-mode: multiply;
+  transition: color 0.2s;
 }
 
-/* When user selects text, show it in blue */
+/* When hovering, show text more clearly */
+.textLayer > span:hover {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+/* When selecting text */
 .textLayer > span::selection {
-  background: rgba(0, 123, 255, 0.3);
-  color: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 123, 255, 0.4);
+  color: rgba(0, 0, 0, 0.9);
 }
 
-.textLayer > span::-moz-selection {
-  background: rgba(0, 123, 255, 0.3);
-  color: rgba(0, 0, 0, 0.8);
-}
-
-/* Highlighted spans - show in bright yellow with strong emphasis */
+/* Highlighted spans - VERY visible */
 .textLayer span.highlight {
-  background-color: rgba(255, 235, 59, 0.9) !important;
-  color: rgba(0, 0, 0, 0.9) !important;  /* Show black text for highlights */
-  border: 2px solid #ffc107;
-  padding: 2px 4px;
-  box-shadow: 0 0 15px rgba(255, 193, 7, 0.9);
+  background-color: rgba(255, 235, 59, 0.95) !important;
+  color: rgba(0, 0, 0, 1) !important;  /* Solid black text */
+  border: 3px solid #ffc107;
+  padding: 4px 6px;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(255, 193, 7, 1);
   animation: highlight-pulse 2s ease-in-out infinite;
   z-index: 10;
-  font-weight: 600;  /* Make highlighted text bold */
+  font-weight: 700;
 }
 
-/* Smooth pulsing animation for highlights */
 @keyframes highlight-pulse {
   0%, 100% {
-    background-color: rgba(255, 235, 59, 0.7);
-    box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
+    background-color: rgba(255, 235, 59, 0.85);
+    transform: scale(1);
   }
   50% {
-    background-color: rgba(255, 235, 59, 0.95);
-    box-shadow: 0 0 20px rgba(255, 193, 7, 1);
+    background-color: rgba(255, 235, 59, 1);
+    transform: scale(1.02);
   }
 }
 
