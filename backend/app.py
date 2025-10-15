@@ -72,12 +72,22 @@ async def startup_event():
     print('[STARTUP] Dang khoi dong Legal Q&A System v2.0...')
     
     # 1. Load Gemini API
-    load_dotenv()
+    # 1. Load Gemini API
+    # Try environment variable first (for cloud platforms like Render)
     api_key = os.getenv('GOOGLE_API_KEY')
+    
+    # If not found, try loading from .env file (for local development)
     if not api_key:
-        print('[ERROR] GOOGLE_API_KEY not found in .env file!')
+        print('[INFO] API key not in environment, trying .env file...')
+        load_dotenv()
+        api_key = os.getenv('GOOGLE_API_KEY')
+    
+    if not api_key:
+        print('[ERROR] GOOGLE_API_KEY not found in environment variables or .env file!')
         raise Exception('Missing GOOGLE_API_KEY')
     
+    print('[OK] Google API key loaded successfully')
+        
     genai.configure(api_key=api_key)
     
     # 2. Initialize dual Gemini models
