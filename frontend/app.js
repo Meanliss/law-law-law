@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sourcesDiv.textContent = sourcesText;
         chatDisplay.appendChild(sourcesDiv);
         
-        // Thêm nút xem PDF với highlight nếu có pdf_sources
+        // Display PDF buttons with highlighting
         if (data.pdf_sources && data.pdf_sources.length > 0) {
           const pdfButtonsDiv = document.createElement('div');
           pdfButtonsDiv.style.marginTop = '12px';
@@ -220,25 +220,48 @@ document.addEventListener('DOMContentLoaded', () => {
           pdfButtonsDiv.style.flexWrap = 'wrap';
           pdfButtonsDiv.style.gap = '8px';
           
-          // Group by PDF file
+          // Group by PDF file with deduplication
           const pdfGroups = {};
           data.pdf_sources.forEach(source => {
             if (!pdfGroups[source.pdf_file]) {
-              pdfGroups[source.pdf_file] = [];
+              pdfGroups[source.pdf_file] = {
+                highlights: new Set(),  // Use Set to avoid duplicates
+                articles: new Set()
+              };
             }
-            pdfGroups[source.pdf_file].push(source.highlight_text);
+            
+            // Add highlight text (deduplicated)
+            if (source.highlight_text && source.highlight_text.trim()) {
+              pdfGroups[source.pdf_file].highlights.add(source.highlight_text);
+            }
+            
+            // Add article number (deduplicated)
+            if (source.article_num && source.article_num.trim()) {
+              pdfGroups[source.pdf_file].articles.add(source.article_num);
+            }
           });
           
           // Create button for each PDF
-          Object.entries(pdfGroups).forEach(([pdfFile, highlightTexts]) => {
+          Object.entries(pdfGroups).forEach(([pdfFile, data]) => {
             const btn = document.createElement('button');
             btn.classList.add('view-pdf-btn');
             btn.textContent = `📄 Xem ${pdfFile}`;
+            
             btn.onclick = () => {
               if (window.PDFViewer) {
-                window.PDFViewer.open(pdfFile, highlightTexts);
+                // Convert Sets to Arrays
+                const highlightTexts = Array.from(data.highlights);
+                const articleNumbers = Array.from(data.articles);
+                
+                console.log('📖 [PDF Button] Opening:', pdfFile);
+                console.log('🔍 [PDF Button] Highlights:', highlightTexts);
+                console.log('📋 [PDF Button] Articles:', articleNumbers);
+                
+                // Pass both to PDF viewer
+                window.PDFViewer.open(pdfFile, highlightTexts, articleNumbers);
               }
             };
+            
             pdfButtonsDiv.appendChild(btn);
           });
           
