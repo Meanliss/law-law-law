@@ -30,8 +30,23 @@ const PDFViewer = {
 
   async loadPDF(filename) {
     try {
+      // Detect API base URL (same logic as app.js)
+      const API_BASE = (() => {
+        if (window.location.hostname.includes('pages.dev') || 
+            window.location.hostname.includes('cloudflare')) {
+          return 'https://eddiethewall-legal-qa-backend.hf.space';
+        } else if (window.location.hostname === 'localhost' || 
+                   window.location.hostname === '127.0.0.1') {
+          return 'http://localhost:7860';
+        } else {
+          return 'https://eddiethewall-legal-qa-backend.hf.space';
+        }
+      })();
+      
+      console.log('[PDF] Fetching from:', `${API_BASE}/api/get-document`);
+      
       // POST request to avoid IDM detection (no .pdf in URL)
-      const response = await fetch('http://localhost:8000/api/get-document', {
+      const response = await fetch(`${API_BASE}/api/get-document`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
