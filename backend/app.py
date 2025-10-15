@@ -365,4 +365,6 @@ def extract_pdf_metadata(chunk: dict) -> PDFSource:
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run('app:app', host='0.0.0.0', port=8000, reload=False)
+    import os
+    port = int(os.getenv('PORT', 7860))  # Support both 8000 (local) and 7860 (HF Spaces)
+    uvicorn.run('app:app', host='0.0.0.0', port=port, reload=False)
