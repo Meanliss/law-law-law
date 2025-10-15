@@ -277,7 +277,7 @@ const PDFViewer = {
     if (highlightCount === 0) {
       console.warn('⚠️ [Highlight] No highlights applied. Article may be on a different page.');
     }
-  }
+  },  // ⚠️ THIS COMMA WAS MISSING! ⚠️
 
   normalizeText(text) {
     if (!text) return '';
