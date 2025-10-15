@@ -110,7 +110,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Text Layer for highlighting - Override PDF.js defaults */
+/* Text Layer for highlighting and selection */
 .textLayer {
   position: absolute;
   left: 0;
@@ -119,37 +119,56 @@
   bottom: 0;
   overflow: hidden;
   line-height: 1.0;
-  /* Make entire layer invisible */
-  opacity: 0;
+  /* Make text selectable */
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
 }
 
 .textLayer > span {
+  /* Make text transparent but selectable */
   color: transparent;
   position: absolute;
   white-space: pre;
   cursor: text;
   transform-origin: 0% 0%;
-  /* Individual spans invisible by default */
-  opacity: 0;
+  /* Mix blend mode to allow selection while keeping background visible */
+  mix-blend-mode: multiply;
 }
 
+/* When user selects text, show it in blue */
+.textLayer > span::selection {
+  background: rgba(0, 123, 255, 0.3);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.textLayer > span::-moz-selection {
+  background: rgba(0, 123, 255, 0.3);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* Highlighted spans - show in bright yellow with strong emphasis */
 .textLayer span.highlight {
   background-color: rgba(255, 235, 59, 0.9) !important;
-  color: transparent !important;
+  color: rgba(0, 0, 0, 0.9) !important;  /* Show black text for highlights */
   border: 2px solid #ffc107;
+  padding: 2px 4px;
   box-shadow: 0 0 15px rgba(255, 193, 7, 0.9);
   animation: highlight-pulse 2s ease-in-out infinite;
-  /* Only highlights visible */
-  opacity: 1 !important;
   z-index: 10;
+  font-weight: 600;  /* Make highlighted text bold */
 }
 
+/* Smooth pulsing animation for highlights */
 @keyframes highlight-pulse {
   0%, 100% {
-    background-color: rgba(255, 235, 59, 0.6);
+    background-color: rgba(255, 235, 59, 0.7);
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
   }
   50% {
-    background-color: rgba(255, 235, 59, 0.8);
+    background-color: rgba(255, 235, 59, 0.95);
+    box-shadow: 0 0 20px rgba(255, 193, 7, 1);
   }
 }
 
