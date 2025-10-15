@@ -148,57 +148,46 @@
   color: rgba(0, 0, 0, 0.8);
 }
 
-/* Highlighted spans - PRECISE and VISIBLE */
+/* Highlighted spans - Clean and precise */
 .textLayer span.highlight {
-  /* Bright yellow background */
-  background-color: rgba(255, 255, 0, 0.7) !important;
+  /* Semi-transparent yellow */
+  background-color: rgba(255, 255, 0, 0.6) !important;
   
-  /* Black text for contrast */
-  color: rgba(0, 0, 0, 0.9) !important;
+  /* Dark text for readability */
+  color: rgba(0, 0, 0, 1) !important;
   
-  /* Red border for emphasis */
-  border: 2px solid #ff0000 !important;
-  border-radius: 3px;
+  /* Subtle red border */
+  border-bottom: 3px solid #ff0000 !important;
+  border-radius: 2px;
   
-  /* MINIMAL padding to avoid layout issues */
-  padding: 2px 4px !important;
+  /* Minimal padding */
+  padding: 1px 3px !important;
+  margin: 0 !important;
   
-  /* Shadow for visibility */
-  box-shadow: 
-    0 0 15px rgba(255, 255, 0, 0.8),
-    0 0 25px rgba(255, 0, 0, 0.5) !important;
+  /* Subtle shadow */
+  box-shadow: 0 0 10px rgba(255, 255, 0, 0.5) !important;
   
-  /* Bold text */
-  font-weight: 700 !important;
+  /* Bold for emphasis */
+  font-weight: 600 !important;
   
-  /* Smooth pulse animation */
-  animation: highlight-glow 2s ease-in-out infinite !important;
+  /* Gentle glow */
+  animation: gentle-glow 3s ease-in-out infinite !important;
   
-  /* Always on top */
-  z-index: 100 !important;
+  /* On top but not too aggressive */
+  z-index: 50 !important;
   position: relative !important;
   
-  /* IMPORTANT: Don't scale or transform - causes misalignment */
+  /* No transforms */
   transform: none !important;
-  
-  /* Force visibility */
-  opacity: 1 !important;
-  visibility: visible !important;
 }
 
-/* Gentler animation without scaling */
-@keyframes highlight-glow {
+/* Gentler animation */
+@keyframes gentle-glow {
   0%, 100% {
-    background-color: rgba(255, 255, 0, 0.65);
-    box-shadow: 
-      0 0 10px rgba(255, 255, 0, 0.6),
-      0 0 20px rgba(255, 0, 0, 0.3);
+    background-color: rgba(255, 255, 0, 0.5);
   }
   50% {
-    background-color: rgba(255, 255, 0, 0.85);
-    box-shadow: 
-      0 0 20px rgba(255, 255, 0, 1),
-      0 0 35px rgba(255, 0, 0, 0.6);
+    background-color: rgba(255, 255, 0, 0.75);
   }
 }
 /* Button to open PDF viewer */
