@@ -1,4 +1,4 @@
-﻿// PDF Viewer Panel with Text Highlighting
+// PDF Viewer Panel with Smart Text Highlighting
 
 if (typeof pdfjsLib !== 'undefined') {
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -10,13 +10,20 @@ const PDFViewer = {
   totalPages: 0,
   scale: 1.5,
   highlightTexts: [],
+  articleNumbers: [],
   isOpen: false,
 
-  async open(pdfFile, highlightTexts = []) {
+  async open(pdfFile, highlightTexts = [], articleNumbers = []) {
     const panel = document.getElementById('pdf-viewer-panel');
     panel.classList.add('active');
     this.isOpen = true;
     this.highlightTexts = highlightTexts;
+    this.articleNumbers = articleNumbers;
+    
+    console.log('📖 [PDF] Opening:', pdfFile);
+    console.log('🔍 [PDF] Highlight texts:', highlightTexts);
+    console.log('📋 [PDF] Article numbers:', articleNumbers);
+    
     document.getElementById('pdf-title').textContent = pdfFile;
     await this.loadPDF(pdfFile);
   },
@@ -30,7 +37,7 @@ const PDFViewer = {
 
   async loadPDF(filename) {
     try {
-      // Detect API base URL (same logic as app.js)
+      // Auto-detect API base URL
       const API_BASE = (() => {
         if (window.location.hostname.includes('pages.dev') || 
             window.location.hostname.includes('cloudflare')) {
@@ -43,14 +50,11 @@ const PDFViewer = {
         }
       })();
       
-      console.log('[PDF] Fetching from:', `${API_BASE}/api/get-document`);
+      console.log('🔗 [PDF] Fetching from:', `${API_BASE}/api/get-document`);
       
-      // POST request to avoid IDM detection (no .pdf in URL)
       const response = await fetch(`${API_BASE}/api/get-document`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename: filename })
       });
       
@@ -59,7 +63,7 @@ const PDFViewer = {
       }
       
       const data = await response.json();
-      console.log(`[PDF] Loaded ${data.filename}, size: ${data.size} bytes`);
+      console.log(`✅ [PDF] Loaded ${data.filename}, size: ${data.size} bytes`);
       
       // Convert base64 to Uint8Array
       const binaryString = atob(data.data);
@@ -73,53 +77,76 @@ const PDFViewer = {
       this.pdfDoc = await loadingTask.promise;
       this.totalPages = this.pdfDoc.numPages;
       
-      // Search for page with highlight text
+      console.log(`📄 [PDF] Total pages: ${this.totalPages}`);
+      
+      // Search for page with article or highlight text
       const pageWithHighlight = await this.findPageWithHighlight();
       this.currentPage = pageWithHighlight || 1;
       
       await this.renderPage(this.currentPage);
     } catch (error) {
-      console.error('Error loading PDF:', error);
+      console.error('❌ [PDF] Error loading PDF:', error);
       alert('Không thể tải PDF: ' + error.message);
     }
   },
   
   async findPageWithHighlight() {
-    if (!this.highlightTexts || this.highlightTexts.length === 0) return 1;
-    
-    console.log('[PDF] Searching for highlights:', this.highlightTexts);
+    console.log('🔍 [PDF] Searching for highlights across all pages...');
     
     // Search through all pages
     for (let pageNum = 1; pageNum <= this.totalPages; pageNum++) {
       const page = await this.pdfDoc.getPage(pageNum);
       const textContent = await page.getTextContent();
-      const pageText = textContent.items.map(item => item.str).join(' ').toLowerCase();
+      const pageText = textContent.items.map(item => item.str).join(' ');
       
-      // Check if any highlight text is in this page
-      for (const searchText of this.highlightTexts) {
-        const normalized = this.normalizeText(searchText.toLowerCase());
-        if (pageText.includes(normalized) || normalized.includes(pageText)) {
-          console.log(`[PDF] Found highlight on page ${pageNum}`);
-          return pageNum;
+      // Check for article numbers first (most reliable)
+      if (this.articleNumbers && this.articleNumbers.length > 0) {
+        for (const articleNum of this.articleNumbers) {
+          const normalized = this.normalizeText(articleNum);
+          const pageNormalized = this.normalizeText(pageText);
+          
+          if (pageNormalized.includes(normalized)) {
+            console.log(`✅ [PDF] Found article "${articleNum}" on page ${pageNum}`);
+            return pageNum;
+          }
+        }
+      }
+      
+      // Check for highlight text content
+      if (this.highlightTexts && this.highlightTexts.length > 0) {
+        for (const searchText of this.highlightTexts) {
+          // Extract key phrases (first 50 chars)
+          const keyPhrase = searchText.substring(0, 50);
+          const normalized = this.normalizeText(keyPhrase);
+          const pageNormalized = this.normalizeText(pageText);
+          
+          if (pageNormalized.includes(normalized)) {
+            console.log(`✅ [PDF] Found content on page ${pageNum}`);
+            return pageNum;
+          }
         }
       }
     }
     
-    console.log('[PDF] No highlight found, starting at page 1');
+    console.log('⚠️ [PDF] No matches found, starting at page 1');
     return 1;
   },
 
   async renderPage(pageNum) {
     if (!this.pdfDoc || pageNum < 1 || pageNum > this.totalPages) return;
+    
     this.currentPage = pageNum;
     const page = await this.pdfDoc.getPage(pageNum);
     const canvas = document.getElementById('pdf-canvas');
     const context = canvas.getContext('2d');
     const viewport = page.getViewport({ scale: this.scale });
+    
     canvas.width = viewport.width;
     canvas.height = viewport.height;
+    
     await page.render({ canvasContext: context, viewport: viewport }).promise;
     await this.renderTextLayer(page, viewport);
+    
     document.getElementById('current-page').textContent = pageNum;
     document.getElementById('total-pages').textContent = this.totalPages;
     document.getElementById('prev-page').disabled = pageNum <= 1;
@@ -131,7 +158,6 @@ const PDFViewer = {
     const textLayer = document.getElementById('text-layer');
     textLayer.innerHTML = '';
     
-    // Set text layer size to match canvas
     textLayer.style.width = viewport.width + 'px';
     textLayer.style.height = viewport.height + 'px';
     
@@ -144,62 +170,118 @@ const PDFViewer = {
     }).promise;
     
     // Apply highlights after text is fully rendered
-    setTimeout(() => this.applyHighlights(textLayer), 300);
+    setTimeout(() => this.applyHighlights(textLayer), 500);
   },
 
   applyHighlights(textLayer) {
-    if (!this.highlightTexts || this.highlightTexts.length === 0) return;
-    
-    console.log('[Highlight] Texts to highlight:', this.highlightTexts);
+    console.log('🎨 [Highlight] Starting highlight process...');
     
     const spans = textLayer.querySelectorAll('span');
+    console.log(`📝 [Highlight] Found ${spans.length} text spans`);
+    
+    if (spans.length === 0) {
+      console.error('❌ [Highlight] No spans found in text layer!');
+      return;
+    }
+    
     let highlightCount = 0;
     
-    // Build full page text for context matching
-    let fullPageText = '';
-    const spanMap = [];
-    spans.forEach((span, index) => {
-      const text = span.textContent || '';
-      spanMap.push({
-        span: span,
-        start: fullPageText.length,
-        end: fullPageText.length + text.length,
-        text: text
-      });
-      fullPageText += text;
-    });
+    // Build full page text for better matching
+    const fullText = Array.from(spans).map(s => s.textContent || '').join(' ');
+    const normalizedFullText = this.normalizeText(fullText);
     
-    const normalizedPageText = this.normalizeText(fullPageText.toLowerCase());
+    console.log('📄 [Highlight] Page text preview:', normalizedFullText.substring(0, 200));
     
-    // For each highlight text, find exact matches in page
-    this.highlightTexts.forEach(searchText => {
-      const normalizedSearch = this.normalizeText(searchText.toLowerCase());
+    // Strategy 1: Highlight by article numbers (e.g., "Điều 8")
+    if (this.articleNumbers && this.articleNumbers.length > 0) {
+      console.log('🔍 [Strategy 1] Looking for articles:', this.articleNumbers);
       
-      // Find all occurrences of search text in page
-      let startPos = 0;
-      while ((startPos = normalizedPageText.indexOf(normalizedSearch, startPos)) !== -1) {
-        const endPos = startPos + normalizedSearch.length;
+      this.articleNumbers.forEach(articleNum => {
+        const searchTerms = [
+          this.normalizeText(articleNum),
+          this.normalizeText(articleNum).replace(/\s+/g, ''),
+          articleNum.toLowerCase().trim()
+        ];
         
-        // Find spans that overlap with this match
-        spanMap.forEach(item => {
-          if (item.start < endPos && item.end > startPos) {
-            item.span.classList.add('highlight');
+        spans.forEach(span => {
+          const spanText = this.normalizeText(span.textContent || '');
+          
+          searchTerms.forEach(term => {
+            if (spanText.includes(term) || term.includes(spanText)) {
+              span.classList.add('highlight');
+              highlightCount++;
+              console.log(`✅ [Highlight] Article match: "${span.textContent}"`);
+              
+              // Highlight next 5-10 spans for context
+              let nextSpan = span.nextElementSibling;
+              let contextCount = 0;
+              while (nextSpan && contextCount < 10) {
+                nextSpan.classList.add('highlight');
+                nextSpan = nextSpan.nextElementSibling;
+                contextCount++;
+              }
+            }
+          });
+        });
+      });
+    }
+    
+    // Strategy 2: Highlight by content keywords
+    if (this.highlightTexts && this.highlightTexts.length > 0) {
+      console.log('🔍 [Strategy 2] Looking for content:', this.highlightTexts);
+      
+      this.highlightTexts.forEach(text => {
+        // Extract important keywords (words > 4 characters)
+        const keywords = text
+          .split(/[\s,.:;!?()]+/)
+          .map(w => this.normalizeText(w))
+          .filter(w => w.length > 4);
+        
+        console.log('🔑 [Highlight] Keywords:', keywords);
+        
+        spans.forEach(span => {
+          const spanText = this.normalizeText(span.textContent || '');
+          
+          keywords.forEach(keyword => {
+            if (spanText.includes(keyword) && keyword.length > 4) {
+              span.classList.add('highlight');
+              highlightCount++;
+            }
+          });
+        });
+      });
+    }
+    
+    console.log(`🎯 [Highlight] Applied ${highlightCount} highlights`);
+    
+    // Strategy 3: Fallback - highlight common legal terms if nothing matched
+    if (highlightCount === 0) {
+      console.warn('⚠️ [Highlight] No matches! Using fallback...');
+      
+      const legalTerms = ['điều', 'khoản', 'điểm', 'chương', 'mục', 'tuổi', 'năm', 'tháng'];
+      
+      spans.forEach(span => {
+        const spanText = this.normalizeText(span.textContent || '');
+        legalTerms.forEach(term => {
+          if (spanText.includes(term)) {
+            span.classList.add('highlight');
             highlightCount++;
           }
         });
-        
-        startPos = endPos;
-      }
-    });
-    
-    console.log(`[Highlight] Applied ${highlightCount} highlights`);
+      });
+      
+      console.log(`📍 [Highlight] Fallback highlighted ${highlightCount} spans`);
+    }
   },
 
   normalizeText(text) {
+    if (!text) return '';
     return text
+      .toString()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
+      .replace(/[đĐ]/g, 'd')
       .trim();
   },
 
