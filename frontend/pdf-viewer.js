@@ -173,7 +173,7 @@ const PDFViewer = {
     setTimeout(() => this.applyHighlights(textLayer), 500);
   },
 
-   applyHighlights(textLayer) {
+  applyHighlights(textLayer) {
     console.log('🎨 [Highlight] Starting highlight process...');
     
     const spans = textLayer.querySelectorAll('span');
@@ -185,107 +185,99 @@ const PDFViewer = {
     }
     
     let highlightCount = 0;
-    const highlightedSpans = new Set(); // Track already highlighted spans
     
-    // Strategy 1: Highlight by EXACT article numbers (most precise)
-    if (this.articleNumbers && this.articleNumbers.length > 0) {
-      console.log('🔍 [Strategy 1] Looking for articles:', this.articleNumbers);
+    // ONLY highlight if we have article numbers - no fuzzy matching!
+    if (!this.articleNumbers || this.articleNumbers.length === 0) {
+      console.warn('⚠️ [Highlight] No article numbers provided. Skipping highlights.');
+      return;
+    }
+    
+    console.log('🔍 [Highlight] Looking for articles:', this.articleNumbers);
+    
+    // Find the starting point of each article
+    this.articleNumbers.forEach(articleNum => {
+      const normalizedArticle = this.normalizeText(articleNum);
+      console.log('🔎 [Highlight] Searching for:', normalizedArticle);
       
-      this.articleNumbers.forEach(articleNum => {
-        const normalizedArticle = this.normalizeText(articleNum);
+      let foundArticle = false;
+      
+      for (let i = 0; i < spans.length; i++) {
+        const span = spans[i];
+        const spanText = span.textContent || '';
+        const normalizedSpan = this.normalizeText(spanText);
         
-        // Look for exact matches like "Điều 8" or "Dieu 8"
-        spans.forEach((span, index) => {
-          const spanText = span.textContent || '';
-          const normalizedSpan = this.normalizeText(spanText);
+        // Look for exact article header like "Điều 8." or "Điều 8:"
+        const isArticleHeader = 
+          normalizedSpan.startsWith(normalizedArticle + '.') ||
+          normalizedSpan.startsWith(normalizedArticle + ':') ||
+          normalizedSpan.startsWith(normalizedArticle + ' ') ||
+          normalizedSpan === normalizedArticle;
+        
+        if (isArticleHeader && !foundArticle) {
+          foundArticle = true;
+          console.log(`✅ [Highlight] Found article at span ${i}: "${spanText}"`);
           
-          // Match patterns like "Điều 8." or "Điều 8:" or "Điều 8 "
-          const patterns = [
-            normalizedArticle + '.',
-            normalizedArticle + ':',
-            normalizedArticle + ' ',
-            normalizedArticle + ','
-          ];
+          // Highlight the article number itself
+          span.classList.add('highlight');
+          highlightCount++;
           
-          const isMatch = patterns.some(pattern => 
-            normalizedSpan.includes(pattern) || 
-            normalizedSpan === normalizedArticle
-          );
-          
-          if (isMatch && !highlightedSpans.has(index)) {
-            span.classList.add('highlight');
-            highlightedSpans.add(index);
+          // Highlight the article title (usually next 1-3 spans)
+          let titleLength = 0;
+          for (let j = i + 1; j < spans.length && titleLength < 3; j++) {
+            const nextSpan = spans[j];
+            const nextText = nextSpan.textContent || '';
+            
+            nextSpan.classList.add('highlight');
             highlightCount++;
-            console.log(`✅ [Highlight] Found article: "${spanText}"`);
+            titleLength++;
             
-            // Highlight the TITLE of the article (next 3-5 spans)
-            for (let i = 1; i <= 5 && index + i < spans.length; i++) {
-              const nextSpan = spans[index + i];
-              if (!highlightedSpans.has(index + i)) {
-                nextSpan.classList.add('highlight');
-                highlightedSpans.add(index + i);
-                highlightCount++;
-              }
-              // Stop at the end of the title (when we hit content)
-              const nextText = nextSpan.textContent || '';
-              if (nextText.trim().length > 50) break;
-            }
-            
-            // Highlight content below (next 15 spans for the article body)
-            for (let i = 6; i <= 20 && index + i < spans.length; i++) {
-              const nextSpan = spans[index + i];
-              const nextText = this.normalizeText(nextSpan.textContent || '');
-              
-              // Stop if we hit another article
-              if (nextText.match(/^dieu\s+\d+/) || nextText.match(/^chuong\s+/)) {
-                break;
-              }
-              
-              if (!highlightedSpans.has(index + i)) {
-                nextSpan.classList.add('highlight');
-                highlightedSpans.add(index + i);
-                highlightCount++;
-              }
+            // Stop at line break or when we hit numbered items (1., a., etc.)
+            if (nextText.match(/^\s*\d+\./) || nextText.match(/^\s*[a-z]\)/)) {
+              break;
             }
           }
-        });
-      });
-    }
-    
-    // Strategy 2: Highlight by SPECIFIC content phrases (only if strategy 1 found nothing)
-    if (highlightCount === 0 && this.highlightTexts && this.highlightTexts.length > 0) {
-      console.log('🔍 [Strategy 2] Looking for specific content phrases');
-      
-      this.highlightTexts.forEach(text => {
-        // Only use longer, specific phrases (> 20 characters)
-        if (text.length < 20) return;
-        
-        const firstChunk = this.normalizeText(text.substring(0, 30));
-        
-        spans.forEach((span, index) => {
-          const spanText = this.normalizeText(span.textContent || '');
           
-          if (spanText.includes(firstChunk) && !highlightedSpans.has(index)) {
-            // Highlight this span and next few
-            for (let i = 0; i < 8 && index + i < spans.length; i++) {
-              if (!highlightedSpans.has(index + i)) {
-                spans[index + i].classList.add('highlight');
-                highlightedSpans.add(index + i);
-                highlightCount++;
-              }
+          // Highlight the first paragraph/item (usually next 10-15 spans after title)
+          let contentLength = 0;
+          const startContent = i + titleLength + 1;
+          
+          for (let j = startContent; j < spans.length && contentLength < 15; j++) {
+            const contentSpan = spans[j];
+            const contentText = this.normalizeText(contentSpan.textContent || '');
+            
+            // Stop if we hit another article
+            if (contentText.match(/^dieu\s+\d+/)) {
+              console.log(`🛑 [Highlight] Stopped at next article: ${contentSpan.textContent}`);
+              break;
             }
+            
+            // Stop if we hit another chapter
+            if (contentText.match(/^chuong\s+/)) {
+              console.log(`🛑 [Highlight] Stopped at next chapter`);
+              break;
+            }
+            
+            contentSpan.classList.add('highlight');
+            highlightCount++;
+            contentLength++;
           }
-        });
-      });
-    }
+          
+          // Don't look for this article again
+          break;
+        }
+      }
+      
+      if (!foundArticle) {
+        console.warn(`⚠️ [Highlight] Article "${articleNum}" not found on this page`);
+      }
+    });
     
-    console.log(`🎯 [Highlight] Applied ${highlightCount} highlights to ${highlightedSpans.size} spans`);
+    console.log(`🎯 [Highlight] Total highlights applied: ${highlightCount}`);
     
-    // NO FALLBACK - if nothing matches, show nothing highlighted
     if (highlightCount === 0) {
-      console.warn('⚠️ [Highlight] No matches found. PDF will open without highlights.');
+      console.warn('⚠️ [Highlight] No highlights applied. Article may be on a different page.');
     }
-  },
+  }
 
   normalizeText(text) {
     if (!text) return '';
