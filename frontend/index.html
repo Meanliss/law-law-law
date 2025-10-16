@@ -3,13 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Chatbot Demo</title>
+  <title>Legal Q&A Assistant</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="pdf-viewer.css">
-  <!-- PDF.js Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <!-- PDF.js Text Layer CSS (REQUIRED for proper text alignment) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
 </head>
 <body>
   <div class="app-container">
@@ -23,15 +19,14 @@
     <!-- Chat main -->
     <div class="chatbot-container">
       <div class="header">
-        <h2 id="chat-title">AI Chatbot</h2>
+        <h2 id="chat-title">⚖️ Trợ lý Pháp luật AI</h2>
         <button id="theme-toggle">🌙</button>
       </div>
 
       <div class="chat-display" id="chat-display"></div>
 
-      <!-- Input area với model selector bên dưới -->
+      <!-- Input area -->
       <div class="input-area">
-        <!-- Model selector ở trên input -->
         <div class="model-selector">
           <label class="mode-label">
             <input type="radio" name="model-mode" value="fast" id="mode-fast">
@@ -44,7 +39,7 @@
         </div>
         
         <div class="input-wrapper">
-          <textarea id="user-input" placeholder="Nhập câu hỏi của bạn..." rows="1"></textarea>
+          <textarea id="user-input" placeholder="Nhập câu hỏi pháp luật của bạn..." rows="1"></textarea>
           <button id="send-button">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -54,22 +49,17 @@
       </div>
     </div>
 
-    <!-- PDF Viewer Panel -->
+    <!-- PDF Viewer Panel (SIMPLE IFRAME VERSION) -->
     <div class="pdf-viewer-panel" id="pdf-viewer-panel">
       <div class="pdf-viewer-header">
-        <h3 id="pdf-title">PDF Viewer</h3>
+        <h3 id="pdf-title">📄 PDF Viewer</h3>
         <button id="close-pdf" class="close-btn">✕</button>
       </div>
-      <div class="pdf-viewer-controls">
-        <button id="prev-page">◀ Trang trước</button>
-        <span id="page-info">Trang <span id="current-page">1</span> / <span id="total-pages">1</span></span>
-        <button id="next-page">Trang sau ▶</button>
-      </div>
-      <div class="pdf-canvas-container">
-        <div class="pdf-page-wrapper">
-          <canvas id="pdf-canvas"></canvas>
-          <div id="text-layer" class="textLayer"></div>
-        </div>
+      
+      <div id="article-info"></div>
+      
+      <div class="pdf-content">
+        <iframe id="pdf-iframe" title="PDF Document Viewer"></iframe>
       </div>
     </div>
   </div>

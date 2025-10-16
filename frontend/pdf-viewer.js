@@ -1,41 +1,49 @@
-﻿// PDF Viewer Panel with Text Highlighting
-
-if (typeof pdfjsLib !== 'undefined') {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-}
+// Simple Native PDF Viewer - No Canvas, No Lag
 
 const PDFViewer = {
-  pdfDoc: null,
-  currentPage: 1,
-  totalPages: 0,
-  scale: 1.5,
-  highlightTexts: [],
   isOpen: false,
 
-  async open(pdfFile, highlightTexts = []) {
+  async open(pdfFile, highlightTexts = [], articleNumbers = []) {
     const panel = document.getElementById('pdf-viewer-panel');
     panel.classList.add('active');
     this.isOpen = true;
-    this.highlightTexts = highlightTexts;
+    
+    console.log('📖 [PDF] Opening:', pdfFile);
+    console.log('📋 [PDF] Articles:', articleNumbers);
+    
     document.getElementById('pdf-title').textContent = pdfFile;
-    await this.loadPDF(pdfFile);
+    await this.loadPDF(pdfFile, articleNumbers);
   },
 
   close() {
     document.getElementById('pdf-viewer-panel').classList.remove('active');
     this.isOpen = false;
-    this.pdfDoc = null;
-    this.currentPage = 1;
+    const iframe = document.getElementById('pdf-iframe');
+    if (iframe) {
+      iframe.src = '';
+    }
   },
 
-  async loadPDF(filename) {
+  async loadPDF(filename, articleNumbers) {
     try {
-      // POST request to avoid IDM detection (no .pdf in URL)
-      const response = await fetch('http://localhost:8000/api/get-document', {
+      // Auto-detect API base URL
+      const API_BASE = (() => {
+        if (window.location.hostname.includes('pages.dev') || 
+            window.location.hostname.includes('cloudflare')) {
+          return 'https://eddiethewall-legal-qa-backend.hf.space';
+        } else if (window.location.hostname === 'localhost' || 
+                   window.location.hostname === '127.0.0.1') {
+          return 'http://localhost:7860';
+        } else {
+          return 'https://eddiethewall-legal-qa-backend.hf.space';
+        }
+      })();
+      
+      console.log('🔗 [PDF] Fetching from:', `${API_BASE}/api/get-document`);
+      
+      const response = await fetch(`${API_BASE}/api/get-document`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename: filename })
       });
       
@@ -44,168 +52,116 @@ const PDFViewer = {
       }
       
       const data = await response.json();
-      console.log(`[PDF] Loaded ${data.filename}, size: ${data.size} bytes`);
+      console.log(`✅ [PDF] Loaded ${data.filename}, size: ${data.size} bytes`);
       
-      // Convert base64 to Uint8Array
+      // Convert base64 to blob
       const binaryString = atob(data.data);
       const bytes = new Uint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }
       
-      // Load PDF from bytes
-      const loadingTask = pdfjsLib.getDocument({ data: bytes });
-      this.pdfDoc = await loadingTask.promise;
-      this.totalPages = this.pdfDoc.numPages;
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
       
-      // Search for page with highlight text
-      const pageWithHighlight = await this.findPageWithHighlight();
-      this.currentPage = pageWithHighlight || 1;
+      // Estimate page number from article
+      let pageNum = 1;
+      if (articleNumbers && articleNumbers.length > 0) {
+        pageNum = this.estimatePageFromArticle(articleNumbers[0]);
+      }
       
-      await this.renderPage(this.currentPage);
+      // Load PDF in iframe with native viewer
+      const iframe = document.getElementById('pdf-iframe');
+      
+      // Use different URL parameters for different browsers
+      const userAgent = navigator.userAgent.toLowerCase();
+      if (userAgent.includes('chrome') || userAgent.includes('edge')) {
+        // Chrome/Edge: Use #page parameter
+        iframe.src = `${blobUrl}#page=${pageNum}&view=FitH&zoom=125`;
+      } else if (userAgent.includes('firefox')) {
+        // Firefox: Use #page parameter
+        iframe.src = `${blobUrl}#page=${pageNum}`;
+      } else {
+        // Other browsers: Just load the PDF
+        iframe.src = blobUrl;
+      }
+      
+      console.log(`📄 [PDF] Loaded in iframe, jumping to page ${pageNum}`);
+      
+      // Show search instructions
+      this.showSearchInstructions(articleNumbers);
+      
     } catch (error) {
-      console.error('Error loading PDF:', error);
+      console.error('❌ [PDF] Error loading PDF:', error);
       alert('Không thể tải PDF: ' + error.message);
     }
   },
-  
-  async findPageWithHighlight() {
-    if (!this.highlightTexts || this.highlightTexts.length === 0) return 1;
+
+  estimatePageFromArticle(articleNum) {
+    // Extract article number (e.g., "Dieu 8" -> 8)
+    const match = articleNum.match(/\d+/);
+    if (!match) return 1;
     
-    console.log('[PDF] Searching for highlights:', this.highlightTexts);
+    const num = parseInt(match[0]);
     
-    // Search through all pages
-    for (let pageNum = 1; pageNum <= this.totalPages; pageNum++) {
-      const page = await this.pdfDoc.getPage(pageNum);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items.map(item => item.str).join(' ').toLowerCase();
-      
-      // Check if any highlight text is in this page
-      for (const searchText of this.highlightTexts) {
-        const normalized = this.normalizeText(searchText.toLowerCase());
-        if (pageText.includes(normalized) || normalized.includes(pageText)) {
-          console.log(`[PDF] Found highlight on page ${pageNum}`);
-          return pageNum;
-        }
-      }
+    // Rough estimate: Most law docs start articles around page 5-10
+    // Điều 1-10: pages 5-15
+    // Điều 11-50: pages 15-60
+    // Điều 51+: pages 60+
+    
+    if (num <= 10) {
+      return 5 + num;
+    } else if (num <= 50) {
+      return 15 + Math.floor(num / 2);
+    } else {
+      return 60 + Math.floor((num - 50) / 3);
     }
-    
-    console.log('[PDF] No highlight found, starting at page 1');
-    return 1;
   },
 
-  async renderPage(pageNum) {
-    if (!this.pdfDoc || pageNum < 1 || pageNum > this.totalPages) return;
-    this.currentPage = pageNum;
-    const page = await this.pdfDoc.getPage(pageNum);
-    const canvas = document.getElementById('pdf-canvas');
-    const context = canvas.getContext('2d');
-    const viewport = page.getViewport({ scale: this.scale });
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    await page.render({ canvasContext: context, viewport: viewport }).promise;
-    await this.renderTextLayer(page, viewport);
-    document.getElementById('current-page').textContent = pageNum;
-    document.getElementById('total-pages').textContent = this.totalPages;
-    document.getElementById('prev-page').disabled = pageNum <= 1;
-    document.getElementById('next-page').disabled = pageNum >= this.totalPages;
-  },
-
-  async renderTextLayer(page, viewport) {
-    const textContent = await page.getTextContent();
-    const textLayer = document.getElementById('text-layer');
-    textLayer.innerHTML = '';
+  showSearchInstructions(articleNumbers) {
+    const infoDiv = document.getElementById('article-info');
+    if (!infoDiv) return;
     
-    // Set text layer size to match canvas
-    textLayer.style.width = viewport.width + 'px';
-    textLayer.style.height = viewport.height + 'px';
-    
-    // Render text layer with PDF.js
-    await pdfjsLib.renderTextLayer({
-      textContentSource: textContent,
-      container: textLayer,
-      viewport: viewport,
-      textDivs: []
-    }).promise;
-    
-    // Apply highlights after text is fully rendered
-    setTimeout(() => this.applyHighlights(textLayer), 300);
-  },
-
-  applyHighlights(textLayer) {
-    if (!this.highlightTexts || this.highlightTexts.length === 0) return;
-    
-    console.log('[Highlight] Texts to highlight:', this.highlightTexts);
-    
-    const spans = textLayer.querySelectorAll('span');
-    let highlightCount = 0;
-    
-    // Build full page text for context matching
-    let fullPageText = '';
-    const spanMap = [];
-    spans.forEach((span, index) => {
-      const text = span.textContent || '';
-      spanMap.push({
-        span: span,
-        start: fullPageText.length,
-        end: fullPageText.length + text.length,
-        text: text
-      });
-      fullPageText += text;
-    });
-    
-    const normalizedPageText = this.normalizeText(fullPageText.toLowerCase());
-    
-    // For each highlight text, find exact matches in page
-    this.highlightTexts.forEach(searchText => {
-      const normalizedSearch = this.normalizeText(searchText.toLowerCase());
+    if (articleNumbers && articleNumbers.length > 0) {
+      // Format articles nicely (Dieu 8 -> Điều 8)
+      const formattedArticles = articleNumbers
+        .map(a => a.replace(/Dieu/i, 'Điều'))
+        .join(', ');
       
-      // Find all occurrences of search text in page
-      let startPos = 0;
-      while ((startPos = normalizedPageText.indexOf(normalizedSearch, startPos)) !== -1) {
-        const endPos = startPos + normalizedSearch.length;
-        
-        // Find spans that overlap with this match
-        spanMap.forEach(item => {
-          if (item.start < endPos && item.end > startPos) {
-            item.span.classList.add('highlight');
-            highlightCount++;
-          }
-        });
-        
-        startPos = endPos;
-      }
-    });
-    
-    console.log(`[Highlight] Applied ${highlightCount} highlights`);
-  },
-
-  normalizeText(text) {
-    return text
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .trim();
-  },
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) this.renderPage(this.currentPage + 1);
-  },
-
-  prevPage() {
-    if (this.currentPage > 1) this.renderPage(this.currentPage - 1);
+      infoDiv.innerHTML = `
+        <div style="padding: 16px; background: linear-gradient(135deg, rgba(255, 235, 59, 0.15) 0%, rgba(255, 193, 7, 0.15) 100%); border-left: 4px solid #ffc107; margin: 12px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-size: 20px;">🔍</span>
+            <strong style="font-size: 16px;">Tìm kiếm các điều này trong file PDF:</strong>
+          </div>
+          
+          <div style="background: rgba(255, 255, 255, 0.5); padding: 10px; border-radius: 6px; margin: 8px 0;">
+            <div style="font-size: 15px; font-weight: 600; color: #d84315; margin-bottom: 4px;">
+              ${formattedArticles}
+            </div>
+          </div>
+          
+          <div style="font-size: 13px; opacity: 0.85; line-height: 1.6;">
+            💡 <strong>Hướng dẫn:</strong><br>
+            1️⃣ Nhấn <kbd style="background: #fff; padding: 2px 6px; border-radius: 3px; border: 1px solid #ccc;">Ctrl+F</kbd> (Windows) hoặc <kbd style="background: #fff; padding: 2px 6px; border-radius: 3px; border: 1px solid #ccc;">Cmd+F</kbd> (Mac)<br>
+            2️⃣ Gõ tên điều luật (ví dụ: "Điều 8")<br>
+            3️⃣ Trình duyệt sẽ tự động tô sáng văn bản
+          </div>
+        </div>
+      `;
+    } else {
+      infoDiv.innerHTML = '';
+    }
   }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('close-pdf')?.addEventListener('click', () => PDFViewer.close());
-  document.getElementById('next-page')?.addEventListener('click', () => PDFViewer.nextPage());
-  document.getElementById('prev-page')?.addEventListener('click', () => PDFViewer.prevPage());
+  
   document.addEventListener('keydown', (e) => {
-    if (!PDFViewer.isOpen) return;
-    if (e.key === 'Escape') PDFViewer.close();
-    else if (e.key === 'ArrowRight') PDFViewer.nextPage();
-    else if (e.key === 'ArrowLeft') PDFViewer.prevPage();
+    if (PDFViewer.isOpen && e.key === 'Escape') {
+      PDFViewer.close();
+    }
   });
 });
 

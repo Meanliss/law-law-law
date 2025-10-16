@@ -72,12 +72,22 @@ async def startup_event():
     print('[STARTUP] Dang khoi dong Legal Q&A System v2.0...')
     
     # 1. Load Gemini API
-    load_dotenv()
+    # 1. Load Gemini API
+    # Try environment variable first (for cloud platforms like Render)
     api_key = os.getenv('GOOGLE_API_KEY')
+    
+    # If not found, try loading from .env file (for local development)
     if not api_key:
-        print('[ERROR] GOOGLE_API_KEY not found in .env file!')
+        print('[INFO] API key not in environment, trying .env file...')
+        load_dotenv()
+        api_key = os.getenv('GOOGLE_API_KEY')
+    
+    if not api_key:
+        print('[ERROR] GOOGLE_API_KEY not found in environment variables or .env file!')
         raise Exception('Missing GOOGLE_API_KEY')
     
+    print('[OK] Google API key loaded successfully')
+        
     genai.configure(api_key=api_key)
     
     # 2. Initialize dual Gemini models
@@ -355,4 +365,6 @@ def extract_pdf_metadata(chunk: dict) -> PDFSource:
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run('app:app', host='0.0.0.0', port=8000, reload=False)
+    import os
+    port = int(os.getenv('PORT', 7860))  # Support both 8000 (local) and 7860 (HF Spaces)
+    uvicorn.run('app:app', host='0.0.0.0', port=port, reload=False)

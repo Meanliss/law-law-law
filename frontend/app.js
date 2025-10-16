@@ -137,9 +137,29 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       // Gọi API backend
       // Auto-detect: Nếu chạy qua Nginx (Docker) dùng /api/, ngược lại dùng :8000
-      const API_BASE = window.location.port === '80' || window.location.port === '' 
-        ? '/api' 
-        : 'http://localhost:8000';
+     // 🌍 Auto-detect environment and set API base URL
+      const API_BASE = (() => {
+  // Production: Cloudflare Pages → Hugging Face backend
+        if (window.location.hostname.includes('pages.dev') || 
+            window.location.hostname.includes('cloudflare')) {
+          return 'https://eddiethewall-legal-qa-backend.hf.space';  // 👈 Your HF backend URL
+        }
+        // Local development
+        else if (window.location.hostname === 'localhost' || 
+                 window.location.hostname === '127.0.0.1') {
+          return 'http://localhost:7860';  // Updated to HF port
+        }
+        // Docker/Nginx
+        else if (window.location.port === '80' || window.location.port === '') {
+          return '/api';
+        }
+        // Fallback
+        else {
+          return 'http://localhost:7860';
+        }
+      })();
+
+    console.log('🔗 Using API Backend:', API_BASE);  // Debug log
       
       const response = await fetch(`${API_BASE}/ask`, {
         method: 'POST',
@@ -192,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sourcesDiv.textContent = sourcesText;
         chatDisplay.appendChild(sourcesDiv);
         
-        // Thêm nút xem PDF với highlight nếu có pdf_sources
+        // Display PDF buttons with highlighting
         if (data.pdf_sources && data.pdf_sources.length > 0) {
           const pdfButtonsDiv = document.createElement('div');
           pdfButtonsDiv.style.marginTop = '12px';
@@ -200,25 +220,48 @@ document.addEventListener('DOMContentLoaded', () => {
           pdfButtonsDiv.style.flexWrap = 'wrap';
           pdfButtonsDiv.style.gap = '8px';
           
-          // Group by PDF file
+          // Group by PDF file with deduplication
           const pdfGroups = {};
           data.pdf_sources.forEach(source => {
             if (!pdfGroups[source.pdf_file]) {
-              pdfGroups[source.pdf_file] = [];
+              pdfGroups[source.pdf_file] = {
+                highlights: new Set(),  // Use Set to avoid duplicates
+                articles: new Set()
+              };
             }
-            pdfGroups[source.pdf_file].push(source.highlight_text);
+            
+            // Add highlight text (deduplicated)
+            if (source.highlight_text && source.highlight_text.trim()) {
+              pdfGroups[source.pdf_file].highlights.add(source.highlight_text);
+            }
+            
+            // Add article number (deduplicated)
+            if (source.article_num && source.article_num.trim()) {
+              pdfGroups[source.pdf_file].articles.add(source.article_num);
+            }
           });
           
           // Create button for each PDF
-          Object.entries(pdfGroups).forEach(([pdfFile, highlightTexts]) => {
+          Object.entries(pdfGroups).forEach(([pdfFile, data]) => {
             const btn = document.createElement('button');
             btn.classList.add('view-pdf-btn');
             btn.textContent = `📄 Xem ${pdfFile}`;
+            
             btn.onclick = () => {
               if (window.PDFViewer) {
-                window.PDFViewer.open(pdfFile, highlightTexts);
+                // Convert Sets to Arrays
+                const highlightTexts = Array.from(data.highlights);
+                const articleNumbers = Array.from(data.articles);
+                
+                console.log('📖 [PDF Button] Opening:', pdfFile);
+                console.log('🔍 [PDF Button] Highlights:', highlightTexts);
+                console.log('📋 [PDF Button] Articles:', articleNumbers);
+                
+                // Pass both to PDF viewer
+                window.PDFViewer.open(pdfFile, highlightTexts, articleNumbers);
               }
             };
+            
             pdfButtonsDiv.appendChild(btn);
           });
           
@@ -227,18 +270,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
     } catch (error) {
-      typingDiv.remove();
-      
-      let errorMessage = '⚠️ Xin lỗi, đã có lỗi xảy ra. ';
-      
-      if (error.message.includes('Failed to fetch')) {
-        const backendUrl = window.location.port === '80' || window.location.port === '' 
-          ? 'Backend API (qua Nginx)' 
-          : 'http://localhost:8000';
-        errorMessage += `Không thể kết nối đến server. Vui lòng đảm bảo backend đang chạy tại ${backendUrl}`;
-      } else {
-        errorMessage += 'Vui lòng thử lại sau. Chi tiết: ' + error.message;
-      }
+  typingDiv.remove();
+  
+  let errorMessage = '⚠️ Xin lỗi, đã có lỗi xảy ra. ';
+  
+  if (error.message.includes('Failed to fetch')) {
+  errorMessage += `Không thể kết nối đến server. Vui lòng đảm bảo backend đang chạy tại ${API_BASE}`;
+  } else {
+    errorMessage += 'Vui lòng thử lại sau. Chi tiết: ' + error.message;
+  }
       
       addMessage(errorMessage, 'bot');
       console.error('Error calling API:', error);

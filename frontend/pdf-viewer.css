@@ -1,4 +1,4 @@
-/* PDF Viewer Panel - Side Panel Style */
+/* PDF Viewer Panel - Clean & Simple */
 
 .pdf-viewer-panel {
   position: fixed;
@@ -53,123 +53,57 @@
   color: #e74c3c;
 }
 
-.pdf-viewer-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  padding: 12px;
-  background: var(--sidebar-bg);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.pdf-viewer-controls button {
-  padding: 8px 16px;
-  background: var(--gemini-blue);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+/* Article search info banner */
+#article-info {
   font-size: 14px;
-  transition: all 0.2s;
+  overflow-y: auto;
+  max-height: 200px;
 }
 
-.pdf-viewer-controls button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+#article-info kbd {
+  font-family: monospace;
+  font-weight: bold;
 }
 
-.pdf-viewer-controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-#page-info {
-  font-size: 14px;
-  color: var(--text-color);
-}
-
-.pdf-canvas-container {
+/* PDF content container */
+.pdf-content {
   flex: 1;
-  overflow: auto;
-  padding: 20px;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  overflow: hidden;
   background: #525659;
 }
 
-.pdf-page-wrapper {
-  position: relative;
-  display: inline-block;
+#pdf-iframe {
+  flex: 1;
+  border: none;
+  width: 100%;
+  height: 100%;
 }
 
-#pdf-canvas {
-  display: block;
-  background: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* Text Layer for highlighting - Override PDF.js defaults */
-.textLayer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-  line-height: 1.0;
-  /* Make entire layer invisible */
-  opacity: 0;
-}
-
-.textLayer > span {
-  color: transparent;
-  position: absolute;
-  white-space: pre;
-  cursor: text;
-  transform-origin: 0% 0%;
-  /* Individual spans invisible by default */
-  opacity: 0;
-}
-
-.textLayer span.highlight {
-  background-color: rgba(255, 235, 59, 0.9) !important;
-  color: transparent !important;
-  border: 2px solid #ffc107;
-  box-shadow: 0 0 15px rgba(255, 193, 7, 0.9);
-  animation: highlight-pulse 2s ease-in-out infinite;
-  /* Only highlights visible */
-  opacity: 1 !important;
-  z-index: 10;
-}
-
-@keyframes highlight-pulse {
-  0%, 100% {
-    background-color: rgba(255, 235, 59, 0.6);
-  }
-  50% {
-    background-color: rgba(255, 235, 59, 0.8);
-  }
-}
-
-/* Button to open PDF viewer */
+/* PDF button in chat */
 .view-pdf-btn {
   display: inline-block;
   margin-top: 8px;
-  padding: 6px 12px;
-  background: var(--gemini-blue);
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
+  font-weight: 500;
   transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .view-pdf-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.view-pdf-btn:active {
+  transform: translateY(0);
 }
 
 /* Responsive */
