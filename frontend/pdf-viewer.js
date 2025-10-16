@@ -132,7 +132,7 @@ const PDFViewer = {
         <div style="padding: 16px; background: linear-gradient(135deg, rgba(255, 235, 59, 0.15) 0%, rgba(255, 193, 7, 0.15) 100%); border-left: 4px solid #ffc107; margin: 12px;">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
             <span style="font-size: 20px;">🔍</span>
-            <strong style="font-size: 16px;">Tìm kiếm trong PDF:</strong>
+            <strong style="font-size: 16px;">Tìm kiếm các điều này trong file PDF:</strong>
           </div>
           
           <div style="background: rgba(255, 255, 255, 0.5); padding: 10px; border-radius: 6px; margin: 8px 0;">
