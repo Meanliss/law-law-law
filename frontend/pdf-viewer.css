@@ -53,143 +53,27 @@
   color: #e74c3c;
 }
 
-.pdf-viewer-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  padding: 12px;
-  background: var(--sidebar-bg);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.pdf-viewer-controls button {
-  padding: 8px 16px;
-  background: var(--gemini-blue);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+/* Article info banner */
+#article-info {
   font-size: 14px;
-  transition: all 0.2s;
 }
 
-.pdf-viewer-controls button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.pdf-viewer-controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-#page-info {
-  font-size: 14px;
-  color: var(--text-color);
-}
-
-.pdf-canvas-container {
+/* PDF iframe container */
+.pdf-content {
   flex: 1;
-  overflow: auto;
-  padding: 20px;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#pdf-iframe {
+  flex: 1;
+  border: none;
+  width: 100%;
+  height: 100%;
   background: #525659;
 }
 
-.pdf-page-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-#pdf-canvas {
-  display: block;
-  background: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* Text Layer for highlighting and selection */
-.textLayer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-  line-height: 1.0;
-  /* Make text selectable */
-  pointer-events: auto;
-  user-select: text;
-  -webkit-user-select: text;
-  -moz-user-select: text;
-}
-
-.textLayer > span {
-  /* Make text transparent but selectable */
-  color: transparent;
-  position: absolute;
-  white-space: pre;
-  cursor: text;
-  transform-origin: 0% 0%;
-  /* Mix blend mode to allow selection while keeping background visible */
-  mix-blend-mode: multiply;
-}
-
-/* When user selects text, show it in blue */
-.textLayer > span::selection {
-  background: rgba(0, 123, 255, 0.3);
-  color: rgba(0, 0, 0, 0.8);
-}
-
-.textLayer > span::-moz-selection {
-  background: rgba(0, 123, 255, 0.3);
-  color: rgba(0, 0, 0, 0.8);
-}
-
-/* Highlighted spans - Clean and precise */
-.textLayer span.highlight {
-  /* Semi-transparent yellow */
-  background-color: rgba(255, 255, 0, 0.6) !important;
-  
-  /* Dark text for readability */
-  color: rgba(0, 0, 0, 1) !important;
-  
-  /* Subtle red border */
-  border-bottom: 3px solid #ff0000 !important;
-  border-radius: 2px;
-  
-  /* Minimal padding */
-  padding: 1px 3px !important;
-  margin: 0 !important;
-  
-  /* Subtle shadow */
-  box-shadow: 0 0 10px rgba(255, 255, 0, 0.5) !important;
-  
-  /* Bold for emphasis */
-  font-weight: 600 !important;
-  
-  /* Gentle glow */
-  animation: gentle-glow 3s ease-in-out infinite !important;
-  
-  /* On top but not too aggressive */
-  z-index: 50 !important;
-  position: relative !important;
-  
-  /* No transforms */
-  transform: none !important;
-}
-
-/* Gentler animation */
-@keyframes gentle-glow {
-  0%, 100% {
-    background-color: rgba(255, 255, 0, 0.5);
-  }
-  50% {
-    background-color: rgba(255, 255, 0, 0.75);
-  }
-}
 /* Button to open PDF viewer */
 .view-pdf-btn {
   display: inline-block;
