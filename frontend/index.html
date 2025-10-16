@@ -63,8 +63,17 @@
       
       <div id="article-info"></div>
       
-      <div class="pdf-content">
-        <iframe id="pdf-iframe" title="PDF Viewer"></iframe>
+      <div class="pdf-viewer-controls">
+        <button id="prev-page">◀ Trang trước</button>
+        <span id="page-info">Trang <span id="current-page">1</span> / <span id="total-pages">1</span></span>
+        <button id="next-page">Trang sau ▶</button>
+      </div>
+      
+      <div class="pdf-canvas-container">
+        <div class="pdf-page-wrapper">
+          <canvas id="pdf-canvas"></canvas>
+          <div id="text-layer" class="textLayer"></div>
+        </div>
       </div>
     </div>
 
