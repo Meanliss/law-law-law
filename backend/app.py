@@ -14,7 +14,7 @@ from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 
 # Import models
-from models import QuestionRequest, AnswerResponse, HealthResponse, PDFSource
+from models import QuestionRequest, AnswerResponse, HealthResponse, PDFSource, FeedbackRequest, FeedbackResponse
 
 # Import core functions
 from core.document_processor import xu_ly_van_ban_phap_luat_json
@@ -286,6 +286,47 @@ async def get_stats():
         },
         "intent_cache_size": get_cache_size()
     }
+
+
+@app.post("/feedback", response_model=FeedbackResponse)
+async def submit_feedback(request: FeedbackRequest):
+    """Submit user feedback (like/dislike) on answer quality"""
+    import json
+    from datetime import datetime
+    
+    # Create feedback log directory if not exists
+    feedback_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'feedback_logs')
+    os.makedirs(feedback_dir, exist_ok=True)
+    
+    # Prepare feedback data
+    feedback_data = {
+        "timestamp": datetime.now().isoformat(),
+        "query": request.query,
+        "answer": request.answer,
+        "context": request.context,
+        "status": request.status,
+        "comment": request.comment
+    }
+    
+    # Save to JSON file (append mode)
+    feedback_file = os.path.join(feedback_dir, f"feedback_{datetime.now().strftime('%Y%m')}.jsonl")
+    
+    try:
+        with open(feedback_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(feedback_data, ensure_ascii=False) + '\n')
+        
+        print(f'[FEEDBACK] {request.status.upper()}: {request.query[:50]}...')
+        
+        return {
+            "success": True,
+            "message": "Cảm ơn phản hồi của bạn!"
+        }
+    except Exception as e:
+        print(f'[ERROR] Failed to save feedback: {e}')
+        return {
+            "success": False,
+            "message": "Không thể lưu phản hồi"
+        }
 
 
 # ============================================================================

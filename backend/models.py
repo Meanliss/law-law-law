@@ -38,6 +38,21 @@ class AnswerResponse(BaseModel):
     timing: Optional[TimingInfo] = None  # Performance metrics
 
 
+class FeedbackRequest(BaseModel):
+    """User feedback on answer quality"""
+    query: str
+    answer: str
+    context: List[Dict[str, str]]  # Sources used
+    status: str  # "like" or "dislike"
+    comment: Optional[str] = None  # Optional user comment
+
+
+class FeedbackResponse(BaseModel):
+    """Feedback submission response"""
+    success: bool
+    message: str
+
+
 class HealthResponse(BaseModel):
     status: str
     models_loaded: bool

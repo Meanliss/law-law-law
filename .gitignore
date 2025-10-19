@@ -18,6 +18,7 @@ backend/cache/*.pkl
 backend/cache/*.idx
 backend/cache/*.hash
 !backend/cache/.gitkeep
+backend/feedback_logs/
 *.backup
 
 # Frontend

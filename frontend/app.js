@@ -9,19 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const modeFast = document.getElementById('mode-fast');
   const modeQuality = document.getElementById('mode-quality');
 
-  // QUAN TRỌNG: Đang sử dụng biến JavaScript (lưu trong RAM)
-  // Nếu muốn lưu vĩnh viễn, uncomment các dòng localStorage bên dưới
-  let chats = [];
-  let currentChatId = null;
-  let isDark = false;
-  let modelMode = 'quality'; // 'fast' hoặc 'quality'
-
-  // ===== CÁCH DÙNG localStorage (Chỉ khi chạy local) =====
-  // Bước 1: Comment 3 dòng trên
-  // Bước 2: Uncomment 3 dòng dưới đây:
-  // let chats = JSON.parse(localStorage.getItem('chats')) || [];
-  // let currentChatId = localStorage.getItem('currentChatId');
-  // let isDark = localStorage.getItem('theme') === 'dark';
+  // ===== SỬ DỤNG localStorage để lưu vĩnh viễn =====
+  let chats = JSON.parse(localStorage.getItem('chats')) || [];
+  let currentChatId = localStorage.getItem('currentChatId');
+  let isDark = localStorage.getItem('theme') === 'dark';
+  let modelMode = localStorage.getItem('modelMode') || 'quality';
 
   // Tự động điều chỉnh chiều cao textarea
   function autoResizeTextarea() {
@@ -47,9 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Lưu chats
   function saveChats() {
-    // Nếu dùng localStorage, uncomment dòng dưới:
-    // localStorage.setItem('chats', JSON.stringify(chats));
-    // localStorage.setItem('currentChatId', currentChatId);
+    localStorage.setItem('chats', JSON.stringify(chats));
+    localStorage.setItem('currentChatId', currentChatId);
   }
 
   // Render sidebar
@@ -104,6 +95,100 @@ document.addEventListener('DOMContentLoaded', () => {
       
       saveChats();
       renderSidebar();
+    }
+  }
+
+  // Thêm nút Like/Dislike
+  function addFeedbackButtons(query, answer, sources) {
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.classList.add('feedback-buttons');
+
+    const likeBtn = document.createElement('button');
+    likeBtn.classList.add('feedback-btn', 'like-btn');
+    likeBtn.innerHTML = '👍';
+    likeBtn.title = 'Câu trả lời hữu ích';
+    
+    const dislikeBtn = document.createElement('button');
+    dislikeBtn.classList.add('feedback-btn', 'dislike-btn');
+    dislikeBtn.innerHTML = '👎';
+    dislikeBtn.title = 'Câu trả lời chưa chính xác';
+
+    const feedbackText = document.createElement('span');
+    feedbackText.classList.add('feedback-text');
+
+    likeBtn.onclick = async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      await submitFeedback(query, answer, sources, 'like');
+      
+      // Chỉ cập nhật style của nút, không thêm/xóa element
+      likeBtn.style.background = '#4caf50';
+      likeBtn.style.color = 'white';
+      likeBtn.disabled = true;
+      dislikeBtn.disabled = true;
+      dislikeBtn.style.opacity = '0.3';
+      feedbackText.textContent = 'Cảm ơn phản hồi!';
+    };
+
+    dislikeBtn.onclick = async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      await submitFeedback(query, answer, sources, 'dislike');
+      
+      // Chỉ cập nhật style của nút, không thêm/xóa element
+      dislikeBtn.style.background = '#f44336';
+      dislikeBtn.style.color = 'white';
+      dislikeBtn.disabled = true;
+      likeBtn.disabled = true;
+      likeBtn.style.opacity = '0.3';
+      feedbackText.textContent = 'Chúng tôi sẽ cải thiện!';
+    };
+
+    feedbackDiv.appendChild(likeBtn);
+    feedbackDiv.appendChild(dislikeBtn);
+    feedbackDiv.appendChild(feedbackText);
+    chatDisplay.appendChild(feedbackDiv);
+  }
+
+  // Gửi feedback tới server
+  async function submitFeedback(query, answer, sources, status) {
+    const API_BASE = (() => {
+      if (window.location.hostname.includes('pages.dev') || 
+          window.location.hostname.includes('cloudflare')) {
+        return 'https://eddiethewall-legal-qa-backend.hf.space';
+      }
+      else if (window.location.hostname === 'localhost' || 
+               window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:7860';
+      }
+      else if (window.location.port === '80' || window.location.port === '') {
+        return '/api';
+      }
+      else {
+        return 'http://localhost:7860';
+      }
+    })();
+
+    try {
+      const response = await fetch(`${API_BASE}/feedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: query,
+          answer: answer,
+          context: sources,
+          status: status
+        })
+      });
+
+      const data = await response.json();
+      console.log('✓ Feedback sent:', status, data);
+    } catch (error) {
+      console.error('✗ Feedback error:', error);
     }
   }
 
@@ -267,6 +352,9 @@ document.addEventListener('DOMContentLoaded', () => {
           
           chatDisplay.appendChild(pdfButtonsDiv);
         }
+        
+        // Thêm nút Like/Dislike ở cuối cùng
+        addFeedbackButtons(messageText, data.answer, data.sources || []);
       }
       
     } catch (error) {
@@ -306,6 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
   modeFast.addEventListener('change', () => {
     if (modeFast.checked) {
       modelMode = 'fast';
+      localStorage.setItem('modelMode', 'fast');
       console.log('✅ Switched to FAST mode (all Flash Lite)');
     }
   });
@@ -313,6 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
   modeQuality.addEventListener('change', () => {
     if (modeQuality.checked) {
       modelMode = 'quality';
+      localStorage.setItem('modelMode', 'quality');
       console.log('✅ Switched to QUALITY mode (Flash Lite for intent, Flash for answer)');
     }
   });
@@ -322,23 +412,30 @@ document.addEventListener('DOMContentLoaded', () => {
     isDark = !isDark;
     document.body.classList.toggle('dark');
     themeToggle.textContent = isDark ? '☀️' : '🌙';
-    
-    // Nếu dùng localStorage, uncomment dòng dưới:
-    // localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
   });
 
-  // Khôi phục theme
+  // Khôi phục theme và model mode
   if (isDark) {
     document.body.classList.add('dark');
     themeToggle.textContent = '☀️';
+  }
+  
+  // Khôi phục model mode selection
+  if (modelMode === 'fast') {
+    modeFast.checked = true;
+  } else {
+    modeQuality.checked = true;
   }
 
   // Khởi tạo
   if (chats.length === 0) {
     createNewChat();
   } else {
-    currentChatId = chats[chats.length - 1].id;
-    renderChat(chats[chats.length - 1]);
+    // Khôi phục chat cuối cùng hoặc chat đã chọn
+    const lastChat = chats.find(c => c.id == currentChatId) || chats[chats.length - 1];
+    currentChatId = lastChat.id;
+    renderChat(lastChat);
     renderSidebar();
   }
 });
