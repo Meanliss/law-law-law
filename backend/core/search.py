@@ -43,6 +43,12 @@ def advanced_hybrid_search(
         print(f'[WARN] Rejected query: {decomp_result["intent"]["reason"]}')
         return []
     
+    # ✅ Log refined query
+    refined_query = decomp_result.get('refined_query', query)
+    if refined_query != query:
+        print(f'[REFINED] Original: "{query}"')
+        print(f'[REFINED] →→→ New: "{refined_query}"')
+    
     sub_queries = decomp_result['sub_queries']
     print(f'[INFO] Decomposed into {len(sub_queries)} sub-queries: {sub_queries}')
     

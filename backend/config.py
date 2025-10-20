@@ -32,32 +32,20 @@ FAISS_CACHE = f'{CACHE_DIR}/embeddings.pkl'
 # Data Path
 DATA_DIR = 'data'
 
-# Intent Detection Keywords
-LEGAL_KEYWORDS = {
-    'primary': [
-        'luật', 'pháp luật', 'quy định', 'điều', 'khoản', 'điểm', 
-        'nghị định', 'thông tư', 'bộ luật', 'quyền', 'nghĩa vụ',
-        'hợp đồng', 'tài sản', 'kết hôn', 'ly hôn', 'lao động',
-        'đất đai', 'hình sự', 'dân sự', 'tố tụng', 'hành chính',
-        'đấu thầu', 'chuyển giao công nghệ', 'vi phạm', 'xử phạt',
-        'tuổi', 'độ tuổi'
-    ],
-    'secondary': [
-        'khiếu nại', 'tố cáo', 'án', 'tòa', 'bồi thường', 'trách nhiệm',
-        'hợp pháp', 'quy trình', 'đăng ký', 'cấp phép', 'thuế', 'phí',
-        'lệ phí', 'thủ tục', 'điều kiện', 'tiêu chuẩn', 'quyết định',
-        'gia đình', 'con cái', 'cha mẹ', 'vợ chồng', 'di sản'
-    ]
-}
+# ============================================================================
+# ⚠️ LEGACY: Intent Detection Keywords (KHÔNG DÙNG NỮA - Đã chuyển sang LLM)
+# ============================================================================
+# LEGAL_KEYWORDS = {
+#     'primary': [...],
+#     'secondary': [...]
+# }
+# IRRELEVANT_PATTERNS = [...]
+# INTENT_KEYWORD_ACCEPT_THRESHOLD = 0.4
+# INTENT_KEYWORD_UNCERTAIN_THRESHOLD = 0.2
+# ============================================================================
 
-IRRELEVANT_PATTERNS = [
-    r'\b(thời tiết|bóng đá|game|phim|nhạc|ăn uống|du lịch)\b',
-    r'\b(nấu ăn|công thức|món ăn|quán|nhà hàng|cafe)\b',
-    r'\b(bệnh|thuốc|chữa|triệu chứng|y tế)\b',
-    r'\b(laptop|điện thoại|máy tính|cấu hình|smartphone)\b',
-    r'\b(toán|vật lý|hóa học|sinh học|lịch sử|địa lý)\b',
-    r'\b(chào|xin chào|hello|hi|hey)\b'
-]
+# Intent Detection Thresholds (chỉ dùng cho LLM)
+INTENT_CONFIDENCE_REJECT_THRESHOLD = 0.7  # Reject nếu confidence >= threshold và is_legal=False
 
 # Query Expansion Rules
 QUERY_EXPANSION_RULES = {
@@ -142,7 +130,6 @@ QUERY_EXPANSION_RULES = {
     ],
 }
 
-# Intent Detection Thresholds
-INTENT_KEYWORD_ACCEPT_THRESHOLD = 0.4
-INTENT_KEYWORD_UNCERTAIN_THRESHOLD = 0.15
-INTENT_CONFIDENCE_REJECT_THRESHOLD = 0.7
+# ⚠️ LEGACY: Không dùng nữa (đã chuyển sang LLM)
+# INTENT_KEYWORD_ACCEPT_THRESHOLD = 0.4
+# INTENT_KEYWORD_UNCERTAIN_THRESHOLD = 0.15

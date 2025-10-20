@@ -10,6 +10,7 @@ class QuestionRequest(BaseModel):
     question: str
     use_advanced: bool = True
     model_mode: str = "quality"  # "fast" or "quality"
+    chat_history: Optional[List[Dict[str, str]]] = []  # ✅ Lịch sử chat từ client
 
 
 class TimingInfo(BaseModel):
