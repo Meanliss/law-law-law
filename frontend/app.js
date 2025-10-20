@@ -24,17 +24,21 @@ document.addEventListener('DOMContentLoaded', () => {
   userInput.addEventListener('input', autoResizeTextarea);
 
   // Tạo hội thoại mới
-  function createNewChat() {
+  function createNewChat(mode = null) {
+    const chatMode = mode || modelMode;  // Sử dụng mode hiện tại nếu không truyền vào
     const newChat = {
       id: Date.now(),
       title: "Hội thoại mới",
-      messages: []
+      messages: [],
+      mode: chatMode  // ✅ Lưu mode của chat
     };
     chats.push(newChat);
     currentChatId = newChat.id;
     saveChats();
     renderSidebar();
     renderChat(newChat);
+    
+    console.log(`✅ Created new chat with mode: ${chatMode}`);
   }
 
   // Lưu chats
@@ -43,18 +47,86 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('currentChatId', currentChatId);
   }
 
+  // Xóa chat
+  function deleteChat(chatId) {
+    const chatIndex = chats.findIndex(c => c.id === chatId);
+    if (chatIndex === -1) return;
+    
+    chats.splice(chatIndex, 1);
+    
+    // Nếu xóa chat đang active, chuyển sang chat khác hoặc tạo mới
+    if (currentChatId === chatId) {
+      if (chats.length > 0) {
+        currentChatId = chats[chats.length - 1].id;
+        const currentChat = chats.find(c => c.id === currentChatId);
+        renderChat(currentChat);
+      } else {
+        createNewChat();
+      }
+    }
+    
+    saveChats();
+    renderSidebar();
+    console.log(`🗑️ Deleted chat ${chatId}`);
+  }
+
   // Render sidebar
   function renderSidebar() {
     chatList.innerHTML = '';
     chats.slice().reverse().forEach(chat => {
       const li = document.createElement('li');
-      li.textContent = chat.title;
+      
+      // ✅ Hiển thị mode badge
+      const modeBadge = chat.mode === 'fast' ? '⚡' : '🎯';
+      
+      // Chat title span
+      const titleSpan = document.createElement('span');
+      titleSpan.textContent = `${modeBadge} ${chat.title}`;
+      titleSpan.style.flex = '1';
+      titleSpan.style.cursor = 'pointer';
+      
+      // Delete button
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '×';
+      deleteBtn.className = 'delete-chat-btn';
+      deleteBtn.title = 'Xóa cuộc trò chuyện';
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (confirm('Bạn có chắc muốn xóa cuộc trò chuyện này?')) {
+          deleteChat(chat.id);
+        }
+      };
+      
       li.classList.toggle('active', chat.id === currentChatId);
-      li.onclick = () => {
+      li.style.display = 'flex';
+      li.style.alignItems = 'center';
+      li.style.justifyContent = 'space-between';
+      
+      titleSpan.onclick = () => {
         currentChatId = chat.id;
+        
+        // ✅ Khi chọn chat, chuyển mode theo chat đó
+        const chatMode = chat.mode || 'quality';
+        if (modelMode !== chatMode) {
+          modelMode = chatMode;
+          localStorage.setItem('modelMode', modelMode);
+          
+          // Update radio buttons
+          if (modelMode === 'fast') {
+            modeFast.checked = true;
+          } else {
+            modeQuality.checked = true;
+          }
+          
+          console.log(`🔄 Switched to ${modelMode} mode (from chat)`);
+        }
+        
         renderChat(chat);
         renderSidebar();
       };
+      
+      li.appendChild(titleSpan);
+      li.appendChild(deleteBtn);
       chatList.appendChild(li);
     });
   }
@@ -353,7 +425,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageText = userInput.value.trim();
     if (messageText === '') return;
 
-    if (!currentChatId) createNewChat();
+    // ✅ Kiểm tra xem có cần tạo chat mới không
+    if (!currentChatId) {
+      createNewChat(modelMode);
+    } else {
+      // ✅ Kiểm tra mode của chat hiện tại
+      const currentChat = chats.find(c => c.id === currentChatId);
+      if (currentChat) {
+        const chatMode = currentChat.mode || 'quality';
+        
+        // Nếu mode khác với chat hiện tại → Tạo chat mới
+        if (chatMode !== modelMode) {
+          console.log(`🔄 Mode changed: ${chatMode} → ${modelMode}. Creating new chat...`);
+          createNewChat(modelMode);
+        }
+      }
+    }
     
     addMessage(messageText, 'user');
     userInput.value = '';
@@ -485,17 +572,35 @@ document.addEventListener('DOMContentLoaded', () => {
   // Model mode selector
   modeFast.addEventListener('change', () => {
     if (modeFast.checked) {
+      const oldMode = modelMode;
       modelMode = 'fast';
       localStorage.setItem('modelMode', 'fast');
       console.log('✅ Switched to FAST mode (all Flash Lite)');
+      
+      // ✅ Nếu có chat hiện tại và mode khác → Thông báo sẽ tạo chat mới
+      if (currentChatId && oldMode !== 'fast') {
+        const currentChat = chats.find(c => c.id === currentChatId);
+        if (currentChat && currentChat.mode !== 'fast') {
+          console.log('💡 Next message will create a new FAST chat');
+        }
+      }
     }
   });
 
   modeQuality.addEventListener('change', () => {
     if (modeQuality.checked) {
+      const oldMode = modelMode;
       modelMode = 'quality';
       localStorage.setItem('modelMode', 'quality');
       console.log('✅ Switched to QUALITY mode (Flash Lite for intent, Flash for answer)');
+      
+      // ✅ Nếu có chat hiện tại và mode khác → Thông báo sẽ tạo chat mới
+      if (currentChatId && oldMode !== 'quality') {
+        const currentChat = chats.find(c => c.id === currentChatId);
+        if (currentChat && currentChat.mode !== 'quality') {
+          console.log('💡 Next message will create a new QUALITY chat');
+        }
+      }
     }
   });
 
@@ -554,6 +659,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (chats.length === 0) {
     createNewChat();
   } else {
+    // ✅ Fix: Thêm mode cho các chat cũ (migrate data)
+    chats.forEach(chat => {
+      if (!chat.mode) {
+        chat.mode = 'quality';  // Mặc định cho chat cũ
+      }
+    });
+    saveChats();
+    
     // ✅ Kiểm tra xem có nên tạo chat mới không
     if (shouldCreateNewChat()) {
       createNewChat();
@@ -561,6 +674,19 @@ document.addEventListener('DOMContentLoaded', () => {
       // Khôi phục chat cuối cùng hoặc chat đã chọn
       const lastChat = chats.find(c => c.id == currentChatId) || chats[chats.length - 1];
       currentChatId = lastChat.id;
+      
+      // ✅ Cập nhật modelMode theo chat được chọn
+      if (lastChat.mode) {
+        modelMode = lastChat.mode;
+        localStorage.setItem('modelMode', modelMode);
+        
+        if (modelMode === 'fast') {
+          modeFast.checked = true;
+        } else {
+          modeQuality.checked = true;
+        }
+      }
+      
       renderChat(lastChat);
       renderSidebar();
     }
