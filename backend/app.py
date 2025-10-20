@@ -2,6 +2,11 @@
 Legal Document Q&A API - FastAPI Application
 Modular architecture with clean separation of concerns
 """
+import sys
+import io
+if sys.platform == 'win32':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -385,18 +390,34 @@ def map_json_to_pdf(json_filename: str) -> str:
 
 
 def extract_pdf_metadata(chunk: dict) -> PDFSource:
-    """Extract PDF metadata from chunk"""
+    """Extract PDF metadata from chunk with full article + section reference"""
     metadata = chunk.get('metadata', {})
     json_file = metadata.get('json_file', '')
     pdf_file = map_json_to_pdf(json_file) if json_file else 'unknown.pdf'
     
+    # Build complete reference: "Dieu X, Khoan Y"
+    article_num = metadata.get('article_num', '')  # e.g., "3" or "Dieu 3"
+    section_num = metadata.get('section_num', '')  # e.g., "5" or "Khoan 5"
+    
+    # Construct full reference
+    full_reference = article_num
+    if section_num:
+        # If article_num doesn't already contain section info
+        if 'Khoan' not in article_num and 'khoan' not in article_num.lower():
+            # Clean section number
+            section_clean = section_num.replace('Khoan', '').replace('khoan', '').strip()
+            if article_num:
+                full_reference = f"{article_num}, Khoan {section_clean}"
+            else:
+                full_reference = f"Khoan {section_clean}"
+    
     return PDFSource(
         pdf_file=pdf_file,
-        page_num=metadata.get('page_num'),  # Will be None for now
+        page_num=metadata.get('page_num'),
         content=chunk['content'][:200],
-        highlight_text=chunk['content'],  # Full content for highlighting
+        highlight_text=chunk['content'],
         json_file=json_file,
-        article_num=metadata.get('article_num')
+        article_num=full_reference  # Now contains "Dieu 3, Khoan 5"
     )
 
 

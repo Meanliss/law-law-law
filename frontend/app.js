@@ -14,7 +14,36 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentChatId = localStorage.getItem('currentChatId');
   let isDark = localStorage.getItem('theme') === 'dark';
   let modelMode = localStorage.getItem('modelMode') || 'quality';
+  function trimSourceText(sourceText) {
+    //Intelligently extract law name and document number from source text
+    const pattern1 = /^(Luật[^,]+?)\s+(số\s+\d+\/\d+\/[A-Z0-9]+)/i;
+    const match1 = sourceText.match(pattern1);
+    if (match1) {
+      return `${match1[1]} ${match1[2]}`;
+    }
 
+    const pattern2 = /^(Nghị định[^,]+?)\s+(số\s+\d+\/\d+\/[A-Z0-9]+)/i;
+    const match2 = sourceText.match(pattern2);
+    if (match2) {
+      return `${match2[1]} ${match2[2]}`;
+    }
+    const pattern3 = /^([^,]+?)\s+(số\s+\d+\/\d+\/[A-Z\-0-9]+)/i;
+    const match3 = sourceText.match(pattern3);
+    if (match3) {
+      let lawName = match3[1];
+      const words = lawName.split(/\s+/);
+
+      const halfLength = Math.floor(words.length/2);
+      const firstHalf = words.slice(0, halfLength).join(' ');
+      const secondHalf = words.slice(halfLength).join(' ');
+      if (firstHalf === secondHalf) {
+        lawName = firstHalf;
+      }
+      return `${lawName} ${match3[2]}`;
+    }
+    return sourceText.substring(0, 100);
+
+  }
   // Tự động điều chỉnh chiều cao textarea
   function autoResizeTextarea() {
     userInput.style.height = 'auto';
@@ -282,76 +311,176 @@ document.addEventListener('DOMContentLoaded', () => {
         timingDiv.textContent = timingText;
         chatDisplay.appendChild(timingDiv);
       }
-      
-      // Hiển thị nguồn tham khảo và nút xem PDF
+      // Hiển thị nguồn tham khảo với clickable citations
       if (data.sources && data.sources.length > 0) {
-        const sourcesText = `\n\n📚 Nguồn tham khảo:\n${data.sources.slice(0, 3).map((s, i) => 
-          `${i + 1}. ${s.source}`
-        ).join('\n')}`;
+        // Create sources container
+        const sourcesContainer = document.createElement('div');
+        sourcesContainer.classList.add('message', 'bot', 'sources');
+        sourcesContainer.style.fontSize = '0.85em';
+        sourcesContainer.style.opacity = '0.9';
         
-        const sourcesDiv = document.createElement('div');
-        sourcesDiv.classList.add('message', 'bot', 'sources');
-        sourcesDiv.style.fontSize = '0.85em';
-        sourcesDiv.style.opacity = '0.8';
-        sourcesDiv.style.whiteSpace = 'pre-wrap';
-        sourcesDiv.textContent = sourcesText;
-        chatDisplay.appendChild(sourcesDiv);
+        // Add "Nguồn tham khảo" header
+        const sourcesHeader = document.createElement('div');
+        sourcesHeader.style.fontWeight = '600';
+        sourcesHeader.style.marginBottom = '12px';
+        sourcesHeader.style.fontSize = '1em';
+        sourcesHeader.textContent = '📚 Nguồn tham khảo:';
+        sourcesContainer.appendChild(sourcesHeader);
         
-        // Display PDF buttons with highlighting
+        // Create a map of PDF sources by index
+        const pdfSourcesByIndex = {};
         if (data.pdf_sources && data.pdf_sources.length > 0) {
-          const pdfButtonsDiv = document.createElement('div');
-          pdfButtonsDiv.style.marginTop = '12px';
-          pdfButtonsDiv.style.display = 'flex';
-          pdfButtonsDiv.style.flexWrap = 'wrap';
-          pdfButtonsDiv.style.gap = '8px';
-          
-          // Group by PDF file with deduplication
-          const pdfGroups = {};
-          data.pdf_sources.forEach(source => {
-            if (!pdfGroups[source.pdf_file]) {
-              pdfGroups[source.pdf_file] = {
-                highlights: new Set(),  // Use Set to avoid duplicates
-                articles: new Set()
-              };
-            }
-            
-            // Add highlight text (deduplicated)
-            if (source.highlight_text && source.highlight_text.trim()) {
-              pdfGroups[source.pdf_file].highlights.add(source.highlight_text);
-            }
-            
-            // Add article number (deduplicated)
-            if (source.article_num && source.article_num.trim()) {
-              pdfGroups[source.pdf_file].articles.add(source.article_num);
-            }
+          data.pdf_sources.forEach((pdfSource, idx) => {
+            pdfSourcesByIndex[idx] = pdfSource;
           });
+        }
+        
+        // Add clickable source citations with trimmed text
+        data.sources.slice(0, 3).forEach((s, i) => {
+          const pdfSource = pdfSourcesByIndex[i];
           
-          // Create button for each PDF
-          Object.entries(pdfGroups).forEach(([pdfFile, data]) => {
-            const btn = document.createElement('button');
-            btn.classList.add('view-pdf-btn');
-            btn.textContent = `📄 Xem ${pdfFile}`;
+          // Create card-style container for each source
+          const sourceCard = document.createElement('div');
+          sourceCard.style.marginBottom = '10px';
+          sourceCard.style.padding = '12px';
+          sourceCard.style.background = 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)';
+          sourceCard.style.borderLeft = '3px solid #667eea';
+          sourceCard.style.borderRadius = '6px';
+          sourceCard.style.transition = 'all 0.2s ease';
+          sourceCard.style.cursor = pdfSource ? 'pointer' : 'default';
+          
+          // Header: Source title with article number
+          const sourceHeader = document.createElement('div');
+          sourceHeader.style.display = 'flex';
+          sourceHeader.style.alignItems = 'center';
+          sourceHeader.style.gap = '8px';
+          
+          const numberBadge = document.createElement('span');
+          numberBadge.style.display = 'inline-flex';
+          numberBadge.style.alignItems = 'center';
+          numberBadge.style.justifyContent = 'center';
+          numberBadge.style.minWidth = '24px';
+          numberBadge.style.height = '24px';
+          numberBadge.style.padding = '0 6px';
+          numberBadge.style.background = '#667eea';
+          numberBadge.style.color = 'white';
+          numberBadge.style.borderRadius = '12px';
+          numberBadge.style.fontSize = '0.9em';
+          numberBadge.style.fontWeight = '600';
+          numberBadge.textContent = i + 1;
+          
+          const sourceTitle = document.createElement('div');
+          sourceTitle.style.flex = '1';
+          sourceTitle.style.fontSize = '0.95em';
+          sourceTitle.style.fontWeight = '500';
+          sourceTitle.style.color = pdfSource ? '#667eea' : 'inherit';
+          sourceTitle.style.lineHeight = '1.4';
+          
+          // Smart trim the source text
+          const trimmedSource = trimSourceText(s.source);
+
+          if (pdfSource && pdfSource.article_num) {
+            // Parse article_num which contains "Dieu 3, Khoan 5" format
+            let articleRef = pdfSource.article_num.trim();
             
-            btn.onclick = () => {
+            // Replace Vietnamese characters
+            articleRef = articleRef
+              .replace(/Dieu/gi, 'Điều')
+              .replace(/Khoan/gi, 'Khoản');
+            
+            // Handle cases where article_num might be just a number like "3"
+            if (/^\d+$/.test(articleRef)) {
+              articleRef = `Điều ${articleRef}`;
+            }
+            
+            // Clean up spacing around commas
+            articleRef = articleRef.replace(/\s*,\s*/g, ', ');
+            
+            // Debug: Log what we received
+            console.log(`[Source ${i+1}] article_num:`, pdfSource.article_num, '→', articleRef);
+            
+            sourceTitle.innerHTML = `${trimmedSource} <span style="color: #d84315; font-weight: 600; margin-left: 6px;">[${articleRef}]</span>`;
+          } else {
+            sourceTitle.textContent = trimmedSource;
+          }
+          
+          sourceHeader.appendChild(numberBadge);
+          sourceHeader.appendChild(sourceTitle);
+          
+          // Add PDF icon if clickable
+          if (pdfSource && pdfSource.pdf_file) {
+            const pdfIcon = document.createElement('span');
+            pdfIcon.style.fontSize = '1.2em';
+            pdfIcon.textContent = '📄';
+            pdfIcon.style.opacity = '0.7';
+            sourceHeader.appendChild(pdfIcon);
+          }
+          
+          sourceCard.appendChild(sourceHeader);
+          
+          // Click handler (if PDF available)
+          if (pdfSource && pdfSource.pdf_file && pdfSource.article_num) {
+            sourceCard.onclick = () => {
               if (window.PDFViewer) {
-                // Convert Sets to Arrays
-                const highlightTexts = Array.from(data.highlights);
-                const articleNumbers = Array.from(data.articles);
-                
-                console.log('📖 [PDF Button] Opening:', pdfFile);
-                console.log('🔍 [PDF Button] Highlights:', highlightTexts);
-                console.log('📋 [PDF Button] Articles:', articleNumbers);
-                
-                // Pass both to PDF viewer
-                window.PDFViewer.open(pdfFile, highlightTexts, articleNumbers);
+                console.log(`📖 [Source Card Click] Opening ${pdfSource.pdf_file} at ${pdfSource.article_num}`);
+                window.PDFViewer.open(
+                  pdfSource.pdf_file,
+                  [pdfSource.highlight_text || ''],
+                  [pdfSource.article_num]
+                );
               }
             };
             
-            pdfButtonsDiv.appendChild(btn);
+            // Hover effects
+            sourceCard.onmouseenter = () => {
+              sourceCard.style.background = 'linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%)';
+              sourceCard.style.borderLeftColor = '#764ba2';
+              sourceCard.style.transform = 'translateX(4px)';
+              sourceCard.style.boxShadow = '0 2px 8px rgba(102, 126, 234, 0.2)';
+            };
+            
+            sourceCard.onmouseleave = () => {
+              sourceCard.style.background = 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)';
+              sourceCard.style.borderLeftColor = '#667eea';
+              sourceCard.style.transform = 'translateX(0)';
+              sourceCard.style.boxShadow = 'none';
+            };
+          }
+          
+          sourcesContainer.appendChild(sourceCard);
+        });
+        
+        // Optional: Add summary footer for multiple PDFs
+        if (data.pdf_sources && data.pdf_sources.length > 0) {
+          const pdfGroups = {};
+          data.pdf_sources.forEach(source => {
+            if (!pdfGroups[source.pdf_file]) {
+              pdfGroups[source.pdf_file] = new Set();
+            }
+            if (source.article_num) {
+              pdfGroups[source.pdf_file].add(source.article_num);
+            }
           });
           
-          chatDisplay.appendChild(pdfButtonsDiv);
+          if (Object.keys(pdfGroups).length > 0) {
+            const footerDiv = document.createElement('div');
+            footerDiv.style.marginTop = '12px';
+            footerDiv.style.paddingTop = '12px';
+            footerDiv.style.borderTop = '1px solid rgba(128, 128, 128, 0.2)';
+            footerDiv.style.fontSize = '0.85em';
+            footerDiv.style.opacity = '0.7';
+            footerDiv.style.fontStyle = 'italic';
+            
+            const pdfNames = Object.keys(pdfGroups);
+            const totalArticles = Object.values(pdfGroups).reduce((sum, set) => sum + set.size, 0);
+            
+            footerDiv.textContent = `💡 Click vào các thẻ để xem ${totalArticles} điều từ ${pdfNames.length} văn bản`;
+            
+            sourcesContainer.appendChild(footerDiv);
+          }
         }
+        
+        chatDisplay.appendChild(sourcesContainer);
         
         // Thêm nút Like/Dislike ở cuối cùng
         addFeedbackButtons(messageText, data.answer, data.sources || []);
