@@ -53,21 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
   userInput.addEventListener('input', autoResizeTextarea);
 
   // Tạo hội thoại mới
-  function createNewChat(mode = null) {
-    const chatMode = mode || modelMode;  // Sử dụng mode hiện tại nếu không truyền vào
+  function createNewChat() {
     const newChat = {
       id: Date.now(),
       title: "Hội thoại mới",
-      messages: [],
-      mode: chatMode  // ✅ Lưu mode của chat
+      messages: []
     };
     chats.push(newChat);
     currentChatId = newChat.id;
     saveChats();
     renderSidebar();
     renderChat(newChat);
-    
-    console.log(`✅ Created new chat with mode: ${chatMode}`);
   }
 
   // Lưu chats
@@ -76,86 +72,18 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('currentChatId', currentChatId);
   }
 
-  // Xóa chat
-  function deleteChat(chatId) {
-    const chatIndex = chats.findIndex(c => c.id === chatId);
-    if (chatIndex === -1) return;
-    
-    chats.splice(chatIndex, 1);
-    
-    // Nếu xóa chat đang active, chuyển sang chat khác hoặc tạo mới
-    if (currentChatId === chatId) {
-      if (chats.length > 0) {
-        currentChatId = chats[chats.length - 1].id;
-        const currentChat = chats.find(c => c.id === currentChatId);
-        renderChat(currentChat);
-      } else {
-        createNewChat();
-      }
-    }
-    
-    saveChats();
-    renderSidebar();
-    console.log(`🗑️ Deleted chat ${chatId}`);
-  }
-
   // Render sidebar
   function renderSidebar() {
     chatList.innerHTML = '';
     chats.slice().reverse().forEach(chat => {
       const li = document.createElement('li');
-      
-      // ✅ Hiển thị mode badge
-      const modeBadge = chat.mode === 'fast' ? '⚡' : '🎯';
-      
-      // Chat title span
-      const titleSpan = document.createElement('span');
-      titleSpan.textContent = `${modeBadge} ${chat.title}`;
-      titleSpan.style.flex = '1';
-      titleSpan.style.cursor = 'pointer';
-      
-      // Delete button
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = '×';
-      deleteBtn.className = 'delete-chat-btn';
-      deleteBtn.title = 'Xóa cuộc trò chuyện';
-      deleteBtn.onclick = (e) => {
-        e.stopPropagation();
-        if (confirm('Bạn có chắc muốn xóa cuộc trò chuyện này?')) {
-          deleteChat(chat.id);
-        }
-      };
-      
+      li.textContent = chat.title;
       li.classList.toggle('active', chat.id === currentChatId);
-      li.style.display = 'flex';
-      li.style.alignItems = 'center';
-      li.style.justifyContent = 'space-between';
-      
-      titleSpan.onclick = () => {
+      li.onclick = () => {
         currentChatId = chat.id;
-        
-        // ✅ Khi chọn chat, chuyển mode theo chat đó
-        const chatMode = chat.mode || 'quality';
-        if (modelMode !== chatMode) {
-          modelMode = chatMode;
-          localStorage.setItem('modelMode', modelMode);
-          
-          // Update radio buttons
-          if (modelMode === 'fast') {
-            modeFast.checked = true;
-          } else {
-            modeQuality.checked = true;
-          }
-          
-          console.log(`🔄 Switched to ${modelMode} mode (from chat)`);
-        }
-        
         renderChat(chat);
         renderSidebar();
       };
-      
-      li.appendChild(titleSpan);
-      li.appendChild(deleteBtn);
       chatList.appendChild(li);
     });
   }
@@ -164,15 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderChat(chat) {
     chatDisplay.innerHTML = '';
     chatTitle.textContent = chat.title;
-    chat.messages.forEach((msg, index) => {
-      // ✅ Truyền đầy đủ metadata + index khi render lại
-      addMessage(msg.text, msg.sender, false, false, msg.metadata, index);
+    chat.messages.forEach(msg => {
+      addMessage(msg.text, msg.sender, false, false);
     });
     chatDisplay.scrollTop = chatDisplay.scrollHeight;
   }
 
   // Thêm tin nhắn
-  function addMessage(text, sender, save = true, animated = true, metadata = null, messageIndex = -1) {
+  function addMessage(text, sender, save = true, animated = true) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', sender);
 
@@ -184,100 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const formattedText = text.replace(/\n/g, '<br>');
     messageDiv.innerHTML = formattedText;
     chatDisplay.appendChild(messageDiv);
-    
-    // ✅ Nếu là bot message và có metadata, hiển thị sources và PDF buttons
-    if (sender === 'bot' && metadata) {
-      // Hiển thị timing nếu có
-      if (metadata.timing && metadata.timing.total_ms !== undefined) {
-        const timingDiv = document.createElement('div');
-        timingDiv.classList.add('message', 'bot', 'timing-info');
-        timingDiv.style.fontSize = '0.75em';
-        timingDiv.style.opacity = '0.6';
-        timingDiv.style.fontStyle = 'italic';
-        timingDiv.style.padding = '4px 12px';
-        
-        const t = metadata.timing;
-        timingDiv.innerHTML = `⚡ Performance: <b>${t.total_ms}ms</b> (Search: ${t.search_ms || 0}ms + Generation: ${t.generation_ms || 0}ms)`;
-        chatDisplay.appendChild(timingDiv);
-      }
-      
-      // Hiển thị sources và PDF buttons
-      if (metadata.sources && metadata.sources.length > 0) {
-        const sourcesContainer = document.createElement('div');
-        sourcesContainer.classList.add('sources-container');
-        
-        const sourcesText = `\n\n📚 Nguồn tham khảo:\n${metadata.sources.slice(0, 3).map((s, i) => 
-          `${i + 1}. ${s.source}`
-        ).join('\n')}`;
-        
-        const sourcesDiv = document.createElement('div');
-        sourcesDiv.classList.add('message', 'bot', 'sources');
-        sourcesDiv.style.fontSize = '0.85em';
-        sourcesDiv.style.opacity = '0.8';
-        sourcesDiv.style.whiteSpace = 'pre-wrap';
-        sourcesDiv.textContent = sourcesText;
-        sourcesContainer.appendChild(sourcesDiv);
-        
-        // Display PDF buttons
-        if (metadata.pdf_sources && metadata.pdf_sources.length > 0) {
-          const pdfButtonsDiv = document.createElement('div');
-          pdfButtonsDiv.style.marginTop = '12px';
-          pdfButtonsDiv.style.display = 'flex';
-          pdfButtonsDiv.style.flexWrap = 'wrap';
-          pdfButtonsDiv.style.gap = '8px';
-          
-          const pdfGroups = {};
-          metadata.pdf_sources.forEach(source => {
-            if (!pdfGroups[source.pdf_file]) {
-              pdfGroups[source.pdf_file] = {
-                highlights: new Set(),
-                articles: new Set()
-              };
-            }
-            
-            if (source.highlight_text && source.highlight_text.trim()) {
-              pdfGroups[source.pdf_file].highlights.add(source.highlight_text);
-            }
-            
-            if (source.article_num && source.article_num.trim()) {
-              pdfGroups[source.pdf_file].articles.add(source.article_num);
-            }
-          });
-          
-          Object.entries(pdfGroups).forEach(([pdfFile, data]) => {
-            const btn = document.createElement('button');
-            btn.classList.add('view-pdf-btn');
-            btn.textContent = `📄 Xem ${pdfFile}`;
-            
-            btn.onclick = () => {
-              if (window.PDFViewer) {
-                const highlightTexts = Array.from(data.highlights);
-                const articleNumbers = Array.from(data.articles);
-                window.PDFViewer.open(pdfFile, highlightTexts, articleNumbers);
-              }
-            };
-            
-            pdfButtonsDiv.appendChild(btn);
-          });
-          
-          sourcesContainer.appendChild(pdfButtonsDiv);
-        }
-        // Thêm feedback buttons (với query từ metadata)
-        if (metadata.query) {
-          const feedbackDiv = addFeedbackButtons(metadata.query, text, metadata.sources || [], metadata.feedbackStatus, messageIndex);
-          sourcesContainer.appendChild(feedbackDiv);
-        }
-        
-        chatDisplay.appendChild(sourcesContainer);
-      }
-    }
-    
     chatDisplay.scrollTop = chatDisplay.scrollHeight;
 
     if (save && currentChatId) {
       const chat = chats.find(c => c.id === currentChatId);
-      // ✅ Lưu cả metadata (sources, pdf_sources, timing...)
-      chat.messages.push({ text, sender, metadata });
+      chat.messages.push({ text, sender });
       
       // Cập nhật tiêu đề chat từ tin nhắn đầu tiên
       if (sender === 'user' && chat.title === "Hội thoại mới") {
@@ -290,123 +128,57 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Thêm nút Like/Dislike
-  function addFeedbackButtons(query, answer, sources, feedbackStatus = null, messageIndex = -1) {
+  function addFeedbackButtons(query, answer, sources) {
     const feedbackDiv = document.createElement('div');
     feedbackDiv.classList.add('feedback-buttons');
-    feedbackDiv.style.marginTop = '8px';  // Thêm khoảng cách
 
     const likeBtn = document.createElement('button');
     likeBtn.classList.add('feedback-btn', 'like-btn');
     likeBtn.innerHTML = '👍';
     likeBtn.title = 'Câu trả lời hữu ích';
-    likeBtn.type = 'button';  // ✅ Ngăn form submit
     
     const dislikeBtn = document.createElement('button');
     dislikeBtn.classList.add('feedback-btn', 'dislike-btn');
     dislikeBtn.innerHTML = '👎';
     dislikeBtn.title = 'Câu trả lời chưa chính xác';
-    dislikeBtn.type = 'button';  // ✅ Ngăn form submit
 
     const feedbackText = document.createElement('span');
     feedbackText.classList.add('feedback-text');
 
-    // ✅ Nếu đã có feedback, hiển thị kết quả và ẩn nút
-    if (feedbackStatus) {
-      likeBtn.style.display = 'none';
-      dislikeBtn.style.display = 'none';
+    likeBtn.onclick = async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       
-      if (feedbackStatus === 'like') {
-        feedbackText.textContent = '✅ Cảm ơn phản hồi của bạn!';
-        feedbackText.style.color = '#4caf50';
-      } else if (feedbackStatus === 'dislike') {
-        feedbackText.textContent = '✅ Cảm ơn phản hồi! Chúng tôi sẽ cải thiện.';
-        feedbackText.style.color = '#2196f3';
-      }
-      feedbackText.style.fontWeight = '500';
-    } else {
-      // ✅ Chưa feedback, hiển thị nút
-      likeBtn.onclick = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();  // ✅ Ngăn tất cả event bubbling
-        
-        console.log('� PREVENTING RELOAD - Like clicked for query:', query, 'messageIndex:', messageIndex);
-        await submitFeedback(query, answer, sources, 'like');
-        
-        // ✅ Lưu trạng thái feedback vào localStorage (dùng index hoặc query)
-        saveFeedbackStatus(query, 'like', messageIndex);
-        console.log('✅ Feedback saved, still here! No reload.');
-        
-        // ✅ Ẩn các nút, chỉ hiển thị message
-        likeBtn.style.display = 'none';
-        dislikeBtn.style.display = 'none';
-        feedbackText.textContent = '✅ Cảm ơn phản hồi của bạn!';
-        feedbackText.style.color = '#4caf50';
-        feedbackText.style.fontWeight = '500';
-        
-        return false;  // ✅ Đảm bảo không reload
-      };
+      await submitFeedback(query, answer, sources, 'like');
+      
+      // Chỉ cập nhật style của nút, không thêm/xóa element
+      likeBtn.style.background = '#4caf50';
+      likeBtn.style.color = 'white';
+      likeBtn.disabled = true;
+      dislikeBtn.disabled = true;
+      dislikeBtn.style.opacity = '0.3';
+      feedbackText.textContent = 'Cảm ơn phản hồi!';
+    };
 
-      dislikeBtn.onclick = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();  // ✅ Ngăn tất cả event bubbling
-        
-        console.log('� PREVENTING RELOAD - Dislike clicked for query:', query, 'messageIndex:', messageIndex);
-        await submitFeedback(query, answer, sources, 'dislike');
-        
-        // ✅ Lưu trạng thái feedback vào localStorage (dùng index hoặc query)
-        saveFeedbackStatus(query, 'dislike', messageIndex);
-        console.log('✅ Feedback saved, still here! No reload.');
-        
-        // ✅ Ẩn các nút, chỉ hiển thị message
-        likeBtn.style.display = 'none';
-        dislikeBtn.style.display = 'none';
-        feedbackText.textContent = '✅ Cảm ơn phản hồi! Chúng tôi sẽ cải thiện.';
-        feedbackText.style.color = '#2196f3';
-        feedbackText.style.fontWeight = '500';
-        
-        return false;  // ✅ Đảm bảo không reload
-      };
-    }
+    dislikeBtn.onclick = async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      await submitFeedback(query, answer, sources, 'dislike');
+      
+      // Chỉ cập nhật style của nút, không thêm/xóa element
+      dislikeBtn.style.background = '#f44336';
+      dislikeBtn.style.color = 'white';
+      dislikeBtn.disabled = true;
+      likeBtn.disabled = true;
+      likeBtn.style.opacity = '0.3';
+      feedbackText.textContent = 'Chúng tôi sẽ cải thiện!';
+    };
 
     feedbackDiv.appendChild(likeBtn);
     feedbackDiv.appendChild(dislikeBtn);
     feedbackDiv.appendChild(feedbackText);
-    
-    // ✅ RETURN element thay vì appendChild ngay
-    return feedbackDiv;
-  }
-
-  // ✅ Lưu trạng thái feedback vào metadata của message
-  function saveFeedbackStatus(query, status, messageIndex = -1) {
-    if (!currentChatId) return;
-    
-    const chat = chats.find(c => c.id === currentChatId);
-    if (!chat) return;
-    
-    // ✅ Ưu tiên dùng messageIndex nếu có, nếu không thì tìm bằng query
-    if (messageIndex >= 0 && messageIndex < chat.messages.length) {
-      const msg = chat.messages[messageIndex];
-      if (msg.sender === 'bot') {
-        if (!msg.metadata) msg.metadata = {};
-        msg.metadata.feedbackStatus = status;
-        saveChats();
-        console.log('✅ Feedback saved to localStorage (by index):', { messageIndex, status });
-        return;
-      }
-    }
-    
-    // ✅ Fallback: Tìm bằng query (cho các message mới)
-    for (let i = chat.messages.length - 1; i >= 0; i--) {
-      const msg = chat.messages[i];
-      if (msg.metadata && msg.metadata.query === query) {
-        msg.metadata.feedbackStatus = status;
-        saveChats();
-        console.log('✅ Feedback saved to localStorage (by query):', { query, status });
-        break;
-      }
-    }
+    chatDisplay.appendChild(feedbackDiv);
   }
 
   // Gửi feedback tới server
@@ -454,22 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageText = userInput.value.trim();
     if (messageText === '') return;
 
-    // ✅ Kiểm tra xem có cần tạo chat mới không
-    if (!currentChatId) {
-      createNewChat(modelMode);
-    } else {
-      // ✅ Kiểm tra mode của chat hiện tại
-      const currentChat = chats.find(c => c.id === currentChatId);
-      if (currentChat) {
-        const chatMode = currentChat.mode || 'quality';
-        
-        // Nếu mode khác với chat hiện tại → Tạo chat mới
-        if (chatMode !== modelMode) {
-          console.log(`🔄 Mode changed: ${chatMode} → ${modelMode}. Creating new chat...`);
-          createNewChat(modelMode);
-        }
-      }
-    }
+    if (!currentChatId) createNewChat();
     
     addMessage(messageText, 'user');
     userInput.value = '';
@@ -518,21 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('🔗 Using API Backend:', API_BASE);  // Debug log
       
-      // ✅ Chuẩn bị chat history (chỉ gửi khi dùng Quality mode)
-      let chatHistory = [];
-      if (modelMode === 'quality' && currentChatId) {
-        const currentChat = chats.find(c => c.id === currentChatId);
-        if (currentChat && currentChat.messages.length > 0) {
-          // Lấy tối đa 6 message gần nhất (3 cặp hỏi-đáp) TRƯỚC câu hỏi hiện tại
-          const recentMessages = currentChat.messages.slice(-6);
-          chatHistory = recentMessages.map(msg => ({
-            role: msg.sender === 'user' ? 'user' : 'assistant',
-            content: msg.text
-          }));
-          console.log(`📜 Sending chat history: ${chatHistory.length} messages`);
-        }
-      }
-      
       const response = await fetch(`${API_BASE}/ask`, {
         method: 'POST',
         headers: {
@@ -541,8 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({
           question: messageText,
           use_advanced: true,
-          model_mode: modelMode,  // Send selected mode: 'fast' or 'quality'
-          chat_history: chatHistory  // ✅ Gửi lịch sử chat (chỉ khi Quality mode)
+          model_mode: modelMode  // Send selected mode: 'fast' or 'quality'
         })
       });
 
@@ -554,15 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
       
       typingDiv.remove();
       
-      // ✅ Lưu metadata để có thể restore lại sau khi reload
-      const metadata = {
-        query: messageText,
-        sources: data.sources || [],
-        pdf_sources: data.pdf_sources || [],
-        timing: data.timing || null
-      };
+      // Hiển thị câu trả lời
+      addMessage(data.answer, 'bot');
       
-<<<<<<< HEAD
       // Hiển thị performance timing (nếu có)
       if (data.timing) {
         const timingText = `⚡ Performance: ${data.timing.total_ms}ms (Search: ${data.timing.search_ms}ms + Generation: ${data.timing.generation_ms}ms)`;
@@ -750,10 +485,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Thêm nút Like/Dislike ở cuối cùng
         addFeedbackButtons(messageText, data.answer, data.sources || []);
       }
-=======
-      // Hiển thị câu trả lời với metadata
-      addMessage(data.answer, 'bot', true, true, metadata);
->>>>>>> origin/main
       
     } catch (error) {
   typingDiv.remove();
@@ -791,35 +522,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Model mode selector
   modeFast.addEventListener('change', () => {
     if (modeFast.checked) {
-      const oldMode = modelMode;
       modelMode = 'fast';
       localStorage.setItem('modelMode', 'fast');
       console.log('✅ Switched to FAST mode (all Flash Lite)');
-      
-      // ✅ Nếu có chat hiện tại và mode khác → Thông báo sẽ tạo chat mới
-      if (currentChatId && oldMode !== 'fast') {
-        const currentChat = chats.find(c => c.id === currentChatId);
-        if (currentChat && currentChat.mode !== 'fast') {
-          console.log('💡 Next message will create a new FAST chat');
-        }
-      }
     }
   });
 
   modeQuality.addEventListener('change', () => {
     if (modeQuality.checked) {
-      const oldMode = modelMode;
       modelMode = 'quality';
       localStorage.setItem('modelMode', 'quality');
       console.log('✅ Switched to QUALITY mode (Flash Lite for intent, Flash for answer)');
-      
-      // ✅ Nếu có chat hiện tại và mode khác → Thông báo sẽ tạo chat mới
-      if (currentChatId && oldMode !== 'quality') {
-        const currentChat = chats.find(c => c.id === currentChatId);
-        if (currentChat && currentChat.mode !== 'quality') {
-          console.log('💡 Next message will create a new QUALITY chat');
-        }
-      }
     }
   });
 
@@ -844,70 +557,14 @@ document.addEventListener('DOMContentLoaded', () => {
     modeQuality.checked = true;
   }
 
-  // ✅ Kiểm tra thời gian truy cập lần cuối
-  function shouldCreateNewChat() {
-    const lastAccessTime = localStorage.getItem('lastAccessTime');
-    const now = Date.now();
-    
-    // Nếu chưa có lastAccessTime, lưu lại và giữ chat cũ
-    if (!lastAccessTime) {
-      localStorage.setItem('lastAccessTime', now);
-      return false;
-    }
-    
-    // Tính khoảng thời gian (miligiây)
-    const timeDiff = now - parseInt(lastAccessTime);
-    const hoursDiff = timeDiff / (1000 * 60 * 60);
-    
-    // Nếu > 24 giờ (hoặc bạn có thể đổi thành 12, 6 giờ...)
-    // thì tạo chat mới
-    const HOURS_THRESHOLD = 24;  // ✅ Thay đổi số giờ tại đây
-    
-    if (hoursDiff > HOURS_THRESHOLD) {
-      console.log(`⏰ Last access was ${hoursDiff.toFixed(1)} hours ago. Creating new chat...`);
-      localStorage.setItem('lastAccessTime', now);
-      return true;
-    }
-    
-    // Cập nhật thời gian truy cập
-    localStorage.setItem('lastAccessTime', now);
-    return false;
-  }
-
   // Khởi tạo
   if (chats.length === 0) {
     createNewChat();
   } else {
-    // ✅ Fix: Thêm mode cho các chat cũ (migrate data)
-    chats.forEach(chat => {
-      if (!chat.mode) {
-        chat.mode = 'quality';  // Mặc định cho chat cũ
-      }
-    });
-    saveChats();
-    
-    // ✅ Kiểm tra xem có nên tạo chat mới không
-    if (shouldCreateNewChat()) {
-      createNewChat();
-    } else {
-      // Khôi phục chat cuối cùng hoặc chat đã chọn
-      const lastChat = chats.find(c => c.id == currentChatId) || chats[chats.length - 1];
-      currentChatId = lastChat.id;
-      
-      // ✅ Cập nhật modelMode theo chat được chọn
-      if (lastChat.mode) {
-        modelMode = lastChat.mode;
-        localStorage.setItem('modelMode', modelMode);
-        
-        if (modelMode === 'fast') {
-          modeFast.checked = true;
-        } else {
-          modeQuality.checked = true;
-        }
-      }
-      
-      renderChat(lastChat);
-      renderSidebar();
-    }
+    // Khôi phục chat cuối cùng hoặc chat đã chọn
+    const lastChat = chats.find(c => c.id == currentChatId) || chats[chats.length - 1];
+    currentChatId = lastChat.id;
+    renderChat(lastChat);
+    renderSidebar();
   }
 });
