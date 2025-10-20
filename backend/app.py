@@ -234,7 +234,15 @@ async def ask_question(request: QuestionRequest):
     
     # ===== PHASE 2: ANSWER GENERATION =====
     gen_start = time.time()
-    answer = generate_answer(request.question, relevant_chunks, answer_model)
+    
+    # ✅ CHỈ truyền chat_history cho Quality mode (sử dụng Flash model)
+    if request.model_mode == "quality" and request.chat_history:
+        print(f'[CONTEXT] Using chat history: {len(request.chat_history)} messages')
+        answer = generate_answer(request.question, relevant_chunks, answer_model, chat_history=request.chat_history)
+    else:
+        # Fast mode hoặc không có history → Không dùng context
+        answer = generate_answer(request.question, relevant_chunks, answer_model)
+    
     timing['generation_ms'] = round((time.time() - gen_start) * 1000, 2)
     print(f'[TIMING] Answer generation completed in {timing["generation_ms"]}ms')
     
