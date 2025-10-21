@@ -62,13 +62,17 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
             continue
 
         # Process clauses
+        # Process clauses
+        # Process clauses
         for khoan in dieu['khoan']:
-            khoan_source = f'{base_source}, Khoan {khoan.get("khoan_so", "")}'
+            khoan_so = khoan.get('khoan_so', '')
+            khoan_source = f'{base_source}, Khoan {khoan_so}'
             khoan_content = khoan.get('noi_dung_hien_hanh', khoan.get('noi_dung', ''))
             
             khoan_metadata = base_metadata.copy()
             khoan_metadata.update({
-                'clause_num': khoan.get('khoan_so', ''),
+                'clause_num': khoan_so,
+                'article_num': f'Dieu {dieu_so}, Khoan {khoan_so}', 
                 'level': 'clause'
             })
             

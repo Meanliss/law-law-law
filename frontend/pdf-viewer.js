@@ -119,64 +119,40 @@ const PDFViewer = {
   },
 
   showSearchInstructions(articleNumbers) {
-  const infoDiv = document.getElementById('article-info');
-  if (!infoDiv) return;
-  
-  if (articleNumbers && articleNumbers.length > 0) {
-    // Format articles nicely (Dieu 8 -> Điều 8)
-    const formattedArticles = articleNumbers
-      .map(a => a.replace(/Dieu/i, 'Điều'))
-      .join(', ');
+    const infoDiv = document.getElementById('article-info');
+    if (!infoDiv) return;
     
-    infoDiv.innerHTML = `
-      <div style="padding: 16px; background: linear-gradient(135deg, rgba(255, 235, 59, 0.15) 0%, rgba(255, 193, 7, 0.15) 100%); border-left: 4px solid #ffc107; margin: 12px;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-          <span style="font-size: 20px;">🔍</span>
-          <strong style="font-size: 16px;">Tìm kiếm các điều này trong file PDF:</strong>
-        </div>
-        
-        <div style="background: rgba(255, 255, 255, 0.5); padding: 10px; border-radius: 6px; margin: 8px 0;">
-          <div style="font-size: 15px; font-weight: 600; color: #d84315; margin-bottom: 4px;">
-            ${formattedArticles}
+    if (articleNumbers && articleNumbers.length > 0) {
+      // Format articles nicely (Dieu 8 -> Điều 8)
+      const formattedArticles = articleNumbers
+        .map(a => a.replace(/Dieu/i, 'Điều'))
+        .join(', ');
+      
+      infoDiv.innerHTML = `
+        <div style="padding: 16px; background: linear-gradient(135deg, rgba(255, 235, 59, 0.15) 0%, rgba(255, 193, 7, 0.15) 100%); border-left: 4px solid #ffc107; margin: 12px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-size: 20px;">🔍</span>
+            <strong style="font-size: 16px;">Tìm kiếm các điều này trong file PDF:</strong>
+          </div>
+          
+          <div style="background: rgba(255, 255, 255, 0.5); padding: 10px; border-radius: 6px; margin: 8px 0;">
+            <div style="font-size: 15px; font-weight: 600; color: #d84315; margin-bottom: 4px;">
+              ${formattedArticles}
+            </div>
+          </div>
+          
+          <div style="font-size: 13px; opacity: 0.85; line-height: 1.6;">
+            💡 <strong>Hướng dẫn:</strong><br>
+            1️⃣ Nhấn <kbd style="background: #fff; padding: 2px 6px; border-radius: 3px; border: 1px solid #ccc;">Ctrl+F</kbd> (Windows) hoặc <kbd style="background: #fff; padding: 2px 6px; border-radius: 3px; border: 1px solid #ccc;">Cmd+F</kbd> (Mac)<br>
+            2️⃣ Gõ tên điều luật (ví dụ: "Điều 8")<br>
+            3️⃣ Trình duyệt sẽ tự động tô sáng văn bản
           </div>
         </div>
-        
-        <div style="font-size: 13px; opacity: 0.85; line-height: 1.8;">
-          💡 <strong>Hướng dẫn tìm kiếm:</strong><br>
-          1️⃣ Nhấn <kbd style="background: #fff; padding: 3px 7px; border-radius: 4px; border: 1px solid #ccc; font-family: monospace; font-size: 12px;">Ctrl+F</kbd> (Windows) hoặc 
-          <kbd style="background: #fff; padding: 3px 7px; border-radius: 4px; border: 1px solid #ccc; font-family: monospace; font-size: 12px;">Cmd+F</kbd> (Mac)<br>
-          2️⃣ Gõ tên điều luật: <code style="background: #fff; padding: 2px 6px; border-radius: 3px; color: #d84315; font-weight: 600;">${formattedArticles.split(', ')[0]}</code><br>
-          3️⃣ Trình duyệt sẽ tự động tô vàng và nhảy đến vị trí chính xác ✨
-        </div>
-        
-        <button id="copy-search-term" style="margin-top: 12px; padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s;">
-          📋 Sao chép "${formattedArticles.split(', ')[0]}" để tìm kiếm
-        </button>
-      </div>
-    `;
-    
-    // Add copy to clipboard functionality
-    const copyBtn = document.getElementById('copy-search-term');
-    if (copyBtn) {
-      copyBtn.onclick = () => {
-        const searchTerm = formattedArticles.split(', ')[0];
-        navigator.clipboard.writeText(searchTerm).then(() => {
-          copyBtn.textContent = '✅ Đã sao chép!';
-          copyBtn.style.background = '#2196F3';
-          setTimeout(() => {
-            copyBtn.innerHTML = `📋 Sao chép "${searchTerm}" để tìm kiếm`;
-            copyBtn.style.background = '#4CAF50';
-          }, 2000);
-        }).catch(err => {
-          console.error('Copy failed:', err);
-          alert('Không thể sao chép. Vui lòng sao chép thủ công: ' + searchTerm);
-        });
-      };
+      `;
+    } else {
+      infoDiv.innerHTML = '';
     }
-  } else {
-    infoDiv.innerHTML = '';
   }
-}
 };
 
 document.addEventListener('DOMContentLoaded', () => {
