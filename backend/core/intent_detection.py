@@ -114,13 +114,15 @@ BẮT ĐẦU PHÂN TÍCH:"""
         }, query
 
 
-def enhanced_decompose_query(question: str, gemini_lite_model) -> Dict:
+def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_model=None, use_advanced=False) -> Dict:
     """
     Intent detection + Query refinement + Smart decomposition
     
     Args:
         question: User question
-        gemini_lite_model: Gemini lite model instance
+        gemini_lite_model: Gemini lite model instance (for Fast mode)
+        gemini_flash_model: Gemini flash model instance (for Quality mode) - OPTIONAL
+        use_advanced: True = Quality mode (dùng Flash cho decompose), False = Fast mode (dùng Lite)
     
     Returns:
         {
@@ -133,7 +135,7 @@ def enhanced_decompose_query(question: str, gemini_lite_model) -> Dict:
     """
     from .query_expansion import decompose_query_smart
     
-    # ✅ Step 1: Intent detection + Query refinement (LLM Lite)
+    # ✅ Step 1: Intent detection + Query refinement (luôn dùng Lite - nhanh)
     print(f'\n[INTENT+REFINE] Analyzing: "{question}"')
     intent, refined_query = detect_intent_and_refine(question, gemini_lite_model)
     
@@ -148,9 +150,14 @@ def enhanced_decompose_query(question: str, gemini_lite_model) -> Dict:
             'refined_query': question  # Không refine nếu bị reject
         }
     
-    # ✅ Step 3: Smart decomposition với câu hỏi đã tinh chỉnh
-    print(f'[DECOMPOSE] Using refined query: "{refined_query}"')
-    decompose_result = decompose_query_smart(refined_query, gemini_lite_model)
+    # ✅ Step 3: Smart decomposition
+    # Quality mode: Dùng Flash (reasoning tốt hơn, tách câu phức tạp chính xác hơn)
+    # Fast mode: Dùng Lite (nhanh hơn)
+    decompose_model = gemini_flash_model if (use_advanced and gemini_flash_model) else gemini_lite_model
+    model_name = "Flash (Quality)" if (use_advanced and gemini_flash_model) else "Lite (Fast)"
+    
+    print(f'[DECOMPOSE] Using {model_name} model for query: "{refined_query}"')
+    decompose_result = decompose_query_smart(refined_query, decompose_model)
     
     return {
         'sub_queries': decompose_result['sub_queries'],

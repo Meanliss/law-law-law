@@ -173,26 +173,37 @@ async def ask_question(request: QuestionRequest):
     print(f'[INFO] Model Mode: {request.model_mode.upper()} {"(all Flash Lite)" if request.model_mode == "fast" else "(Flash Lite for intent, Flash for answer)"}')
     print(f'{"="*70}')
     
-    # Select models based on mode
+    # Select models and configuration based on mode
     if request.model_mode == "fast":
         # Fast mode: Use Flash Lite for everything
         intent_model = gemini_lite_model
         answer_model = gemini_lite_model
-        print('[MODE] ⚡ FAST - Using Flash Lite for all operations')
+        decompose_model = gemini_lite_model
+        rerank_model = None  # No re-ranking in fast mode
+        use_advanced = False
+        print('[MODE] ⚡ FAST - Using Flash Lite for all operations (no re-ranking)')
     else:
-        # Quality mode: Use Flash Lite for intent, Flash for answer
+        # Quality mode: Use Flash Lite for intent, Flash for decompose/answer/rerank
         intent_model = gemini_lite_model
         answer_model = gemini_model
-        print('[MODE] 🎯 QUALITY - Using Flash Lite (intent) + Flash (answer)')
+        decompose_model = gemini_model  # ✅ Flash cho decompose (tách câu tốt hơn)
+        rerank_model = gemini_model     # ✅ Flash cho re-ranking
+        use_advanced = True
+        print('[MODE] 🎯 QUALITY - Using Flash Lite (intent) + Flash (decompose/answer/rerank)')
     
     # ===== PHASE 1: INTENT DETECTION & QUERY EXPANSION =====
     intent_start = time.time()
     
     # Search with selected mode
     if request.use_advanced:
-        # Create enhanced_decompose function with intent_model closure
+        # Create enhanced_decompose function with models
         def enhanced_decompose_fn(query):
-            return enhanced_decompose_query(query, intent_model)
+            return enhanced_decompose_query(
+                query, 
+                intent_model,
+                gemini_flash_model=decompose_model,
+                use_advanced=use_advanced
+            )
         
         relevant_chunks = advanced_hybrid_search(
             query=request.question,
@@ -202,7 +213,9 @@ async def ask_question(request: QuestionRequest):
             embedder=embedder,
             tokenize_fn=tokenize_vi,
             enhanced_decompose_fn=enhanced_decompose_fn,
-            top_k=8
+            gemini_model=rerank_model,  # ✅ Truyền model cho re-ranking
+            use_advanced=use_advanced,  # ✅ Enable advanced features
+            top_k=5  # Giảm xuống 5 vì có re-ranking
         )
         mode = "advanced"
     else:
@@ -240,13 +253,24 @@ async def ask_question(request: QuestionRequest):
     # ===== PHASE 2: ANSWER GENERATION =====
     gen_start = time.time()
     
-    # ✅ CHỈ truyền chat_history cho Quality mode (sử dụng Flash model)
+    # ✅ Generate với mode-specific prompt và chat history
     if request.model_mode == "quality" and request.chat_history:
         print(f'[CONTEXT] Using chat history: {len(request.chat_history)} messages')
-        answer = generate_answer(request.question, relevant_chunks, answer_model, chat_history=request.chat_history)
+        answer = generate_answer(
+            request.question, 
+            relevant_chunks, 
+            answer_model, 
+            chat_history=request.chat_history,
+            use_advanced=use_advanced  # ✅ Enable reasoning prompt
+        )
     else:
-        # Fast mode hoặc không có history → Không dùng context
-        answer = generate_answer(request.question, relevant_chunks, answer_model)
+        # Fast mode hoặc không có history
+        answer = generate_answer(
+            request.question, 
+            relevant_chunks, 
+            answer_model,
+            use_advanced=use_advanced  # ✅ Chọn prompt phù hợp
+        )
     
     timing['generation_ms'] = round((time.time() - gen_start) * 1000, 2)
     print(f'[TIMING] Answer generation completed in {timing["generation_ms"]}ms')
