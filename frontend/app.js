@@ -616,6 +616,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   newChatBtn.addEventListener('click', createNewChat);
 
+  // Clear all chats button
+  const clearAllChatsBtn = document.getElementById('clear-all-chats');
+  clearAllChatsBtn.addEventListener('click', () => {
+    if (confirm('⚠️ Bạn có chắc chắn muốn xóa HẾT TẤT CẢ cuộc hội thoại?\n\nHành động này KHÔNG THỂ HOÀN TÁC!')) {
+      // Xóa hết data từ localStorage
+      localStorage.removeItem('chats');
+      localStorage.removeItem('currentChatId');
+      
+      // Reset biến trong memory
+      chats = [];
+      currentChatId = null;
+      
+      // Tạo chat mới
+      createNewChat();
+      
+      console.log('🗑️ All chats deleted successfully');
+    }
+  });
+
   // Model mode selector
   modeFast.addEventListener('change', () => {
     if (modeFast.checked) {

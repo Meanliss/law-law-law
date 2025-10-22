@@ -8,9 +8,12 @@ if sys.platform == 'win32':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.exceptions import RequestValidationError
+from fastapi.exception_handlers import request_validation_exception_handler
+from contextlib import asynccontextmanager
 from collections import defaultdict
 import os
 import time  # For performance timing
@@ -34,25 +37,6 @@ from config import EMBEDDING_MODEL  # Import embedding model name
 
 
 # ============================================================================
-# FastAPI Application Setup
-# ============================================================================
-
-app = FastAPI(
-    title='Legal Document Q&A API',
-    description='Advanced RAG system for Vietnamese legal documents',
-    version='2.0.0'
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=['*'],
-    allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*'],
-)
-
-
-# ============================================================================
 # Global State Variables
 # ============================================================================
 
@@ -66,32 +50,31 @@ gemini_lite_model = None  # Lite model for intent detection
 
 
 # ============================================================================
-# Startup Event
+# Lifespan Event Handler (replaces deprecated on_event)
 # ============================================================================
 
-@app.on_event("startup")
-async def startup_event():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     """Initialize all models and indexes on server startup"""
     global all_chunks, bm25_index, faiss_index, corpus_embeddings, embedder, gemini_model, gemini_lite_model
     
-    print('[STARTUP] Dang khoi dong Legal Q&A System v2.0...')
+    print('[STARTUP] Dang khoi dong Legal Q&A System v2.0...', flush=True)
     
-    # 1. Load Gemini API
     # 1. Load Gemini API
     # Try environment variable first (for cloud platforms like Render)
     api_key = os.getenv('GOOGLE_API_KEY')
     
     # If not found, try loading from .env file (for local development)
     if not api_key:
-        print('[INFO] API key not in environment, trying .env file...')
+        print('[INFO] API key not in environment, trying .env file...', flush=True)
         load_dotenv()
         api_key = os.getenv('GOOGLE_API_KEY')
     
     if not api_key:
-        print('[ERROR] GOOGLE_API_KEY not found in environment variables or .env file!')
+        print('[ERROR] GOOGLE_API_KEY not found in environment variables or .env file!', flush=True)
         raise Exception('Missing GOOGLE_API_KEY')
     
-    print('[OK] Google API key loaded successfully')
+    print('[OK] Google API key loaded successfully', flush=True)
         
     genai.configure(api_key=api_key)
     
@@ -99,48 +82,88 @@ async def startup_event():
     gemini_model = genai.GenerativeModel('gemini-2.5-flash')  # For answer generation
     gemini_lite_model = genai.GenerativeModel('gemini-2.5-flash-lite')  # For intent/decompose
     
-    print('[OK] Google AI models ready:')
-    print('  - gemini-2.5-flash (answer generation)')
-    print('  - gemini-2.5-flash-lite (intent detection, decomposition)')
+    print('[OK] Google AI models ready:', flush=True)
+    print('  - gemini-2.5-flash (answer generation)', flush=True)
+    print('  - gemini-2.5-flash-lite (intent detection, decomposition)', flush=True)
     
     # 3. Load embedding model
-    print(f'[INFO] Dang tai embedding model: {EMBEDDING_MODEL}...')
+    print(f'[INFO] Dang tai embedding model: {EMBEDDING_MODEL}...', flush=True)
     embedder = SentenceTransformer(EMBEDDING_MODEL)
-    print(f'[OK] Embedding model {EMBEDDING_MODEL} da san sang')
-    print(f'     Model info: Vietnamese-optimized PhoBERT (vinai/phobert-base)')
+    print(f'[OK] Embedding model {EMBEDDING_MODEL} da san sang', flush=True)
+    print(f'     Model info: Vietnamese-optimized PhoBERT (vinai/phobert-base)', flush=True)
     
     # 4. Load legal documents
     data_folder = 'data'
     if not os.path.exists(data_folder):
-        print(f'[WARN] Khong tim thay thu muc {data_folder}')
+        print(f'[WARN] Khong tim thay thu muc {data_folder}', flush=True)
+        yield  # Must yield even if no data
         return
     
     json_files = [f for f in os.listdir(data_folder) if f.endswith('.json')]
-    print(f'[INFO] Tim thay {len(json_files)} file JSON')
+    print(f'[INFO] Tim thay {len(json_files)} file JSON', flush=True)
     
     all_chunks = []
     for json_file in json_files:
         file_path = os.path.join(data_folder, json_file)
         chunks, nguon = xu_ly_van_ban_phap_luat_json(file_path)
         all_chunks.extend(chunks)
-        print(f'[OK] {json_file}: {len(chunks)} chunks')
+        print(f'[OK] {json_file}: {len(chunks)} chunks', flush=True)
     
     if not all_chunks:
-        print('[ERROR] Khong co du lieu nao duoc tai!')
+        print('[ERROR] Khong co du lieu nao duoc tai!', flush=True)
+        yield  # Must yield even if no data
         return
     
-    print(f'[OK] Tong cong: {len(all_chunks)} chunks')
+    print(f'[OK] Tong cong: {len(all_chunks)} chunks', flush=True)
     
     # 5. Build/Load indexes with hash-based caching
     data_hash = get_data_hash(all_chunks)
-    print(f'[INFO] Data hash: {data_hash}')
+    print(f'[INFO] Data hash: {data_hash}', flush=True)
     
     corpus = [tokenize_vi(chunk['content']) for chunk in all_chunks]
     bm25_index = build_or_load_bm25(corpus, data_hash)
     
     faiss_index, corpus_embeddings = build_or_load_faiss(all_chunks, data_hash, embedder)
     
-    print('[SUCCESS] Server san sang!')
+    print('[SUCCESS] Server san sang!', flush=True)
+    
+    # Application is running - yield control back to FastAPI
+    yield
+    
+    # Cleanup on shutdown (optional)
+    print('[SHUTDOWN] Cleaning up resources...', flush=True)
+
+
+# ============================================================================
+# FastAPI Application Setup (with lifespan)
+# ============================================================================
+
+app = FastAPI(
+    title='Legal Document Q&A API',
+    description='Advanced RAG system for Vietnamese legal documents',
+    version='2.0.0',
+    lifespan=lifespan  # ✅ Use lifespan instead of on_event
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
+
+
+# ============================================================================
+# Exception Handlers
+# ============================================================================
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Log request validation errors for easier debugging"""
+    print('[VALIDATION ERROR]', exc.errors(), flush=True)
+    print('[REQUEST BODY]', exc.body, flush=True)
+    return await request_validation_exception_handler(request, exc)
 
 
 # ============================================================================
@@ -168,10 +191,10 @@ async def ask_question(request: QuestionRequest):
     if not all_chunks:
         raise HTTPException(status_code=503, detail="System not ready")
     
-    print(f'\n{"="*70}')
-    print(f'[INFO] Question: {request.question}')
-    print(f'[INFO] Model Mode: {request.model_mode.upper()} {"(all Flash Lite)" if request.model_mode == "fast" else "(Flash Lite for intent, Flash for answer)"}')
-    print(f'{"="*70}')
+    print(f'\n{"="*70}', flush=True)
+    print(f'[INFO] Question: {request.question}', flush=True)
+    print(f'[INFO] Model Mode: {request.model_mode.upper()} {"(all Flash Lite)" if request.model_mode == "fast" else "(Flash Lite for intent, Flash for answer)"}', flush=True)
+    print(f'{"="*70}', flush=True)
     
     # Select models and configuration based on mode
     if request.model_mode == "fast":
@@ -181,7 +204,7 @@ async def ask_question(request: QuestionRequest):
         decompose_model = gemini_lite_model
         rerank_model = None  # No re-ranking in fast mode
         use_advanced = False
-        print('[MODE] ⚡ FAST - Using Flash Lite for all operations (no re-ranking)')
+        print('[MODE] ⚡ FAST - Using Flash Lite for all operations (no re-ranking)', flush=True)
     else:
         # Quality mode: Use Flash Lite for intent, Flash for decompose/answer/rerank
         intent_model = gemini_lite_model
@@ -189,7 +212,7 @@ async def ask_question(request: QuestionRequest):
         decompose_model = gemini_model  # ✅ Flash cho decompose (tách câu tốt hơn)
         rerank_model = gemini_model     # ✅ Flash cho re-ranking
         use_advanced = True
-        print('[MODE] 🎯 QUALITY - Using Flash Lite (intent) + Flash (decompose/answer/rerank)')
+        print('[MODE] 🎯 QUALITY - Using Flash Lite (intent) + Flash (decompose/answer/rerank)', flush=True)
     
     # ===== PHASE 1: INTENT DETECTION & QUERY EXPANSION =====
     intent_start = time.time()
@@ -231,13 +254,13 @@ async def ask_question(request: QuestionRequest):
         mode = "simple"
     
     timing['search_ms'] = round((time.time() - intent_start) * 1000, 2)
-    print(f'[TIMING] Search completed in {timing["search_ms"]}ms')
+    print(f'[TIMING] Search completed in {timing["search_ms"]}ms', flush=True)
     
     # Check if query was rejected by intent detection
     if not relevant_chunks:
         total_time = round((time.time() - start_time) * 1000, 2)
-        print(f'[TIMING] Total time (rejected): {total_time}ms')
-        print(f'{"="*70}\n')
+        print(f'[TIMING] Total time (rejected): {total_time}ms', flush=True)
+        print(f'{"="*70}\n', flush=True)
         return {
             "answer": get_rejection_message(),
             "sources": [],
@@ -255,7 +278,7 @@ async def ask_question(request: QuestionRequest):
     
     # ✅ Generate với mode-specific prompt và chat history
     if request.model_mode == "quality" and request.chat_history:
-        print(f'[CONTEXT] Using chat history: {len(request.chat_history)} messages')
+        print(f'[CONTEXT] Using chat history: {len(request.chat_history)} messages', flush=True)
         answer = generate_answer(
             request.question, 
             relevant_chunks, 
@@ -273,14 +296,14 @@ async def ask_question(request: QuestionRequest):
         )
     
     timing['generation_ms'] = round((time.time() - gen_start) * 1000, 2)
-    print(f'[TIMING] Answer generation completed in {timing["generation_ms"]}ms')
+    print(f'[TIMING] Answer generation completed in {timing["generation_ms"]}ms', flush=True)
     
     # Total time
     timing['total_ms'] = round((time.time() - start_time) * 1000, 2)
-    print(f'[TIMING] ⚡ TOTAL TIME: {timing["total_ms"]}ms')
-    print(f'  ├─ Search: {timing["search_ms"]}ms ({round(timing["search_ms"]/timing["total_ms"]*100, 1)}%)')
-    print(f'  └─ Generation: {timing["generation_ms"]}ms ({round(timing["generation_ms"]/timing["total_ms"]*100, 1)}%)')
-    print(f'{"="*70}\n')
+    print(f'[TIMING] ⚡ TOTAL TIME: {timing["total_ms"]}ms', flush=True)
+    print(f'  ├─ Search: {timing["search_ms"]}ms ({round(timing["search_ms"]/timing["total_ms"]*100, 1)}%)', flush=True)
+    print(f'  └─ Generation: {timing["generation_ms"]}ms ({round(timing["generation_ms"]/timing["total_ms"]*100, 1)}%)', flush=True)
+    print(f'{"="*70}\n', flush=True)
     
     # Format sources (original format)
     sources = [
@@ -352,14 +375,14 @@ async def submit_feedback(request: FeedbackRequest):
         with open(feedback_file, 'a', encoding='utf-8') as f:
             f.write(json.dumps(feedback_data, ensure_ascii=False) + '\n')
         
-        print(f'[FEEDBACK] {request.status.upper()}: {request.query[:50]}...')
+        print(f'[FEEDBACK] {request.status.upper()}: {request.query[:50]}...', flush=True)
         
         return {
             "success": True,
             "message": "Cảm ơn phản hồi của bạn!"
         }
     except Exception as e:
-        print(f'[ERROR] Failed to save feedback: {e}')
+        print(f'[ERROR] Failed to save feedback: {e}', flush=True)
         return {
             "success": False,
             "message": "Không thể lưu phản hồi"
@@ -383,9 +406,9 @@ async def get_document(request: dict):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     pdf_path = os.path.join(current_dir, 'data', filename)
     
-    print(f"[PDF] Requested: {filename}")
-    print(f"[PDF] Looking at: {pdf_path}")
-    print(f"[PDF] Exists: {os.path.exists(pdf_path)}")
+    print(f"[PDF] Requested: {filename}", flush=True)
+    print(f"[PDF] Looking at: {pdf_path}", flush=True)
+    print(f"[PDF] Exists: {os.path.exists(pdf_path)}", flush=True)
     
     if not os.path.exists(pdf_path):
         raise HTTPException(status_code=404, detail=f"Document not found")
