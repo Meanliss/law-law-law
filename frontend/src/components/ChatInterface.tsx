@@ -59,6 +59,22 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
     }
   }, [messages, isTyping]);
 
+  // Helper function to format law name nicely
+  const formatLawName = (jsonFile: string | undefined): string => {
+    if (!jsonFile) return 'Văn bản pháp luật';
+    
+    const nameMap: Record<string, string> = {
+      'luat_lao_donghopnhat.json': 'Bộ luật Lao động',
+      'luat_dat_dai_hopnhat.json': 'Luật Đất đai',
+      'luat_hon_nhan_hopnhat.json': 'Luật Hôn nhân và Gia đình',
+      'luat_dauthau_hopnhat.json': 'Luật Đấu thầu',
+      'chuyen_giao_cong_nghe_hopnhat.json': 'Luật Chuyển giao công nghệ',
+      'nghi_dinh_214_2025.json': 'Nghị định 214/2025/NĐ-CP',
+    };
+    
+    return nameMap[jsonFile] || jsonFile.replace('_hopnhat.json', '').replace(/_/g, ' ');
+  };
+
   const handleSendMessage = async (text: string) => {
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -74,10 +90,10 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
       // Call backend API
       const response = await askQuestion(text, mode, chatHistory);
       
-      // Convert PDF sources to display format
-      const displaySources = response.pdf_sources.map((pdfSource) => ({
-        title: pdfSource.json_file?.replace('_hopnhat.json', '').replace(/_/g, ' ').toUpperCase() || 'Văn bản pháp luật',
-        page: pdfSource.article_num ? `[${pdfSource.article_num}]` : undefined,
+      // Convert PDF sources to display format - limit to 3 sources
+      const displaySources = response.pdf_sources.slice(0, 3).map((pdfSource) => ({
+        title: formatLawName(pdfSource.json_file),
+        page: pdfSource.article_num || undefined,
         pdfUrl: pdfSource.pdf_file
       }));
 
@@ -217,12 +233,18 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
                           <div className="flex-1">
                             <button
                               onClick={() => source.pdfUrl && handleOpenPDF(source.pdfUrl, source.title)}
-                              className="text-left hover:underline"
+                              className="text-left hover:underline w-full"
                             >
-                              <span className="text-gray-700 dark:text-gray-300">{source.title}</span>
-                              {source.page && (
-                                <span className="text-red-500 dark:text-red-400 ml-2">{source.page}</span>
-                              )}
+                              <div className="flex flex-col gap-1">
+                                <span className="text-gray-700 dark:text-gray-300 font-medium">
+                                  {source.title}
+                                </span>
+                                {source.page && (
+                                  <span className="text-red-500 dark:text-red-400 text-xs">
+                                    📄 {source.page}
+                                  </span>
+                                )}
+                              </div>
                             </button>
                           </div>
                         </div>
