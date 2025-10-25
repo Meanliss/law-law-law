@@ -30,6 +30,22 @@ interface ChatInterfaceProps {
   onToggleDarkMode: () => void;
 }
 
+// Helper function to format law name nicely
+const formatLawName = (jsonFile: string | undefined): string => {
+  if (!jsonFile) return 'Văn bản pháp luật';
+  
+  const nameMap: Record<string, string> = {
+    'luat_lao_donghopnhat.json': 'Bộ luật Lao động',
+    'luat_dat_dai_hopnhat.json': 'Luật Đất đai',
+    'luat_hon_nhan_hopnhat.json': 'Luật Hôn nhân và Gia đình',
+    'luat_dauthau_hopnhat.json': 'Luật Đấu thầu',
+    'chuyen_giao_cong_nghe_hopnhat.json': 'Luật Chuyển giao công nghệ',
+    'nghi_dinh_214_2025.json': 'Nghị định 214/2025/NĐ-CP',
+  };
+  
+  return nameMap[jsonFile] || jsonFile.replace('_hopnhat.json', '').replace(/_/g, ' ');
+};
+
 export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -47,10 +63,11 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
     // Reset messages when conversation changes
     setMessages([{
       id: '1',
-      text: 'Xin chào! Tôi là trợ lý pháp luật AI. Tôi có thể giúp bạn tư vấn về các vấn đề pháp luật tại Việt Nam. Bạn có câu hỏi gì không?',
+      text: 'Xao trình! Tôi là trợ lý pháp luật AI. Tôi có thể giúp bạn tư vấn về các vấn đề pháp luật tại Việt Nam. Bạn có câu hỏi gì không?',
       sender: 'ai',
       timestamp: new Date()
     }]);
+    setChatHistory([]);
   }, [conversationId]);
 
   useEffect(() => {
@@ -58,22 +75,6 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isTyping]);
-
-  // Helper function to format law name nicely
-  const formatLawName = (jsonFile: string | undefined): string => {
-    if (!jsonFile) return 'Văn bản pháp luật';
-    
-    const nameMap: Record<string, string> = {
-      'luat_lao_donghopnhat.json': 'Bộ luật Lao động',
-      'luat_dat_dai_hopnhat.json': 'Luật Đất đai',
-      'luat_hon_nhan_hopnhat.json': 'Luật Hôn nhân và Gia đình',
-      'luat_dauthau_hopnhat.json': 'Luật Đấu thầu',
-      'chuyen_giao_cong_nghe_hopnhat.json': 'Luật Chuyển giao công nghệ',
-      'nghi_dinh_214_2025.json': 'Nghị định 214/2025/NĐ-CP',
-    };
-    
-    return nameMap[jsonFile] || jsonFile.replace('_hopnhat.json', '').replace(/_/g, ' ');
-  };
 
   const handleSendMessage = async (text: string) => {
     const userMessage: Message = {
@@ -134,13 +135,13 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
 
   const handleFeedback = async (messageId: string, feedback: 'up' | 'down') => {
     // Find the message
-    const message = messages.find(msg => msg.id === messageId);
+    const message = messages.find((msg: Message) => msg.id === messageId);
     if (!message || !message.context) return;
 
     // Toggle feedback
     const newFeedback = message.feedback === feedback ? null : feedback;
     
-    setMessages((prev: Message[]) => prev.map(msg => 
+    setMessages((prev: Message[]) => prev.map((msg: Message) => 
       msg.id === messageId 
         ? { ...msg, feedback: newFeedback }
         : msg
@@ -150,11 +151,11 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
     if (newFeedback) {
       try {
         // Find corresponding user question
-        const messageIndex = messages.findIndex(msg => msg.id === messageId);
+        const messageIndex = messages.findIndex((msg: Message) => msg.id === messageId);
         let userQuestion = '';
         
         // Look backwards for the user message
-        for (let i = messageIndex - 1; i >= 0; i--) {
+        for (let i = messageIndex - 1; i >= 0; i--) { 
           if (messages[i].sender === 'user') {
             userQuestion = messages[i].text;
             break;
@@ -168,9 +169,9 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
           newFeedback === 'up' ? 'like' : 'dislike'
         );
         
-        console.log('Feedback submitted successfully');
+        console.log('Feedback submitted successfullyb ka');
       } catch (error) {
-        console.error('Error submitting feedback:', error);
+        console.error('Error submitting feedback bla bla bla:', error);
       }
     }
   };
@@ -204,17 +205,19 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-gray-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
-        <h1 className="text-gray-900 dark:text-gray-100">123</h1>
+    <div className="h-full flex flex-col bg-gray-50 dark:bg-gray-900">
+      {/* Header - Fixed */}
+      <div className="flex-shrink-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+        <h1 className="text-gray-900 dark:text-gray-100">Trợ lý Pháp luật AI</h1>
         <DarkModeToggle isDark={isDarkMode} onToggle={onToggleDarkMode} />
-      </header>
+      </div>
       
-      <ScrollArea className="flex-1 p-6">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {messages.map((message) => (
-            <div key={message.id}>
-              <ChatMessage message={message} isDarkMode={isDarkMode} />
+      {/* Messages Area - Scrollable */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto p-6 space-y-6">
+            {messages.map((message) => (
+              <div key={message.id}>
+                <ChatMessage message={message} isDarkMode={isDarkMode} />
               {message.sender === 'ai' && message.sources && (
                 <div className="ml-11 mt-4">
                   <Card className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
@@ -236,7 +239,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
                               className="text-left hover:underline w-full"
                             >
                               <div className="flex flex-col gap-1">
-                                <span className="text-gray-700 dark:text-gray-300 font-medium">
+                                <span className="text-gray-700 dark:text-gray-300">
                                   {source.title}
                                 </span>
                                 {source.page && (
@@ -252,7 +255,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
                     </div>
                     <p className="text-xs text-orange-500 dark:text-orange-400 mt-3 flex items-center gap-1">
                       <span>💡</span>
-                      Click vào các link để xem tài liệu đầy đủ để có câu trả lời
+                      Click vào các link để xem tài liệu đầy đủ
                     </p>
                   </Card>
                   <div className="flex items-center gap-2 mt-3">
@@ -275,27 +278,28 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
                   </div>
                 </div>
               )}
-            </div>
-          ))}
-          {isTyping && (
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white flex-shrink-0">
-                AI
               </div>
-              <Card className="p-4 flex-1 bg-white dark:bg-gray-800">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            ))}
+              {isTyping && (
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white flex-shrink-0">
+                  AI
                 </div>
-              </Card>
-            </div>
-          )}
-          <div ref={scrollRef} />
-        </div>
-      </ScrollArea>
+                <Card className="p-4 flex-1 bg-white dark:bg-gray-800">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
+                </Card>
+              </div>
+            )}
+            <div ref={scrollRef} />
+          </div>
+      </div>
       
-      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+      {/* Input Area - Fixed at bottom */}
+      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-2 mb-3">
             <Button

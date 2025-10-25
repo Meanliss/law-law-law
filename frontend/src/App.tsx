@@ -58,11 +58,13 @@ export default function App() {
         onDeleteConversation={handleDeleteConversation}
         isDarkMode={isDarkMode}
       />
-      <ChatInterface 
-        conversationId={activeConversation} 
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
-      />
+      <div className="flex-1 overflow-hidden">
+        <ChatInterface 
+          conversationId={activeConversation} 
+          isDarkMode={isDarkMode}
+          onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+        />
+      </div>
     </div>
   );
 }
