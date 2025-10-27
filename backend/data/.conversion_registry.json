@@ -1,0 +1,74 @@
+{
+  "luat_chuyen_giao_cong_nghe.pdf": {
+    "hash": "8e49c6a81ef5d31aeeaf5a58ad534f09",
+    "json_file": "luat_chuyen_giao_cong_nghe__hopnhat.json",
+    "converted_at": "2025-10-24T22:56:09.866209",
+    "pdf_size": 1359530,
+    "json_size": 140447,
+    "articles": 62
+  },
+  "luat_dat_dai.pdf": {
+    "hash": "e20e51a33134fed60cc985cfa313c140",
+    "json_file": "luat_dat_dai__hopnhat.json",
+    "converted_at": "2025-10-24T22:58:41.657909",
+    "pdf_size": 2508809,
+    "json_size": 862414,
+    "articles": 264
+  },
+  "luat_dau_thau(57_2024).pdf": {
+    "hash": "4e1cecc2cd128a5df53eeb57d682d179",
+    "json_file": "luat_dau_thau_57_2024__hopnhat.json",
+    "converted_at": "2025-10-24T22:59:10.230602",
+    "pdf_size": 438961,
+    "json_size": 137052,
+    "articles": 11
+  },
+  "luat_dau_thau(90_2025).pdf": {
+    "hash": "0abc3b3f3ce4e805f1266f3c87680409",
+    "json_file": "luat_dau_thau_90_2025__hopnhat.json",
+    "converted_at": "2025-10-24T22:59:30.149931",
+    "pdf_size": 1775435,
+    "json_size": 228783,
+    "articles": 54
+  },
+  "luat_dau_thau.pdf": {
+    "hash": "8603a168b909567ede2c0484cca698d7",
+    "json_file": "luat_dau_thau__hopnhat.json",
+    "converted_at": "2025-10-24T22:59:51.042642",
+    "pdf_size": 505018,
+    "json_size": 285290,
+    "articles": 96
+  },
+  "luat_hon_nhan.pdf": {
+    "hash": "3f6a7c82206d339bc74049f508c46c81",
+    "json_file": "luat_hon_nhan__hopnhat.json",
+    "converted_at": "2025-10-24T23:00:07.772266",
+    "pdf_size": 979196,
+    "json_size": 162819,
+    "articles": 132
+  },
+  "luat_lao_dong.pdf": {
+    "hash": "c11e45c2dc33218b4cd8be0f7a01e727",
+    "json_file": "luat_lao_dong__hopnhat.json",
+    "converted_at": "2025-10-24T23:00:57.387080",
+    "pdf_size": 1920341,
+    "json_size": 363438,
+    "articles": 223
+  },
+  "luat_so_huu_tri_tue.pdf": {
+    "hash": "c8dd8452395d9e4073118db704b56446",
+    "json_file": "luat_so_huu_tri_tue__hopnhat.json",
+    "converted_at": "2025-10-24T23:01:45.432064",
+    "pdf_size": 1836969,
+    "json_size": 589440,
+    "articles": 213
+  },
+  "nghi_dinh_214_2025.pdf": {
+    "hash": "5dc18995bdaacf2b13a3d599f4500204",
+    "json_file": "nghi_dinh_214_2025.json",
+    "converted_at": "2025-10-24T23:04:12.413061",
+    "pdf_size": 2038280,
+    "json_size": 664890,
+    "articles": 148
+  }
+}

@@ -15,7 +15,13 @@ services:
       # Persist cache between restarts
       - legal-qa-cache:/app/cache
       # Mount data folder
-      - ./backend/data:/app/data:ro
+            # Mount data folders with appropriate permissions
+      - ./backend/data/pdf:/app/data/pdf:ro              # Read-only PDFs
+      - ./backend/data/json_manual:/app/data/json_manual # Production JSONs (read-write)
+      - ./backend/data/json_auto:/app/data/json_auto     # Auto-converted JSONs (read-write)
+      - ./backend/data/.conversion_registry.json:/app/data/.conversion_registry.json  # Registry file
+            # Feedback logs
+      - ./backend/feedback_logs:/app/feedback_logs
     env_file:
       - ./backend/.env
     restart: unless-stopped
