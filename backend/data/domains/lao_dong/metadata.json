@@ -1,0 +1,13 @@
+{
+  "domain_id": "lao_dong",
+  "domain_name": "Luật Lao động",
+  "total_chunks": 218,
+  "json_files": [
+    "luat_lao_donghopnhat.json"
+  ],
+  "pdf_files": [
+    "luat_lao_dong.pdf"
+  ],
+  "embedding_model": "keepitreal/vietnamese-sbert",
+  "embedding_dim": 768
+}

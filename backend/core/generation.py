@@ -20,7 +20,7 @@ def generate_answer(question: str, context: List[Dict], gemini_model, chat_histo
         Generated answer
     """
     context_text = '\n\n'.join([
-        f"[{i+1}] {chunk['source']}\n{chunk['content']}"
+        f"[{i+1}] {chunk.get('json_file', chunk.get('source', 'Unknown'))}\n{chunk['content']}"
         for i, chunk in enumerate(context)
     ])
 

@@ -260,24 +260,47 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
                       Click vào các link để xem tài liệu đầy đủ
                     </p>
                   </Card>
-                  <div className="flex items-center gap-2 mt-3">
+                  <div className={`flex items-center gap-2 mt-3 transition-all duration-500 ${
+                    message.feedback ? 'opacity-0 translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'
+                  }`}>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={`gap-1 ${message.feedback === 'up' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                      className="gap-1 hover:scale-110 transition-transform active:scale-95"
                       onClick={() => handleFeedback(message.id, 'up')}
                     >
-                      <ThumbsUp size={16} />
+                      <ThumbsUp size={16} className="transition-colors hover:text-green-500" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={`gap-1 ${message.feedback === 'down' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                      className="gap-1 hover:scale-110 transition-transform active:scale-95"
                       onClick={() => handleFeedback(message.id, 'down')}
                     >
-                      <ThumbsDown size={16} />
+                      <ThumbsDown size={16} className="transition-colors hover:text-red-500" />
                     </Button>
                   </div>
+                  {message.feedback && (
+                    <div className="mt-3 animate-fade-in">
+                      <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${
+                        message.feedback === 'up' 
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                      }`}>
+                        {message.feedback === 'up' ? (
+                          <>
+                            <ThumbsUp size={14} className="animate-bounce" />
+                            <span>Cảm ơn phản hồi của bạn!</span>
+                          </>
+                        ) : (
+                          <>
+                            <ThumbsDown size={14} className="animate-bounce" />
+                            <span>Chúng tôi sẽ cải thiện!</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               </div>

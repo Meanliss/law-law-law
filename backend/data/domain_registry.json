@@ -1,0 +1,98 @@
+{
+  "lao_dong": {
+    "name": "Luật Lao động",
+    "description": "Các quy định về hợp đồng lao động, quyền lợi người lao động, nghỉ việc, sa thải, lương, bảo hiểm",
+    "keywords": [
+      "lao động",
+      "nghỉ việc",
+      "hợp đồng lao động",
+      "sa thải",
+      "lương",
+      "tiền lương",
+      "bảo hiểm xã hội",
+      "thai sản",
+      "nghỉ phép",
+      "thôi việc",
+      "người lao động",
+      "người sử dụng lao động",
+      "nội quy",
+      "kỷ luật lao động"
+    ],
+    "json_files": ["luat_lao_donghopnhat.json"],
+    "pdf_files": ["luat_lao_dong.pdf"]
+  },
+  "dau_thau": {
+    "name": "Luật Đấu thầu",
+    "description": "Quy định về đấu thầu, mua sắm công, gói thầu, nhà thầu, Nghị định 214/2025",
+    "keywords": [
+      "đấu thầu",
+      "thầu",
+      "gói thầu",
+      "nhà thầu",
+      "mua sắm công",
+      "dự toán",
+      "hồ sơ dự thầu",
+      "trúng thầu",
+      "đấu giá",
+      "nghị định 214"
+    ],
+    "json_files": ["luat_dauthau_hopnhat.json", "nghi_dinh_214_2025.json"],
+    "pdf_files": ["luat_dau_thau.pdf", "nghi_dinh_214_2025.pdf"]
+  },
+  "dat_dai": {
+    "name": "Luật Đất đai",
+    "description": "Quy định về quyền sử dụng đất, sổ đỏ, bồi thường, giải phóng mặt bằng",
+    "keywords": [
+      "đất đai",
+      "sổ đỏ",
+      "quyền sử dụng đất",
+      "bồi thường",
+      "giải phóng mặt bằng",
+      "thổ cư",
+      "chuyển nhượng đất",
+      "thuê đất",
+      "cấp giấy chứng nhận",
+      "đất nông nghiệp",
+      "đất ở"
+    ],
+    "json_files": ["luat_dat_dai_hopnhat.json"],
+    "pdf_files": ["luat_dat_dai.pdf"]
+  },
+  "hon_nhan": {
+    "name": "Luật Hôn nhân và Gia đình",
+    "description": "Quy định về kết hôn, ly hôn, nuôi con, quyền sở hữu tài sản vợ chồng",
+    "keywords": [
+      "ly hôn",
+      "kết hôn",
+      "hôn nhân",
+      "gia đình",
+      "nuôi con",
+      "chia tài sản",
+      "quyền nuôi con",
+      "trợ cấp nuôi con",
+      "vợ chồng",
+      "tài sản chung",
+      "tài sản riêng",
+      "quan hệ cha mẹ con"
+    ],
+    "json_files": ["luat_hon_nhan_hopnhat.json"],
+    "pdf_files": ["luat_hon_nhan.pdf"]
+  },
+  "chuyen_giao_cong_nghe": {
+    "name": "Luật Chuyển giao công nghệ",
+    "description": "Quy định về chuyển giao công nghệ, sở hữu trí tuệ, hợp đồng chuyển giao",
+    "keywords": [
+      "chuyển giao công nghệ",
+      "công nghệ",
+      "sở hữu trí tuệ",
+      "bản quyền",
+      "bằng sáng chế",
+      "hợp đồng chuyển giao",
+      "tri thức",
+      "know-how",
+      "bí mật công nghệ"
+    ],
+    "json_files": ["chuyen_giao_cong_nghe_hopnhat.json"],
+    "pdf_files": ["chuyen_giao_cong_nghe.pdf"]
+  }
+}

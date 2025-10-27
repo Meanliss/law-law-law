@@ -1,0 +1,13 @@
+{
+  "domain_id": "dat_dai",
+  "domain_name": "Luật Đất đai",
+  "total_chunks": 264,
+  "json_files": [
+    "luat_dat_dai_hopnhat.json"
+  ],
+  "pdf_files": [
+    "luat_dat_dai.pdf"
+  ],
+  "embedding_model": "keepitreal/vietnamese-sbert",
+  "embedding_dim": 768
+}

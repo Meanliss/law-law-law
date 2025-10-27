@@ -15,6 +15,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.exception_handlers import request_validation_exception_handler
 from contextlib import asynccontextmanager
 from collections import defaultdict
+from typing import Optional
 import os
 import time  # For performance timing
 import google.generativeai as genai
@@ -27,8 +28,10 @@ from models import QuestionRequest, AnswerResponse, HealthResponse, PDFSource, F
 # Import core functions
 from core.document_processor import xu_ly_van_ban_phap_luat_json
 from core.search import advanced_hybrid_search, simple_search
+from core.search_domains import search_with_domains, search_multi_query_with_domains  # ✅ New
 from core.generation import generate_answer, get_rejection_message
 from core.intent_detection import get_cache_size, enhanced_decompose_query
+from core.domain_manager import DomainManager  # ✅ New
 
 # Import utilities
 from utils.cache import get_data_hash, build_or_load_bm25, build_or_load_faiss
@@ -40,10 +43,13 @@ from config import EMBEDDING_MODEL  # Import embedding model name
 # Global State Variables
 # ============================================================================
 
-all_chunks = []
-bm25_index = None
-faiss_index = None
-corpus_embeddings = None
+# all_chunks = []
+# bm25_index = None
+# faiss_index = None
+# corpus_embeddings = None
+
+# ✅ NEW: Domain-based architecture
+domain_manager: Optional[DomainManager] = None
 embedder = None
 gemini_model = None  # Full model for answer generation
 gemini_lite_model = None  # Lite model for intent detection
@@ -55,27 +61,24 @@ gemini_lite_model = None  # Lite model for intent detection
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Initialize all models and indexes on server startup"""
-    global all_chunks, bm25_index, faiss_index, corpus_embeddings, embedder, gemini_model, gemini_lite_model
+    """Initialize all models and domain manager on server startup"""
+    global domain_manager, embedder, gemini_model, gemini_lite_model
     
-    print('[STARTUP] Dang khoi dong Legal Q&A System v2.0...', flush=True)
+    print('[STARTUP] 🚀 Khoi dong Legal Q&A System v3.0 (Domain-based)...', flush=True)
     
     # 1. Load Gemini API
-    # Try environment variable first (for cloud platforms like Render)
     api_key = os.getenv('GOOGLE_API_KEY')
     
-    # If not found, try loading from .env file (for local development)
     if not api_key:
         print('[INFO] API key not in environment, trying .env file...', flush=True)
         load_dotenv()
         api_key = os.getenv('GOOGLE_API_KEY')
     
     if not api_key:
-        print('[ERROR] GOOGLE_API_KEY not found in environment variables or .env file!', flush=True)
+        print('[ERROR] GOOGLE_API_KEY not found!', flush=True)
         raise Exception('Missing GOOGLE_API_KEY')
     
     print('[OK] Google API key loaded successfully', flush=True)
-        
     genai.configure(api_key=api_key)
     
     # 2. Initialize dual Gemini models
@@ -87,51 +90,28 @@ async def lifespan(app: FastAPI):
     print('  - gemini-2.5-flash-lite (intent detection, decomposition)', flush=True)
     
     # 3. Load embedding model
-    print(f'[INFO] Dang tai embedding model: {EMBEDDING_MODEL}...', flush=True)
+    print(f'[INFO] Loading embedding model: {EMBEDDING_MODEL}...', flush=True)
     embedder = SentenceTransformer(EMBEDDING_MODEL)
-    print(f'[OK] Embedding model {EMBEDDING_MODEL} da san sang', flush=True)
-    print(f'     Model info: Vietnamese-optimized PhoBERT (vinai/phobert-base)', flush=True)
+    print(f'[OK] Embedding model ready', flush=True)
     
-    # 4. Load legal documents
-    data_folder = 'data'
-    if not os.path.exists(data_folder):
-        print(f'[WARN] Khong tim thay thu muc {data_folder}', flush=True)
-        yield  # Must yield even if no data
-        return
+    # 4. Initialize Domain Manager (lazy loading)
+    print('[INFO] Initializing Domain Manager...', flush=True)
+    domain_manager = DomainManager(embedder=embedder)
+    print(f'[OK] Domain Manager ready with {len(domain_manager.domains)} domains', flush=True)
     
-    json_files = [f for f in os.listdir(data_folder) if f.endswith('.json')]
-    print(f'[INFO] Tim thay {len(json_files)} file JSON', flush=True)
+    # List domains
+    for domain_id, domain in domain_manager.domains.items():
+        print(f'  ✓ {domain_id}: {domain.domain_name} ({domain.chunk_count} chunks)', flush=True)
     
-    all_chunks = []
-    for json_file in json_files:
-        file_path = os.path.join(data_folder, json_file)
-        chunks, nguon = xu_ly_van_ban_phap_luat_json(file_path)
-        all_chunks.extend(chunks)
-        print(f'[OK] {json_file}: {len(chunks)} chunks', flush=True)
+    print('[SUCCESS] ✅ Server ready! (Indices will load on first query)', flush=True)
     
-    if not all_chunks:
-        print('[ERROR] Khong co du lieu nao duoc tai!', flush=True)
-        yield  # Must yield even if no data
-        return
-    
-    print(f'[OK] Tong cong: {len(all_chunks)} chunks', flush=True)
-    
-    # 5. Build/Load indexes with hash-based caching
-    data_hash = get_data_hash(all_chunks)
-    print(f'[INFO] Data hash: {data_hash}', flush=True)
-    
-    corpus = [tokenize_vi(chunk['content']) for chunk in all_chunks]
-    bm25_index = build_or_load_bm25(corpus, data_hash)
-    
-    faiss_index, corpus_embeddings = build_or_load_faiss(all_chunks, data_hash, embedder)
-    
-    print('[SUCCESS] Server san sang!', flush=True)
-    
-    # Application is running - yield control back to FastAPI
+    # Application is running
     yield
     
-    # Cleanup on shutdown (optional)
+    # Cleanup on shutdown
     print('[SHUTDOWN] Cleaning up resources...', flush=True)
+    if domain_manager:
+        domain_manager.unload_all()
 
 
 # ============================================================================
@@ -174,171 +154,176 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
     """Health check endpoint"""
+    total_chunks = sum(d.metadata.get('chunk_count', 0) for d in domain_manager.domains.values()) if domain_manager else 0
+    
     return {
         "status": "healthy",
         "models_loaded": embedder is not None and gemini_model is not None,
-        "total_chunks": len(all_chunks)
+        "total_chunks": total_chunks
     }
 
 
 @app.post("/ask", response_model=AnswerResponse)
 async def ask_question(request: QuestionRequest):
-    """Main Q&A endpoint with advanced search and intent detection"""
-    # ===== START TIMING =====
+    """Main Q&A endpoint with domain-based search"""
     start_time = time.time()
     timing = {}
     
-    if not all_chunks:
+    if not domain_manager:
         raise HTTPException(status_code=503, detail="System not ready")
     
     print(f'\n{"="*70}', flush=True)
     print(f'[INFO] Question: {request.question}', flush=True)
-    print(f'[INFO] Model Mode: {request.model_mode.upper()} {"(all Flash Lite)" if request.model_mode == "fast" else "(Flash Lite for intent, Flash for answer)"}', flush=True)
+    print(f'[INFO] Mode: {request.model_mode.upper()}', flush=True)
     print(f'{"="*70}', flush=True)
     
-    # Select models and configuration based on mode
-    if request.model_mode == "fast":
-        # Fast mode: Use Flash Lite for everything
-        intent_model = gemini_lite_model
-        answer_model = gemini_lite_model
-        decompose_model = gemini_lite_model
-        rerank_model = None  # No re-ranking in fast mode
-        use_advanced = False
-        print('[MODE] ⚡ FAST - Using Flash Lite for all operations (no re-ranking)', flush=True)
-    else:
-        # Quality mode: Use Flash Lite for intent, Flash for decompose/answer/rerank
-        intent_model = gemini_lite_model
-        answer_model = gemini_model
-        decompose_model = gemini_model  # ✅ Flash cho decompose (tách câu tốt hơn)
-        rerank_model = gemini_model     # ✅ Flash cho re-ranking
-        use_advanced = True
-        print('[MODE] 🎯 QUALITY - Using Flash Lite (intent) + Flash (decompose/answer/rerank)', flush=True)
-    
-    # ===== PHASE 1: INTENT DETECTION & QUERY EXPANSION =====
+    # ===== PHASE 1: Intent Detection + Domain Detection =====
     intent_start = time.time()
     
-    # Search with selected mode
-    if request.use_advanced:
-        # Create enhanced_decompose function with models
-        def enhanced_decompose_fn(query):
-            return enhanced_decompose_query(
-                query, 
-                intent_model,
-                gemini_flash_model=decompose_model,
-                use_advanced=use_advanced
-            )
-        
-        relevant_chunks = advanced_hybrid_search(
-            query=request.question,
-            all_chunks=all_chunks,
-            bm25_index=bm25_index,
-            faiss_index=faiss_index,
-            embedder=embedder,
-            tokenize_fn=tokenize_vi,
-            enhanced_decompose_fn=enhanced_decompose_fn,
-            gemini_model=rerank_model,  # ✅ Truyền model cho re-ranking
-            use_advanced=use_advanced,  # ✅ Enable advanced features
-            top_k=5  # Giảm xuống 5 vì có re-ranking
-        )
-        mode = "advanced"
-    else:
-        relevant_chunks = simple_search(
-            query=request.question,
-            all_chunks=all_chunks,
-            bm25_index=bm25_index,
-            faiss_index=faiss_index,
-            embedder=embedder,
-            tokenize_fn=tokenize_vi,
-            top_k=8
-        )
-        mode = "simple"
+    use_advanced = (request.model_mode == "quality")
+    decompose_model = gemini_model if use_advanced else gemini_lite_model
     
-    timing['search_ms'] = round((time.time() - intent_start) * 1000, 2)
-    print(f'[TIMING] Search completed in {timing["search_ms"]}ms', flush=True)
+    intent_result = enhanced_decompose_query(
+        question=request.question,
+        gemini_lite_model=gemini_lite_model,
+        gemini_flash_model=decompose_model,
+        use_advanced=use_advanced,
+        domain_manager=domain_manager  # ✅ Pass domain_manager for domain detection
+    )
     
-    # Check if query was rejected by intent detection
-    if not relevant_chunks:
+    timing['intent_ms'] = round((time.time() - intent_start) * 1000, 2)
+    print(f'[TIMING] Intent+Decompose: {timing["intent_ms"]}ms', flush=True)
+    
+    # Check if rejected
+    if not intent_result['should_process']:
         total_time = round((time.time() - start_time) * 1000, 2)
-        print(f'[TIMING] Total time (rejected): {total_time}ms', flush=True)
-        print(f'{"="*70}\n', flush=True)
+        print(f'[TIMING] Total (rejected): {total_time}ms', flush=True)
         return {
             "answer": get_rejection_message(),
             "sources": [],
-            "search_mode": mode,
-            "timing": {
-                "total_ms": total_time,
-                "search_ms": timing['search_ms'],
-                "generation_ms": 0,
-                "status": "rejected"
-            }
+            "pdf_sources": [],
+            "search_method": "rejected",
+            "timing_ms": total_time
         }
     
-    # ===== PHASE 2: ANSWER GENERATION =====
-    gen_start = time.time()
+    # ===== PHASE 2: Domain-based Search =====
+    search_start = time.time()
     
-    # ✅ Generate với mode-specific prompt và chat history
-    if request.model_mode == "quality" and request.chat_history:
-        print(f'[CONTEXT] Using chat history: {len(request.chat_history)} messages', flush=True)
-        answer = generate_answer(
-            request.question, 
-            relevant_chunks, 
-            answer_model, 
-            chat_history=request.chat_history,
-            use_advanced=use_advanced  # ✅ Enable reasoning prompt
+    # Check if we have sub_questions (multi-query) or single query
+    sub_questions = intent_result.get('sub_questions', [])
+    
+    if len(sub_questions) > 1:
+        # Multi-query search across domains
+        print(f'[SEARCH] Multi-query mode: {len(sub_questions)} sub-questions', flush=True)
+        relevant_chunks = search_multi_query_with_domains(
+            sub_questions=sub_questions,
+            domain_manager=domain_manager,
+            tokenize_fn=tokenize_vi,
+            gemini_model=gemini_model if use_advanced else None,
+            use_advanced=use_advanced,
+            top_k=5
         )
     else:
-        # Fast mode hoặc không có history
-        answer = generate_answer(
-            request.question, 
-            relevant_chunks, 
-            answer_model,
-            use_advanced=use_advanced  # ✅ Chọn prompt phù hợp
+        # Single query search with domain hint
+        query = intent_result.get('refined_query', request.question)
+        print(f'[SEARCH] Single-query mode: "{query}"', flush=True)
+        relevant_chunks = search_with_domains(
+            query=query,
+            domain_manager=domain_manager,
+            tokenize_fn=tokenize_vi,
+            intent_data=intent_result,
+            gemini_model=gemini_model if use_advanced else None,
+            use_advanced=use_advanced,
+            top_k=5
         )
     
-    timing['generation_ms'] = round((time.time() - gen_start) * 1000, 2)
-    print(f'[TIMING] Answer generation completed in {timing["generation_ms"]}ms', flush=True)
+    timing['search_ms'] = round((time.time() - search_start) * 1000, 2)
+    print(f'[TIMING] Search: {timing["search_ms"]}ms', flush=True)
+    print(f'[RESULTS] Found {len(relevant_chunks)} relevant chunks', flush=True)
     
-    # Total time
+    if not relevant_chunks:
+        total_time = round((time.time() - start_time) * 1000, 2)
+        return {
+            "answer": "Xin lỗi, tôi không tìm thấy thông tin liên quan trong cơ sở dữ liệu pháp luật.",
+            "sources": [],
+            "pdf_sources": [],
+            "search_method": "domain_based_no_results",
+            "timing_ms": total_time
+        }
+    
+    # ===== PHASE 3: Generate Answer =====
+    gen_start = time.time()
+    
+    answer_model = gemini_model if use_advanced else gemini_lite_model
+    answer = generate_answer(
+        question=request.question,
+        context=relevant_chunks,
+        gemini_model=answer_model
+    )
+    
+    timing['generation_ms'] = round((time.time() - gen_start) * 1000, 2)
     timing['total_ms'] = round((time.time() - start_time) * 1000, 2)
-    print(f'[TIMING] ⚡ TOTAL TIME: {timing["total_ms"]}ms', flush=True)
-    print(f'  ├─ Search: {timing["search_ms"]}ms ({round(timing["search_ms"]/timing["total_ms"]*100, 1)}%)', flush=True)
-    print(f'  └─ Generation: {timing["generation_ms"]}ms ({round(timing["generation_ms"]/timing["total_ms"]*100, 1)}%)', flush=True)
+    
+    print(f'[TIMING] Generation: {timing["generation_ms"]}ms', flush=True)
+    print(f'[TIMING] Total: {timing["total_ms"]}ms', flush=True)
     print(f'{"="*70}\n', flush=True)
     
-    # Format sources (original format)
-    sources = [
-        {"source": chunk["source"], "content": chunk["content"][:200]} 
-        for chunk in relevant_chunks
-    ]
-    
-    # Extract PDF metadata
-    pdf_sources = [extract_pdf_metadata(chunk) for chunk in relevant_chunks]
+    # ===== Prepare Response =====
+    pdf_sources = []
+    for chunk in relevant_chunks[:3]:  # Top 3 for display
+        # Convert page_num to int or None
+        page_num = chunk.get('page_num')
+        if page_num == '' or page_num is None:
+            page_num = None
+        else:
+            try:
+                page_num = int(page_num)
+            except (ValueError, TypeError):
+                page_num = None
+        
+        pdf_sources.append(PDFSource(
+            pdf_file=chunk.get('pdf_file', ''),
+            json_file=chunk.get('json_file', ''),
+            page_num=page_num,
+            article_num=chunk.get('article_num', ''),
+            content=chunk.get('content', '')[:500],  # Limit to 500 chars
+            highlight_text=chunk.get('content', '')[:200]  # First 200 chars for highlight
+        ))
     
     return {
         "answer": answer,
-        "sources": sources,
+        "sources": [{"source": c.get('json_file', ''), "content": c.get('content', '')} for c in relevant_chunks],
         "pdf_sources": pdf_sources,
-        "search_mode": mode,
-        "timing": {
-            "total_ms": timing['total_ms'],
-            "search_ms": timing['search_ms'],
-            "generation_ms": timing['generation_ms'],
-            "status": "success"
-        }
+        "search_method": f"domain_based_{'quality' if use_advanced else 'fast'}",
+        "timing_ms": timing['total_ms']
     }
 
 
 @app.get("/stats")
 async def get_stats():
     """Get system statistics"""
-    laws = defaultdict(int)
-    for chunk in all_chunks:
-        law_name = chunk.get('metadata', {}).get('law_name', 'Unknown')
-        laws[law_name] += 1
+    domains_info = {}
+    total_chunks = 0
+    
+    for domain_id in domain_manager.list_domains():
+        domain = domain_manager.get_domain(domain_id)
+        # Count chunks from JSONL without loading all into memory
+        chunk_count = 0
+        chunks_path = os.path.join(domain.domain_dir, 'chunks.jsonl')
+        if os.path.exists(chunks_path):
+            with open(chunks_path, 'r', encoding='utf-8') as f:
+                chunk_count = sum(1 for _ in f)
+        
+        domains_info[domain_id] = {
+            "name": domain.domain_name,
+            "chunks": chunk_count,
+            "loaded": domain._bm25_index is not None  # Check if indices are loaded
+        }
+        total_chunks += chunk_count
     
     return {
-        "total_chunks": len(all_chunks),
-        "laws": dict(laws),
+        "total_chunks": total_chunks,
+        "domains": domains_info,
         "models": {
             "embedder": EMBEDDING_MODEL,
             "llm_full": "gemini-2.5-flash (answer generation)",
@@ -404,14 +389,29 @@ async def get_document(request: dict):
     
     # Get absolute path
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    pdf_path = os.path.join(current_dir, 'data', filename)
+    
+    # Try to find PDF in domain folders first
+    pdf_path = None
+    domains_dir = os.path.join(current_dir, 'data', 'domains')
+    
+    if os.path.exists(domains_dir):
+        for domain_id in os.listdir(domains_dir):
+            domain_pdf_path = os.path.join(domains_dir, domain_id, 'pdfs', filename)
+            if os.path.exists(domain_pdf_path):
+                pdf_path = domain_pdf_path
+                print(f"[PDF] Found in domain: {domain_id}", flush=True)
+                break
+    
+    # Fallback: Try old location (data/{filename})
+    if pdf_path is None:
+        pdf_path = os.path.join(current_dir, 'data', filename)
     
     print(f"[PDF] Requested: {filename}", flush=True)
     print(f"[PDF] Looking at: {pdf_path}", flush=True)
     print(f"[PDF] Exists: {os.path.exists(pdf_path)}", flush=True)
     
     if not os.path.exists(pdf_path):
-        raise HTTPException(status_code=404, detail=f"Document not found")
+        raise HTTPException(status_code=404, detail=f"Document not found: {filename}")
     
     # Read and encode to base64
     with open(pdf_path, 'rb') as f:

@@ -1,0 +1,17 @@
+{
+  "domain_id": "dau_thau",
+  "domain_name": "Luật Đấu thầu",
+  "total_chunks": 242,
+  "json_files": [
+    "luat_dauthau_hopnhat.json",
+    "nghi_dinh_214_2025.json"
+  ],
+  "pdf_files": [
+    "luat_dau_thau(57_2024).pdf",
+    "luat_dau_thau(90_2025).pdf",
+    "luat_dau_thau.pdf",
+    "Nghị định-214-2025-NĐ-CP.pdf"
+  ],
+  "embedding_model": "keepitreal/vietnamese-sbert",
+  "embedding_dim": 768
+}

@@ -13,7 +13,65 @@ from config import INTENT_CONFIDENCE_REJECT_THRESHOLD
 _intent_cache = {}
 
 
-def detect_intent_and_refine(query: str, gemini_lite_model) -> Tuple[Dict, str]:
+def detect_domain_with_llm(question: str, gemini_lite_model, domain_manager) -> str:
+    """
+    Use LLM to detect which legal domain a question belongs to
+    
+    Args:
+        question: Sub-question to classify
+        gemini_lite_model: Gemini lite model instance
+        domain_manager: DomainManager instance
+    
+    Returns:
+        domain_id (str) or None if cannot detect
+    """
+    try:
+        # Get available domains
+        domains_info = []
+        for domain_id in domain_manager.list_domains():
+            domain_meta = domain_manager.domains.get(domain_id, {})
+            domain_name = domain_meta.get('name', domain_id)
+            domains_info.append(f"- {domain_id}: {domain_name}")
+        
+        domains_list = "\n".join(domains_info)
+        
+        prompt = f"""Bạn là chuyên gia phân loại câu hỏi pháp luật.
+
+CÂU HỎI: "{question}"
+
+CÁC LĨNH VỰC PHÁP LUẬT:
+{domains_list}
+
+NHIỆM VỤ: Xác định câu hỏi thuộc lĩnh vực pháp luật nào.
+
+QUY TẮC:
+1. Chỉ trả về MỘT domain_id phù hợp nhất
+2. Nếu không rõ ràng, trả về "NONE"
+3. Chỉ trả về domain_id, KHÔNG giải thích
+
+FORMAT TRẢLỜI:
+DOMAIN: <domain_id hoặc NONE>
+
+BẮT ĐẦU PHÂN LOẠI:"""
+
+        response = gemini_lite_model.generate_content(prompt)
+        text = response.text.strip()
+        
+        # Parse domain
+        domain_match = re.search(r'DOMAIN:\s*(\w+)', text, re.IGNORECASE)
+        if domain_match:
+            domain = domain_match.group(1).strip()
+            if domain.upper() != 'NONE' and domain in domain_manager.list_domains():
+                return domain
+        
+        return None
+        
+    except Exception as e:
+        print(f'[ERROR] LLM domain detection failed: {e}', flush=True)
+        return None
+
+
+def detect_intent_and_refine(query: str, gemini_lite_model) -> tuple:
     """
     Sử dụng LLM Lite để:
     1. Phát hiện intent (câu hỏi có liên quan pháp luật không)
@@ -114,36 +172,37 @@ BẮT ĐẦU PHÂN TÍCH:"""
         }, query
 
 
-def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_model=None, use_advanced=False) -> Dict:
+def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_model=None, use_advanced=False, domain_manager=None) -> Dict:
     """
-    Intent detection + Query refinement + Smart decomposition
+    Intent detection + Query refinement + Smart decomposition + Domain detection
     
     Args:
         question: User question
         gemini_lite_model: Gemini lite model instance (for Fast mode)
         gemini_flash_model: Gemini flash model instance (for Quality mode) - OPTIONAL
         use_advanced: True = Quality mode (dùng Flash cho decompose), False = Fast mode (dùng Lite)
+        domain_manager: DomainManager instance for domain detection - OPTIONAL
     
     Returns:
         {
-            'sub_queries': List[str],
+            'sub_questions': List[{'question': str, 'domain': str}],  # ✅ Each sub has domain
             'intent': dict,
             'should_process': bool,
             'method': str,
-            'refined_query': str  # ✅ Câu hỏi đã tinh chỉnh
+            'refined_query': str
         }
     """
     from .query_expansion import decompose_query_smart
     
     # ✅ Step 1: Intent detection + Query refinement (luôn dùng Lite - nhanh)
-    print(f'\n[INTENT+REFINE] Analyzing: "{question}"')
+    print(f'\n[INTENT+REFINE] Analyzing: "{question}"', flush=True)
     intent, refined_query = detect_intent_and_refine(question, gemini_lite_model)
     
     # ✅ Step 2: Reject if not legal
     if not intent['is_legal'] and intent['confidence'] >= INTENT_CONFIDENCE_REJECT_THRESHOLD:
-        print(f'[INTENT] REJECTED: {intent["reason"]}')
+        print(f'[INTENT] REJECTED: {intent["reason"]}', flush=True)
         return {
-            'sub_queries': [],
+            'sub_questions': [],
             'intent': intent,
             'should_process': False,
             'method': 'rejected',
@@ -156,15 +215,39 @@ def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_mode
     decompose_model = gemini_flash_model if (use_advanced and gemini_flash_model) else gemini_lite_model
     model_name = "Flash (Quality)" if (use_advanced and gemini_flash_model) else "Lite (Fast)"
     
-    print(f'[DECOMPOSE] Using {model_name} model for query: "{refined_query}"')
+    print(f'[DECOMPOSE] Using {model_name} model for query: "{refined_query}"', flush=True)
     decompose_result = decompose_query_smart(refined_query, decompose_model)
     
+    # ✅ Step 4: Detect domain for each sub-question using LLM
+    sub_questions = []
+    for sub_query in decompose_result['sub_queries']:
+        sub_q_obj = {
+            'question': sub_query,
+            'domain': None
+        }
+        
+        # Detect domain if DomainManager is available
+        if domain_manager:
+            # Use LLM to detect domain (more accurate than keywords)
+            detected_domain = detect_domain_with_llm(sub_query, gemini_lite_model, domain_manager)
+            if detected_domain:
+                sub_q_obj['domain'] = detected_domain
+                print(f'🎯 [DOMAIN-LLM] "{sub_query}" → {detected_domain}', flush=True)
+            else:
+                # Fallback to keyword matching
+                detected_domain = domain_manager.detect_domain_from_keywords(sub_query)
+                if detected_domain:
+                    sub_q_obj['domain'] = detected_domain
+                    print(f'🔑 [DOMAIN-KEYWORD] "{sub_query}" → {detected_domain}', flush=True)
+        
+        sub_questions.append(sub_q_obj)
+    
     return {
-        'sub_queries': decompose_result['sub_queries'],
+        'sub_questions': sub_questions,  # ✅ Now with domain info
         'intent': intent,
         'should_process': decompose_result['should_process'],
         'method': decompose_result['method'],
-        'refined_query': refined_query  # ✅ Trả về câu hỏi đã tinh chỉnh
+        'refined_query': refined_query
     }
 
 

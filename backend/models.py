@@ -35,8 +35,10 @@ class AnswerResponse(BaseModel):
     answer: str
     sources: List[Dict[str, str]]  # Original sources for backward compatibility
     pdf_sources: Optional[List[PDFSource]] = []  # Enhanced PDF metadata
-    search_mode: str
+    search_mode: Optional[str] = None  # Legacy field (deprecated)
+    search_method: Optional[str] = None  # New field: domain_based_quality, domain_based_fast, etc.
     timing: Optional[TimingInfo] = None  # Performance metrics
+    timing_ms: Optional[float] = None  # Simple timing for domain-based
 
 
 class FeedbackRequest(BaseModel):

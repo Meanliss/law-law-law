@@ -1,0 +1,13 @@
+{
+  "domain_id": "chuyen_giao_cong_nghe",
+  "domain_name": "Luật Chuyển giao công nghệ",
+  "total_chunks": 63,
+  "json_files": [
+    "chuyen_giao_cong_nghe_hopnhat.json"
+  ],
+  "pdf_files": [
+    "luat_chuyen_giao_cong_nghe.pdf"
+  ],
+  "embedding_model": "keepitreal/vietnamese-sbert",
+  "embedding_dim": 768
+}
