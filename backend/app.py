@@ -36,7 +36,7 @@ from core.domain_manager import DomainManager  # ✅ New
 # Import utilities
 from utils.cache import get_data_hash, build_or_load_bm25, build_or_load_faiss
 from utils.tokenizer import tokenize_vi
-from config import EMBEDDING_MODEL  # Import embedding model name
+from config import EMBEDDING_MODEL, GEMINI_FLASH_MODEL, GEMINI_PRO_MODEL, GEMINI_LITE_MODEL  # Import model names
 
 
 # ============================================================================
@@ -51,8 +51,9 @@ from config import EMBEDDING_MODEL  # Import embedding model name
 # ✅ NEW: Domain-based architecture
 domain_manager: Optional[DomainManager] = None
 embedder = None
-gemini_model = None  # Full model for answer generation
-gemini_lite_model = None  # Lite model for intent detection
+gemini_flash_model = None  # Flash model for fast mode answer
+gemini_pro_model = None    # Pro model for quality mode answer
+gemini_lite_model = None   # Lite model for intent detection
 
 
 # ============================================================================
@@ -62,7 +63,7 @@ gemini_lite_model = None  # Lite model for intent detection
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Initialize all models and domain manager on server startup"""
-    global domain_manager, embedder, gemini_model, gemini_lite_model
+    global domain_manager, embedder, gemini_flash_model, gemini_pro_model, gemini_lite_model
     
     print('[STARTUP] 🚀 Khoi dong Legal Q&A System v3.0 (Domain-based)...', flush=True)
     
@@ -81,13 +82,15 @@ async def lifespan(app: FastAPI):
     print('[OK] Google API key loaded successfully', flush=True)
     genai.configure(api_key=api_key)
     
-    # 2. Initialize dual Gemini models
-    gemini_model = genai.GenerativeModel('gemini-2.5-flash')  # For answer generation
-    gemini_lite_model = genai.GenerativeModel('gemini-2.5-flash-lite')  # For intent/decompose
+    # 2. Initialize Gemini models (3 models for different purposes)
+    gemini_flash_model = genai.GenerativeModel(GEMINI_FLASH_MODEL)  # Fast mode answer
+    gemini_pro_model = genai.GenerativeModel(GEMINI_PRO_MODEL)      # Quality mode answer
+    gemini_lite_model = genai.GenerativeModel(GEMINI_LITE_MODEL)    # Intent/decompose
     
     print('[OK] Google AI models ready:', flush=True)
-    print('  - gemini-2.5-flash (answer generation)', flush=True)
-    print('  - gemini-2.5-flash-lite (intent detection, decomposition)', flush=True)
+    print(f'  - {GEMINI_FLASH_MODEL} (fast mode answer)', flush=True)
+    print(f'  - {GEMINI_PRO_MODEL} (quality mode answer)', flush=True)
+    print(f'  - {GEMINI_LITE_MODEL} (intent detection, decomposition)', flush=True)
     
     # 3. Load embedding model
     print(f'[INFO] Loading embedding model: {EMBEDDING_MODEL}...', flush=True)
@@ -158,7 +161,7 @@ async def health_check():
     
     return {
         "status": "healthy",
-        "models_loaded": embedder is not None and gemini_model is not None,
+        "models_loaded": embedder is not None and gemini_flash_model is not None,
         "total_chunks": total_chunks
     }
 
@@ -181,7 +184,7 @@ async def ask_question(request: QuestionRequest):
     intent_start = time.time()
     
     use_advanced = (request.model_mode == "quality")
-    decompose_model = gemini_model if use_advanced else gemini_lite_model
+    decompose_model = gemini_flash_model if use_advanced else gemini_lite_model
     
     intent_result = enhanced_decompose_query(
         question=request.question,
@@ -219,7 +222,7 @@ async def ask_question(request: QuestionRequest):
             sub_questions=sub_questions,
             domain_manager=domain_manager,
             tokenize_fn=tokenize_vi,
-            gemini_model=gemini_model if use_advanced else None,
+            gemini_model=gemini_lite_model if use_advanced else None,  # ✅ Use Lite for re-ranking (fast & cheap)
             use_advanced=use_advanced,
             top_k=5
         )
@@ -232,7 +235,7 @@ async def ask_question(request: QuestionRequest):
             domain_manager=domain_manager,
             tokenize_fn=tokenize_vi,
             intent_data=intent_result,
-            gemini_model=gemini_model if use_advanced else None,
+            gemini_model=gemini_lite_model if use_advanced else None,  # ✅ Use Lite for re-ranking (fast & cheap)
             use_advanced=use_advanced,
             top_k=5
         )
@@ -254,11 +257,15 @@ async def ask_question(request: QuestionRequest):
     # ===== PHASE 3: Generate Answer =====
     gen_start = time.time()
     
-    answer_model = gemini_model if use_advanced else gemini_lite_model
+    # Select model based on mode: Pro for quality, Flash for fast
+    answer_model = gemini_pro_model if use_advanced else gemini_flash_model
+    
     answer = generate_answer(
         question=request.question,
         context=relevant_chunks,
-        gemini_model=answer_model
+        gemini_model=answer_model,
+        chat_history=request.chat_history if hasattr(request, 'chat_history') else None,
+        use_advanced=use_advanced  # ✅ CRITICAL: Pass mode to enable quality prompt
     )
     
     timing['generation_ms'] = round((time.time() - gen_start) * 1000, 2)
@@ -326,8 +333,9 @@ async def get_stats():
         "domains": domains_info,
         "models": {
             "embedder": EMBEDDING_MODEL,
-            "llm_full": "gemini-2.5-flash (answer generation)",
-            "llm_lite": "gemini-2.5-flash-lite (intent detection, decomposition)"
+            "llm_flash": f"{GEMINI_FLASH_MODEL} (fast mode answer)",
+            "llm_pro": f"{GEMINI_PRO_MODEL} (quality mode answer)",
+            "llm_lite": f"{GEMINI_LITE_MODEL} (intent detection, decomposition)"
         },
         "intent_cache_size": get_cache_size()
     }

@@ -11,8 +11,9 @@ load_dotenv()
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 # Model Names
-GEMINI_FULL_MODEL = 'gemini-2.5-flash'
-GEMINI_LITE_MODEL = 'gemini-2.5-flash-lite'
+GEMINI_FLASH_MODEL = 'gemini-2.5-flash'  # Fast mode - answer generation
+GEMINI_PRO_MODEL = 'gemini-2.5-pro'  # Quality mode - answer generation
+GEMINI_LITE_MODEL = 'gemini-2.5-flash-lite'  # Intent detection, decomposition
 
 # Embedding Model
 # PhoBERT requires special handling, use multilingual model optimized for Vietnamese
