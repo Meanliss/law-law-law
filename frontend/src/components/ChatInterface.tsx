@@ -63,7 +63,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
     // Reset messages when conversation changes
     setMessages([{
       id: '1',
-      text: 'Xao trình! Tôi là trợ lý pháp luật AI. Tôi có thể giúp bạn tư vấn về các vấn đề pháp luật tại Việt Nam. Bạn có câu hỏi gì không?',
+      text: 'Xao12 trình! Tôi là trợ lý pháp luật AI. Tôi có thể giúp bạn tư vấn về các vấn đề pháp luật tại Việt Nam. Bạn có câu hỏi gì không?',
       sender: 'ai',
       timestamp: new Date()
     }]);
@@ -212,9 +212,11 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
         <DarkModeToggle isDark={isDarkMode} onToggle={onToggleDarkMode} />
       </div>
       
-      {/* Messages Area - Scrollable */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto p-6 space-y-6">
+      {/* Messages Area - Scrollable with ScrollArea */}
+      <div className="flex-1 relative">
+        <div className="absolute inset-0">
+          <ScrollArea className="h-full">
+            <div className="max-w-4xl mx-auto p-6 space-y-6">
             {messages.map((message) => (
               <div key={message.id}>
                 <ChatMessage message={message} isDarkMode={isDarkMode} />
@@ -295,7 +297,9 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
               </div>
             )}
             <div ref={scrollRef} />
-          </div>
+            </div>
+          </ScrollArea>
+        </div>
       </div>
       
       {/* Input Area - Fixed at bottom */}
