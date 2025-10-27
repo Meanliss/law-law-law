@@ -6,7 +6,7 @@ import { PDFViewer } from './PDFViewer';
 import { ScrollArea } from './ui/scroll-area';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
-import { ThumbsUp, ThumbsDown, Zap, Crown } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Zap, Crown, Clock } from 'lucide-react';
 import { askQuestion, submitFeedback, getDocument, type ChatMessage as APIChatMessage, type PDFSource } from '../services/api';
 
 interface Message {
@@ -22,6 +22,8 @@ interface Message {
   pdf_sources?: PDFSource[];
   context?: Array<{ source: string; content: string }>;
   feedback?: 'up' | 'down' | null;
+  timing_ms?: number;
+  search_method?: string;
 }
 
 interface ChatInterfaceProps {
@@ -106,7 +108,9 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
         sources: displaySources,
         pdf_sources: response.pdf_sources,
         context: response.sources,
-        feedback: null
+        feedback: null,
+        timing_ms: response.timing_ms,
+        search_method: response.search_method
       };
       
       setMessages((prev: Message[]) => [...prev, aiMessage]);
@@ -301,6 +305,20 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode }: 
                       </div>
                     </div>
                   )}
+                </div>
+              )}
+              
+              {message.sender === 'ai' && message.timing_ms && (
+                <div className="ml-11 mt-2 flex justify-end">
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
+                    <Clock size={12} />
+                    <span>{(message.timing_ms / 1000).toFixed(2)}s</span>
+                    {message.timing_ms < 2000 && (
+                      <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400">
+                        <Zap size={10} />
+                      </span>
+                    )}
+                  </div>
                 </div>
               )}
               </div>

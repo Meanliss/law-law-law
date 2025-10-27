@@ -43,8 +43,10 @@ export interface AnswerResponse {
     content: string;
   }>;
   pdf_sources: PDFSource[];
-  search_mode: string;
+  search_mode?: string;  // Legacy field
+  search_method?: string;  // New field (domain_based_quality, etc.)
   timing?: TimingInfo;
+  timing_ms?: number;  // Simple timing in milliseconds
 }
 
 export interface FeedbackRequest {
