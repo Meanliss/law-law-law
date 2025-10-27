@@ -257,8 +257,8 @@ async def ask_question(request: QuestionRequest):
     # ===== PHASE 3: Generate Answer =====
     gen_start = time.time()
     
-    # Select model based on mode: Pro for quality, Flash for fast
-    answer_model = gemini_pro_model if use_advanced else gemini_flash_model
+    # Select model based on mode: Flash for both (Quality uses detailed prompt, Fast uses concise)
+    answer_model = gemini_flash_model  # Always use Flash for answer generation
     
     answer = generate_answer(
         question=request.question,

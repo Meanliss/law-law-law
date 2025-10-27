@@ -1,5 +1,8 @@
 import { Card } from './ui/card';
 import { User } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 interface Message {
   id: string;
@@ -15,25 +18,6 @@ interface Message {
 interface ChatMessageProps {
   message: Message;
   isDarkMode: boolean;
-}
-
-function highlightReferences(text: string): React.ReactNode[] {
-  // Match patterns like [1], [2], [3], or [theo đúng]
-  const parts = text.split(/(\[\d+\]|\[theo đúng\])/g);
-  
-  return parts.map((part, index) => {
-    if (/\[\d+\]|\[theo đúng\]/.test(part)) {
-      return (
-        <span
-          key={index}
-          className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded text-sm mx-0.5"
-        >
-          {part}
-        </span>
-      );
-    }
-    return <span key={index}>{part}</span>;
-  });
 }
 
 export function ChatMessage({ message, isDarkMode }: ChatMessageProps) {
@@ -52,9 +36,38 @@ export function ChatMessage({ message, isDarkMode }: ChatMessageProps) {
         <Card className={`p-4 ${
           isAI ? 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700' : 'bg-gray-200 dark:bg-gray-700 border-0'
         }`}>
-          <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
-            {isAI ? highlightReferences(message.text) : message.text}
-          </p>
+          {isAI ? (
+            <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-2 prose-headings:my-3 prose-ul:my-2 prose-ol:my-2 prose-li:my-1">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
+                components={{
+                  p: ({ children }: any) => <p className="text-gray-800 dark:text-gray-200">{children}</p>,
+                  strong: ({ children }: any) => <strong className="font-bold text-gray-900 dark:text-gray-100">{children}</strong>,
+                  em: ({ children }: any) => <em className="italic text-gray-800 dark:text-gray-200">{children}</em>,
+                  ul: ({ children }: any) => <ul className="list-disc list-inside space-y-1 text-gray-800 dark:text-gray-200">{children}</ul>,
+                  ol: ({ children }: any) => <ol className="list-decimal list-inside space-y-1 text-gray-800 dark:text-gray-200">{children}</ol>,
+                  h1: ({ children }: any) => <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{children}</h1>,
+                  h2: ({ children }: any) => <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">{children}</h2>,
+                  h3: ({ children }: any) => <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-1">{children}</h3>,
+                  code: ({ children, className }: any) => {
+                    const isInline = !className;
+                    return isInline ? (
+                      <code className="bg-gray-100 dark:bg-gray-700 text-red-600 dark:text-red-400 px-1 py-0.5 rounded text-sm">{children}</code>
+                    ) : (
+                      <code className="block bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 p-2 rounded overflow-x-auto">{children}</code>
+                    );
+                  },
+                }}
+              >
+                {message.text}
+              </ReactMarkdown>
+            </div>
+          ) : (
+            <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+              {message.text}
+            </p>
+          )}
         </Card>
       </div>
     </div>
