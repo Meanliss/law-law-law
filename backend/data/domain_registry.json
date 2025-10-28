@@ -18,8 +18,12 @@
       "nội quy",
       "kỷ luật lao động"
     ],
-    "json_files": ["luat_lao_donghopnhat.json"],
-    "pdf_files": ["luat_lao_dong.pdf"]
+    "json_files": [
+      "luat_lao_donghopnhat.json"
+    ],
+    "pdf_files": [
+      "luat_lao_dong.pdf"
+    ]
   },
   "dau_thau": {
     "name": "Luật Đấu thầu",
@@ -36,8 +40,14 @@
       "đấu giá",
       "nghị định 214"
     ],
-    "json_files": ["luat_dauthau_hopnhat.json", "nghi_dinh_214_2025.json"],
-    "pdf_files": ["luat_dau_thau.pdf", "nghi_dinh_214_2025.pdf"]
+    "json_files": [
+      "luat_dauthau_hopnhat.json",
+      "nghi_dinh_214_2025.json"
+    ],
+    "pdf_files": [
+      "luat_dau_thau.pdf",
+      "nghi_dinh_214_2025.pdf"
+    ]
   },
   "dat_dai": {
     "name": "Luật Đất đai",
@@ -55,8 +65,12 @@
       "đất nông nghiệp",
       "đất ở"
     ],
-    "json_files": ["luat_dat_dai_hopnhat.json"],
-    "pdf_files": ["luat_dat_dai.pdf"]
+    "json_files": [
+      "luat_dat_dai_hopnhat.json"
+    ],
+    "pdf_files": [
+      "luat_dat_dai.pdf"
+    ]
   },
   "hon_nhan": {
     "name": "Luật Hôn nhân và Gia đình",
@@ -75,8 +89,12 @@
       "tài sản riêng",
       "quan hệ cha mẹ con"
     ],
-    "json_files": ["luat_hon_nhan_hopnhat.json"],
-    "pdf_files": ["luat_hon_nhan.pdf"]
+    "json_files": [
+      "luat_hon_nhan_hopnhat.json"
+    ],
+    "pdf_files": [
+      "luat_hon_nhan.pdf"
+    ]
   },
   "chuyen_giao_cong_nghe": {
     "name": "Luật Chuyển giao công nghệ",
@@ -92,7 +110,20 @@
       "know-how",
       "bí mật công nghệ"
     ],
-    "json_files": ["chuyen_giao_cong_nghe_hopnhat.json"],
-    "pdf_files": ["chuyen_giao_cong_nghe.pdf"]
+    "json_files": [
+      "chuyen_giao_cong_nghe_hopnhat.json"
+    ],
+    "pdf_files": [
+      "chuyen_giao_cong_nghe.pdf"
+    ]
+  },
+  "lshtt": {
+    "name": "LUẬT SỞ HỮU TRÍ TUỆ Luật Sở hữu trí tuệ số",
+    "description": "LUẬT SỞ HỮU TRÍ TUỆ Luật Sở hữu trí tuệ số",
+    "keywords": [
+      "sở hữu trí tuệ",
+      "tác giả",
+      "bản quyền"
+    ]
   }
 }
