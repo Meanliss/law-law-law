@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { ChatInterface } from './components/ChatInterface';
 import { Sidebar } from './components/Sidebar';
+import { PDFViewer } from './components/PDFViewer';
+import { getDocument } from './services/api';  // ✅ THÊM
 
 interface Conversation {
   id: string;
@@ -18,6 +20,14 @@ export default function App() {
     const saved = localStorage.getItem('darkMode');
     return saved ? JSON.parse(saved) : false;
   });
+
+  // ✅ SỬA STATE cho PDF viewer
+  const [pdfView, setPdfView] = useState<{
+    isOpen: boolean;
+    url: string;
+    title: string;
+    articleNum?: string;
+  } | null>(null);
 
   useEffect(() => {
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
@@ -48,6 +58,41 @@ export default function App() {
     }
   };
 
+  // ✅ SỬA HANDLER: Load PDF từ backend
+  const handleOpenPDF = async (pdfFilename: string, title: string, articleNum?: string) => {
+    try {
+      console.log('[PDF] Loading:', { pdfFilename, title, articleNum });
+      
+      // ✅ Kiểm tra filename hợp lệ
+      if (!pdfFilename || pdfFilename === 'undefined') {
+        alert('Không tìm thấy thông tin file PDF. Vui lòng thử lại.');
+        return;
+      }
+      
+      // ✅ Fetch PDF từ backend
+      const pdfResponse = await getDocument(pdfFilename);
+      
+      // ✅ Convert base64 to blob URL
+      const binaryString = window.atob(pdfResponse.data);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      setPdfView({ 
+        isOpen: true,
+        url, 
+        title,
+        articleNum
+      });
+    } catch (error) {
+      console.error('[PDF] Error:', error);
+      alert('Không thể tải file PDF. Vui lòng thử lại.');
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar 
@@ -63,8 +108,20 @@ export default function App() {
           conversationId={activeConversation} 
           isDarkMode={isDarkMode}
           onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+          onOpenPDF={handleOpenPDF}
         />
       </div>
+      
+      {/* ✅ PDF MODAL - CHỈ MỞ KHI CÓ pdfView */}
+      {pdfView && pdfView.isOpen && (
+        <PDFViewer
+          isOpen={pdfView.isOpen}
+          onClose={() => setPdfView(null)}
+          pdfUrl={pdfView.url}
+          title={pdfView.title}
+          articleNum={pdfView.articleNum}
+        />
+      )}
     </div>
   );
 }

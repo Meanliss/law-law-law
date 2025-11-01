@@ -48,7 +48,6 @@ export interface AnswerResponse {
   timing?: TimingInfo;
   timing_ms?: number;  // Simple timing in milliseconds
 }
-
 export interface FeedbackRequest {
   query: string;
   answer: string;
@@ -143,25 +142,55 @@ export async function getStats(): Promise<StatsResponse> {
 /**
  * Get PDF document (base64)
  */
-export async function getDocument(filename: string): Promise<{
-  filename: string;
-  data: string;
-  size: number;
-  type: string;
-}> {
-  const response = await fetch(`${API_BASE}/api/get-document`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ filename }),
+export async function getDocument(filename: string): Promise<{ filename: string; data: string }> {
+  console.log('[API] getDocument called with:', filename);
+  
+  // ✅ Map filename to domain_id
+  const domainMap: Record<string, string> = {
+    'luat_hon_nhan.pdf': 'hon_nhan',
+    'luat_hinh_su.pdf': 'hinh_su',
+    'luat_lao_dong.pdf': 'lao_dong',
+    'luat_dat_dai.pdf': 'dat_dai',
+    'luat_dau_thau.pdf': 'dau_thau',
+    'luat_chuyen_giao_cong_nghe.pdf': 'chuyen_giao_cong_nghe',
+    'nghi_dinh_214_2025.pdf': 'nghi_dinh_214',
+  };
+  
+  let domain_id = 'hon_nhan'; // default
+  for (const [pdf, domain] of Object.entries(domainMap)) {
+    if (filename.includes(pdf)) {
+      domain_id = domain;
+      break;
+    }
+  }
+  
+  console.log('[API] Parsed:', { domain_id, filename });
+  
+  const url = `${API_BASE}/api/pdf-file/${domain_id}/${filename}`;
+  console.log('[API] Fetching from:', url);
+  
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { 'Accept': 'application/pdf' },
   });
 
   if (!response.ok) {
+    console.error('[API] HTTP error:', response.status, response.statusText);
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return response.json();
+  const blob = await response.blob();
+  const reader = new FileReader();
+  
+  return new Promise((resolve, reject) => {
+    reader.onloadend = () => {
+      const base64 = (reader.result as string).split(',')[1];
+      console.log('[API] PDF loaded, size:', blob.size, 'bytes');
+      resolve({ filename, data: base64 });
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 }
 
 /**

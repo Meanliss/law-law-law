@@ -9,6 +9,13 @@ import json
 import pickle
 from pathlib import Path
 import sys
+import os
+# Force UTF-8 on Windows
+if sys.platform == 'win32':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+    os.environ['PYTHONIOENCODING'] = 'utf-8'
 from typing import List
 
 # Add parent directory to path
@@ -49,8 +56,43 @@ def build_domain(domain_id: str):
             print(f"   Chunks: {meta.get('total_chunks', 0)}")
         return
     
-    # Check for JSON files
-    json_files = list((domain_dir / "raw").glob("*.json"))
+    # ✅ Auto-convert PDF nếu chưa có JSON
+    raw_dir = domain_dir / "raw"
+    json_files = list(raw_dir.glob("*.json")) if raw_dir.exists() else []
+
+    if not json_files:
+        # Check for PDF
+        pdfs_dir = domain_dir / "pdfs"
+        pdf_files = list(pdfs_dir.glob("*.pdf")) if pdfs_dir.exists() else []
+        
+        if pdf_files:
+            print(f"⚠️ No JSON found, but found PDF: {pdf_files[0].name}")
+            print(f"🔄 Auto-converting PDF to JSON...")
+            
+            # Import converter (FIX: use correct module)
+            try:
+                from scripts.pdf_converter import PDFConverter  # ✅ Đổi từ pdf_to_json
+                
+                raw_dir.mkdir(parents=True, exist_ok=True)
+                json_output = raw_dir / f"{pdf_files[0].stem}_hopnhat.json"  # ✅ Thêm _hopnhat
+                
+                converter = PDFConverter()
+                converter.convert(str(pdf_files[0]), str(json_output))
+                
+                json_files = [json_output]
+                print(f"✅ Conversion complete: {json_output.name}\n")
+                
+            except ImportError as ie:
+                print(f"❌ Cannot import PDFConverter: {ie}")
+                print(f"   Please check if core/pdf_converter.py exists")
+                return
+            except Exception as e:
+                print(f"❌ Conversion failed: {e}")
+                import traceback
+                traceback.print_exc()
+                return
+
+    # Check for JSON files (sau khi đã convert)
     if not json_files:
         print(f"⚠️ No JSON files found in {domain_dir / 'raw'}")
         return

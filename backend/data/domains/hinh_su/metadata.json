@@ -1,0 +1,13 @@
+{
+  "domain_id": "hinh_su",
+  "domain_name": "LUẬT HÌNH SỰ Bộ",
+  "total_chunks": 398,
+  "json_files": [
+    "luat_hinh_su_hopnhat.json"
+  ],
+  "pdf_files": [
+    "luat_hinh_su.pdf"
+  ],
+  "embedding_model": "keepitreal/vietnamese-sbert",
+  "embedding_dim": 768
+}

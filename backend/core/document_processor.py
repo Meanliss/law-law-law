@@ -10,6 +10,7 @@ from typing import List, Dict, Tuple
 def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
     """
     Process legal document JSON file into chunks
+    Supports BOTH old format (noi_dung_hien_hanh) and new format (tieu_de + mo_ta)
     
     Args:
         file_path: Path to JSON file
@@ -30,22 +31,51 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
 
     nguon_luat = data.get('nguon', 'Khong ro nguon')
     
-    # Extract filename for tracking
+    # Extract filename and domain_id for tracking
     json_filename = os.path.basename(file_path)
+    
+    # ✅ Extract domain_id from filename
+    # Example: "luat_hinh_su_hopnhat.json" → "hinh_su"
+    import re
+    domain_id = json_filename.lower()
+    domain_id = re.sub(r'^luat_', '', domain_id)  # Remove "luat_" prefix
+    domain_id = re.sub(r'_hopnhat\.json$|\.json$', '', domain_id)  # Remove suffixes
+    domain_id = re.sub(r'[^a-z0-9_]', '_', domain_id)  # Clean special chars
 
     for dieu in data.get('du_lieu', []):
         dieu_so = dieu.get('dieu_so')
-        if not dieu_so or not str(dieu_so).strip().isdigit():
+        
+        # ✅ FIX: Accept both numeric and alphanumeric article numbers (1, 2a, 13b, etc.)
+        if not dieu_so:
+            continue
+        
+        dieu_so_str = str(dieu_so).strip()
+        if not dieu_so_str:
             continue
 
         base_source = f'{nguon_luat}, Dieu {dieu_so}'
-        base_content = dieu.get('noi_dung_hien_hanh', f"{dieu.get('tieu_de', '')}. {dieu.get('mo_ta', '')}".strip())
+        
+        # ✅ Support BOTH old and new format
+        # Old format: 'noi_dung_hien_hanh'
+        # New format: 'tieu_de' + 'mo_ta'
+        if 'noi_dung_hien_hanh' in dieu:
+            base_content = dieu['noi_dung_hien_hanh']
+        else:
+            # New format
+            content_parts = []
+            if dieu.get('tieu_de'):
+                content_parts.append(dieu['tieu_de'])
+            if dieu.get('mo_ta'):
+                content_parts.append(dieu['mo_ta'])
+            base_content = ' '.join(content_parts).strip()
         
         base_metadata = {
+            'law_id': domain_id,  # ✅ Use domain_id instead of filename
             'law_name': nguon_luat,
-            'article_num': dieu_so,
+            'article_num': dieu_so_str,
             'level': 'article',
-            'json_file': json_filename  # Add JSON filename for tracking
+            'json_file': json_filename,
+            'chapter': dieu.get('chuong', '')  # ✅ Add chapter info
         }
         
         if 'nguon_sua_doi' in dieu:
@@ -64,6 +94,8 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
         # Process clauses
         for khoan in dieu['khoan']:
             khoan_source = f'{base_source}, Khoan {khoan.get("khoan_so", "")}'
+            
+            # ✅ Support both 'noi_dung_hien_hanh' and 'noi_dung'
             khoan_content = khoan.get('noi_dung_hien_hanh', khoan.get('noi_dung', ''))
             
             khoan_metadata = base_metadata.copy()
@@ -85,7 +117,7 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
                 })
                 continue
             
-            # Process points
+            # Process points (only in old format)
             for diem in khoan.get('diem', []):
                 diem_source = f'{khoan_source}, Diem {diem.get("diem_so", "")}'
                 diem_content = diem.get('noi_dung_hien_hanh', diem.get('noi_dung', ''))
