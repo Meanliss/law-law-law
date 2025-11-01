@@ -124,6 +124,33 @@
       "sở hữu trí tuệ",
       "tác giả",
       "bản quyền"
+    ],
+    "json_files": [
+      "luat_so_huu_tri_tue_hopnhat.json"
+    ],
+    "pdf_files": [
+      "luat_so_huu_tri_tue.pdf"
+    ]
+  },
+  "hinh_su": {
+    "name": "LUẬT HÌNH SỰ Bộ",
+    "description": "Quy định về luật hình sự bộ",
+    "keywords": [
+      "hình sự",
+      "tội phạm",
+      "án tù",
+      "tù",
+      "phạt tù",
+      "vi phạm hình sự",
+      "tội",
+      "kết án",
+      "truy tố"
+    ],
+    "json_files": [
+      "luat_hinh_su_hopnhat.json"
+    ],
+    "pdf_files": [
+      "luat_hinh_su.pdf"
     ]
   }
 }
