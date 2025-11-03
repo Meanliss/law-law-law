@@ -188,54 +188,68 @@ html {
   font-size: var(--font-size);
 }
 
-/**
- * Custom chat layout - Fix scroll issue
- * These classes are outside @layer to ensure they're not purged
- */
-.chat-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background-color: #f9fafb;
-  min-height: 0; /* Critical: Allow flex child to shrink */
+/* Custom animations for glass morphism effect */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
-.dark .chat-container {
-  background-color: oklch(0.145 0 0);
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
 }
 
-.chat-header {
-  flex-shrink: 0;
-  background-color: white;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.dark .chat-header {
-  background-color: oklch(0.269 0 0);
-  border-bottom-color: oklch(0.373 0.034 259.733);
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
 }
 
-.chat-messages {
-  flex: 1;
-  min-height: 0; /* Critical: Allow flex child to shrink */
-  overflow-y: auto;
-  overflow-x: hidden;
+/* Smooth scrolling */
+html {
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
-.chat-input-area {
-  flex-shrink: 0;
-  border-top: 1px solid #e5e7eb;
-  background-color: white;
-  padding: 1rem;
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.dark .chat-input-area {
-  background-color: oklch(0.269 0 0);
-  border-top-color: oklch(0.373 0.034 259.733);
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

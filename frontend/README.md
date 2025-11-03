@@ -1,7 +1,7 @@
 
-  # AI Chatbot for Law Website
+  # Chatbot Web UI Design
 
-  This is a code bundle for AI Chatbot for Law Website. The original project is available at https://www.figma.com/design/K4ijUbK1j5RAZRXyCkf1kG/AI-Chatbot-for-Law-Website.
+  This is a code bundle for Chatbot Web UI Design. The original project is available at https://www.figma.com/design/3g7QqRUtJsUMHVQBBBMYqn/Chatbot-Web-UI-Design.
 
   ## Running the code
 

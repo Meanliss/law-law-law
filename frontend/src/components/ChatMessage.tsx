@@ -1,75 +1,108 @@
 import { Card } from './ui/card';
-import { User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-
-interface Message {
-  id: string;
-  text: string;
-  sender: 'user' | 'ai';
-  timestamp: Date;
-  sources?: Array<{
-    title: string;
-    page?: string;
-  }>;
-}
+import { motion } from 'motion/react';
+import { User, Sparkles } from 'lucide-react';
 
 interface ChatMessageProps {
-  message: Message;
+  message: {
+    id: string;
+    text: string;
+    sender: 'user' | 'ai';
+    timestamp: Date;
+  };
   isDarkMode: boolean;
 }
 
 export function ChatMessage({ message, isDarkMode }: ChatMessageProps) {
-  const isAI = message.sender === 'ai';
+  const isUser = message.sender === 'user';
 
   return (
-    <div className={`flex items-start gap-3`}>
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-        isAI 
-          ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white' 
-          : 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
-      }`}>
-        {isAI ? 'AI' : <User size={18} />}
-      </div>
-      <div className="flex-1">
-        <Card className={`p-4 ${
-          isAI ? 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700' : 'bg-gray-200 dark:bg-gray-700 border-0'
-        }`}>
-          {isAI ? (
-            <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-2 prose-headings:my-3 prose-ul:my-2 prose-ol:my-2 prose-li:my-1">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw]}
-                components={{
-                  p: ({ children }: any) => <p className="text-gray-800 dark:text-gray-200">{children}</p>,
-                  strong: ({ children }: any) => <strong className="font-bold text-gray-900 dark:text-gray-100">{children}</strong>,
-                  em: ({ children }: any) => <em className="italic text-gray-800 dark:text-gray-200">{children}</em>,
-                  ul: ({ children }: any) => <ul className="list-disc list-inside space-y-1 text-gray-800 dark:text-gray-200">{children}</ul>,
-                  ol: ({ children }: any) => <ol className="list-decimal list-inside space-y-1 text-gray-800 dark:text-gray-200">{children}</ol>,
-                  h1: ({ children }: any) => <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{children}</h1>,
-                  h2: ({ children }: any) => <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">{children}</h2>,
-                  h3: ({ children }: any) => <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-1">{children}</h3>,
-                  code: ({ children, className }: any) => {
-                    const isInline = !className;
-                    return isInline ? (
-                      <code className="bg-gray-100 dark:bg-gray-700 text-red-600 dark:text-red-400 px-1 py-0.5 rounded text-sm">{children}</code>
-                    ) : (
-                      <code className="block bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 p-2 rounded overflow-x-auto">{children}</code>
-                    );
-                  },
-                }}
-              >
-                {message.text}
-              </ReactMarkdown>
-            </div>
-          ) : (
-            <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
-              {message.text}
-            </p>
-          )}
-        </Card>
-      </div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+      className={`flex items-start gap-4 ${isUser ? 'flex-row-reverse' : ''}`}
+    >
+      {/* Avatar with Glass Effect */}
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.1, type: 'spring', stiffness: 200, damping: 15 }}
+        className={`relative w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden ${
+          isUser
+            ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500'
+            : 'bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500'
+        } shadow-lg`}
+      >
+        <div className="absolute inset-0 bg-white/20 backdrop-blur-sm" />
+        {isUser ? (
+          <User size={20} className="text-white relative z-10" />
+        ) : (
+          <Sparkles size={20} className="text-white relative z-10" />
+        )}
+      </motion.div>
+
+      {/* Message Bubble with Glass Effect */}
+      <motion.div
+        initial={{ opacity: 0, x: isUser ? 20 : -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.15, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+        className={`relative max-w-[75%] group ${isUser ? 'items-end' : 'items-start'}`}
+      >
+        {/* Glassmorphic Container */}
+        <div
+          className={`relative overflow-hidden rounded-3xl p-4 backdrop-blur-xl border ${
+            isUser
+              ? 'bg-gradient-to-br from-purple-500/90 via-pink-500/90 to-orange-500/90 border-white/30 text-white shadow-xl shadow-purple-500/25'
+              : 'bg-white/70 dark:bg-gray-800/70 border-gray-200/50 dark:border-gray-700/50 text-gray-900 dark:text-gray-100 shadow-xl shadow-gray-500/10 dark:shadow-gray-900/30'
+          }`}
+        >
+          {/* Animated Gradient Overlay */}
+          <div
+            className={`absolute inset-0 opacity-30 ${
+              isUser
+                ? 'bg-gradient-to-br from-white/40 via-transparent to-transparent'
+                : 'bg-gradient-to-br from-blue-500/20 via-cyan-500/20 to-transparent dark:from-blue-400/10 dark:via-cyan-400/10'
+            }`}
+          />
+
+          {/* Liquid Effect Border */}
+          <motion.div
+            animate={{
+              background: isUser
+                ? [
+                    'linear-gradient(45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1))',
+                    'linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3))',
+                    'linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1))',
+                  ]
+                : [
+                    'linear-gradient(45deg, rgba(59,130,246,0.2), rgba(6,182,212,0.2))',
+                    'linear-gradient(90deg, rgba(6,182,212,0.2), rgba(59,130,246,0.2))',
+                    'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(6,182,212,0.2))',
+                  ],
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          />
+
+          {/* Message Content */}
+          <div className="relative z-10 whitespace-pre-wrap break-words">
+            {message.text}
+          </div>
+
+          {/* Time Stamp */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.6 }}
+            transition={{ delay: 0.5 }}
+            className={`text-xs mt-2 ${isUser ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'}`}
+          >
+            {message.timestamp.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+          </motion.div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }

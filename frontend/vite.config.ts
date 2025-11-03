@@ -5,36 +5,6 @@
 
   export default defineConfig({
     plugins: [react()],
-    server: {
-      port: 3000,
-      host: '0.0.0.0',
-      watch: {
-        usePolling: true, // Enable polling for Docker
-      },
-      proxy: {
-        // Proxy all backend endpoints
-        '/ask': {
-          target: process.env.DOCKER_ENV === 'true' ? 'http://backend:7860' : 'http://localhost:7860',
-          changeOrigin: true,
-        },
-        '/feedback': {
-          target: process.env.DOCKER_ENV === 'true' ? 'http://backend:7860' : 'http://localhost:7860',
-          changeOrigin: true,
-        },
-        '/stats': {
-          target: process.env.DOCKER_ENV === 'true' ? 'http://backend:7860' : 'http://localhost:7860',
-          changeOrigin: true,
-        },
-        '/health': {
-          target: process.env.DOCKER_ENV === 'true' ? 'http://backend:7860' : 'http://localhost:7860',
-          changeOrigin: true,
-        },
-        '/api': {
-          target: process.env.DOCKER_ENV === 'true' ? 'http://backend:7860' : 'http://localhost:7860',
-          changeOrigin: true,
-        },
-      },
-    },
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
       alias: {
@@ -82,5 +52,10 @@
     build: {
       target: 'esnext',
       outDir: 'build',
+    },
+    server: {
+      port: 3000,
+      open: false,
+      host: '0.0.0.0',
     },
   });

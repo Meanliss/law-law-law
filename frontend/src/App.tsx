@@ -1,27 +1,16 @@
 import { useState, useEffect } from 'react';
 import { ChatInterface } from './components/ChatInterface';
-import { Sidebar } from './components/Sidebar';
+import { ConversationSidebar, type Conversation } from './components/Sidebar';
 import { PDFViewer } from './components/PDFViewer';
-import { getDocument } from './services/api';  // ✅ THÊM
-
-interface Conversation {
-  id: string;
-  title: string;
-  lastMessage?: string;
-}
+import { getDocument } from './services/api';
 
 export default function App() {
-  const [conversations, setConversations] = useState<Conversation[]>([
-    { id: '1', title: '123', lastMessage: 'Quyền lợi khi bị sa thải' },
-    { id: '2', title: '123', lastMessage: 'Thủ tục ly hôn' },
-  ]);
-  const [activeConversation, setActiveConversation] = useState<string>('1');
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const saved = localStorage.getItem('darkMode');
-    return saved ? JSON.parse(saved) : false;
-  });
-
-  // ✅ SỬA STATE cho PDF viewer
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConversationId, setActiveConversationId] = useState<string>('default');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  
+  // PDF Viewer state
   const [pdfView, setPdfView] = useState<{
     isOpen: boolean;
     url: string;
@@ -29,50 +18,127 @@ export default function App() {
     articleNum?: string;
   } | null>(null);
 
+  // Initialize dark mode and conversations from localStorage
   useEffect(() => {
-    localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
-    if (isDarkMode) {
+    const savedMode = localStorage.getItem('darkMode');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedMode === 'true' || (!savedMode && prefersDark)) {
+      setIsDarkMode(true);
       document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
     }
-  }, [isDarkMode]);
+
+    // Load conversations from localStorage
+    const savedConversations = localStorage.getItem('conversations');
+    if (savedConversations) {
+      const parsed = JSON.parse(savedConversations);
+      setConversations(parsed.map((c: any) => ({
+        ...c,
+        timestamp: new Date(c.timestamp),
+      })));
+    } else {
+      // Add some demo conversations
+      const demoConversations: Conversation[] = [
+        {
+          id: '1',
+          title: '123',
+          preview: 'Quyền lợi khi bị sa thải',
+          timestamp: new Date(Date.now() - 3600000),
+        },
+        {
+          id: '2',
+          title: '123',
+          preview: 'Thủ tục ly hôn',
+          timestamp: new Date(Date.now() - 7200000),
+        },
+      ];
+      setConversations(demoConversations);
+    }
+  }, []);
+
+  // Save conversations to localStorage when they change
+  useEffect(() => {
+    if (conversations.length > 0) {
+      localStorage.setItem('conversations', JSON.stringify(conversations));
+    }
+  }, [conversations]);
+
+  const handleToggleDarkMode = () => {
+    setIsDarkMode((prev) => {
+      const newMode = !prev;
+      localStorage.setItem('darkMode', String(newMode));
+      
+      if (newMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      
+      return newMode;
+    });
+  };
 
   const handleNewConversation = () => {
-    const newId = Date.now().toString();
-    const newConv: Conversation = {
+    const newId = `conv-${Date.now()}`;
+    const newConversation: Conversation = {
       id: newId,
-      title: '123',
+      title: 'Cuộc trò chuyện mới',
+      preview: 'Bắt đầu đặt câu hỏi...',
+      timestamp: new Date(),
     };
-    setConversations([newConv, ...conversations]);
-    setActiveConversation(newId);
+    
+    setConversations([newConversation, ...conversations]);
+    setActiveConversationId(newId);
+    
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  };
+
+  const handleSelectConversation = (id: string) => {
+    setActiveConversationId(id);
+    
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
   };
 
   const handleDeleteConversation = (id: string) => {
-    setConversations(conversations.filter(conv => conv.id !== id));
-    if (activeConversation === id && conversations.length > 1) {
-      const remaining = conversations.filter(conv => conv.id !== id);
-      if (remaining.length > 0) {
-        setActiveConversation(remaining[0].id);
-      }
+    setConversations(conversations.filter((c) => c.id !== id));
+    
+    if (activeConversationId === id) {
+      const remaining = conversations.filter((c) => c.id !== id);
+      setActiveConversationId(remaining.length > 0 ? remaining[0].id : 'default');
     }
   };
 
-  // ✅ SỬA HANDLER: Load PDF từ backend
+  const handleUpdateConversation = (id: string, firstMessage: string) => {
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              title: firstMessage.slice(0, 50),
+              preview: firstMessage.slice(0, 80),
+              timestamp: new Date(),
+            }
+          : c
+      )
+    );
+  };
+
+  // Handle PDF opening from backend
   const handleOpenPDF = async (pdfFilename: string, title: string, articleNum?: string) => {
     try {
       console.log('[PDF] Loading:', { pdfFilename, title, articleNum });
       
-      // ✅ Kiểm tra filename hợp lệ
       if (!pdfFilename || pdfFilename === 'undefined') {
         alert('Không tìm thấy thông tin file PDF. Vui lòng thử lại.');
         return;
       }
       
-      // ✅ Fetch PDF từ backend
       const pdfResponse = await getDocument(pdfFilename);
       
-      // ✅ Convert base64 to blob URL
       const binaryString = window.atob(pdfResponse.data);
       const bytes = new Uint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
@@ -94,25 +160,31 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <Sidebar 
+    <div className="w-full h-screen overflow-hidden flex">
+      {/* Sidebar */}
+      <ConversationSidebar
         conversations={conversations}
-        activeConversation={activeConversation}
-        onSelectConversation={setActiveConversation}
+        activeConversationId={activeConversationId}
         onNewConversation={handleNewConversation}
+        onSelectConversation={handleSelectConversation}
         onDeleteConversation={handleDeleteConversation}
         isDarkMode={isDarkMode}
+        isOpen={isSidebarOpen}
+        onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
       />
+
+      {/* Main Chat Area */}
       <div className="flex-1 overflow-hidden">
-        <ChatInterface 
-          conversationId={activeConversation} 
+        <ChatInterface
+          conversationId={activeConversationId}
           isDarkMode={isDarkMode}
-          onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+          onToggleDarkMode={handleToggleDarkMode}
+          onUpdateConversation={handleUpdateConversation}
           onOpenPDF={handleOpenPDF}
         />
       </div>
-      
-      {/* ✅ PDF MODAL - CHỈ MỞ KHI CÓ pdfView */}
+
+      {/* PDF Viewer Modal */}
       {pdfView && pdfView.isOpen && (
         <PDFViewer
           isOpen={pdfView.isOpen}
