@@ -183,7 +183,7 @@ async def ask_question(request: QuestionRequest):
     # ===== PHASE 1: Intent Detection + Domain Detection =====
     intent_start = time.time()
     
-    use_advanced = (request.model_mode == "quality")
+    use_advanced = (request.model_mode == "detail")
     decompose_model = gemini_flash_model if use_advanced else gemini_lite_model
     
     intent_result = enhanced_decompose_query(
@@ -257,7 +257,7 @@ async def ask_question(request: QuestionRequest):
     # ===== PHASE 3: Generate Answer =====
     gen_start = time.time()
     
-    # Select model based on mode: Flash for both (Quality uses detailed prompt, Fast uses concise)
+    # Select model based on mode: Flash for both (Detail uses detailed prompt, Summary uses concise)
     answer_model = gemini_flash_model  # Always use Flash for answer generation
     
     answer = generate_answer(
@@ -265,7 +265,7 @@ async def ask_question(request: QuestionRequest):
         context=relevant_chunks,
         gemini_model=answer_model,
         chat_history=request.chat_history if hasattr(request, 'chat_history') else None,
-        use_advanced=use_advanced  # ✅ CRITICAL: Pass mode to enable quality prompt
+        use_advanced=use_advanced  # ✅ CRITICAL: Pass mode to enable detail prompt
     )
     
     timing['generation_ms'] = round((time.time() - gen_start) * 1000, 2)
@@ -301,7 +301,7 @@ async def ask_question(request: QuestionRequest):
         "answer": answer,
         "sources": [{"source": c.get('json_file', ''), "content": c.get('content', '')} for c in relevant_chunks],
         "pdf_sources": pdf_sources,
-        "search_method": f"domain_based_{'quality' if use_advanced else 'fast'}",
+        "search_method": f"domain_based_{'detail' if use_advanced else 'summary'}",
         "timing_ms": timing['total_ms']
     }
 
@@ -333,8 +333,8 @@ async def get_stats():
         "domains": domains_info,
         "models": {
             "embedder": EMBEDDING_MODEL,
-            "llm_flash": f"{GEMINI_FLASH_MODEL} (fast mode answer)",
-            "llm_pro": f"{GEMINI_PRO_MODEL} (quality mode answer)",
+            "llm_flash": f"{GEMINI_FLASH_MODEL} (summary mode answer)",
+            "llm_pro": f"{GEMINI_PRO_MODEL} (detail mode answer)",
             "llm_lite": f"{GEMINI_LITE_MODEL} (intent detection, decomposition)"
         },
         "intent_cache_size": get_cache_size()

@@ -9,7 +9,7 @@ from typing import List, Dict, Optional
 class QuestionRequest(BaseModel):
     question: str
     use_advanced: bool = True
-    model_mode: str = "quality"  # "fast" or "quality"
+    model_mode: str = "detail"  # "summary" or "detail"
     chat_history: Optional[List[Dict[str, str]]] = []  # ✅ Lịch sử chat từ client
 
 
@@ -36,7 +36,7 @@ class AnswerResponse(BaseModel):
     sources: List[Dict[str, str]]  # Original sources for backward compatibility
     pdf_sources: Optional[List[PDFSource]] = []  # Enhanced PDF metadata
     search_mode: Optional[str] = None  # Legacy field (deprecated)
-    search_method: Optional[str] = None  # New field: domain_based_quality, domain_based_fast, etc.
+    search_method: Optional[str] = None  # New field: domain_based_detail, domain_based_summary, etc.
     timing: Optional[TimingInfo] = None  # Performance metrics
     timing_ms: Optional[float] = None  # Simple timing for domain-based
 

@@ -39,9 +39,6 @@ def generate_answer(question: str, context: List[Dict], gemini_model, chat_histo
     if use_advanced:
         # ========== QUALITY MODE: Deep Analysis Prompt - CHI TIẾT, PHÂN TÍCH SÂU ==========
         prompt = f'''Bạn là chuyên gia pháp lý Việt Nam với khả năng PHÂN TÍCH VÀ SUY LUẬN CHUYÊN SÂU. 
-
-⚠️ LƯU Ý QUAN TRỌNG: Bạn là trợ lý AI, KHÔNG phải luật sư. Luôn khuyến nghị người dùng tham khảo ý kiến luật sư để có tư vấn chính xác và phù hợp với tình huống cụ thể.
-
 {f"""═══════════════════════════════════════════════════════════
 📚 LỊCH SỬ HỘI THOẠI (ngữ cảnh tham khảo):
 {history_text}
@@ -148,9 +145,6 @@ Việc UBND xã A ban hành Quyết định hủy việc kết hôn giữa anh D
 - Việc anh D xin được giấy xác nhận "độc thân" dù đã có vợ cho thấy có sai sót trong quản lý hộ tịch hoặc hành vi gian dối. Anh D có thể bị xử lý về hành vi làm giả giấy tờ hoặc khai man.
 - Chị P NÊN NHANH CHÓNG nộp đơn lên Tòa án để chấm dứt hợp pháp quan hệ hôn nhân trái pháp luật này.
 - Khuyến nghị chị P tham khảo ý kiến luật sư để được tư vấn cụ thể về quyền lợi (tài sản chung, con cái nếu có...) và thủ tục tố tụng.
-
-⚠️ **LƯU Ý:** Đây chỉ là phân tích pháp lý mang tính tham khảo. Để có câu trả lời chính xác và phù hợp với tình huống cụ thể, bạn nên tham khảo ý kiến của luật sư hoặc cơ quan tư pháp có thẩm quyền.
-
 ═══════════════════════════════════════════════════════════
 
 HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU:'''
