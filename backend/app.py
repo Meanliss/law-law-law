@@ -17,11 +17,12 @@ from contextlib import asynccontextmanager
 from collections import defaultdict
 from typing import Optional
 import os
+import json
 import time  # For performance timing
 import google.generativeai as genai
 from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
-
+from pathlib import Path
 # Import models
 from models import QuestionRequest, AnswerResponse, HealthResponse, PDFSource, FeedbackRequest, FeedbackResponse
 
@@ -32,7 +33,7 @@ from core.search_domains import search_with_domains, search_multi_query_with_dom
 from core.generation import generate_answer, get_rejection_message
 from core.intent_detection import get_cache_size, enhanced_decompose_query
 from core.domain_manager import DomainManager  # ✅ New
-
+from faiss import logger
 # Import utilities
 from utils.cache import get_data_hash, build_or_load_bm25, build_or_load_faiss
 from utils.tokenizer import tokenize_vi
@@ -386,54 +387,68 @@ async def submit_feedback(request: FeedbackRequest):
 # PDF Serving Endpoint
 # ============================================================================
 
-@app.post("/api/get-document")
-async def get_document(request: dict):
-    """Serve PDF as base64 via POST to avoid IDM detection"""
-    import base64
-    
-    filename = request.get('filename')
-    if not filename:
-        raise HTTPException(status_code=400, detail="Filename required")
-    
-    # Get absolute path
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Try to find PDF in domain folders first
-    pdf_path = None
-    domains_dir = os.path.join(current_dir, 'data', 'domains')
-    
-    if os.path.exists(domains_dir):
-        for domain_id in os.listdir(domains_dir):
-            domain_pdf_path = os.path.join(domains_dir, domain_id, 'pdfs', filename)
-            if os.path.exists(domain_pdf_path):
-                pdf_path = domain_pdf_path
-                print(f"[PDF] Found in domain: {domain_id}", flush=True)
-                break
-    
-    # Fallback: Try old location (data/{filename})
-    if pdf_path is None:
-        pdf_path = os.path.join(current_dir, 'data', filename)
-    
-    print(f"[PDF] Requested: {filename}", flush=True)
-    print(f"[PDF] Looking at: {pdf_path}", flush=True)
-    print(f"[PDF] Exists: {os.path.exists(pdf_path)}", flush=True)
-    
-    if not os.path.exists(pdf_path):
-        raise HTTPException(status_code=404, detail=f"Document not found: {filename}")
-    
-    # Read and encode to base64
-    with open(pdf_path, 'rb') as f:
-        pdf_bytes = f.read()
-        pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
-    
-    # Return JSON with base64 data
-    return {
-        "filename": filename,
-        "data": pdf_base64,
-        "size": len(pdf_bytes),
-        "type": "application/pdf"
-    }
+@app.get("/api/pdf/{domain_id}/{article_num}")
+async def get_pdf_info(domain_id: str, article_num: str):
+    """Get PDF metadata for specific article"""
+    try:
+        domain_dir = Path(f"data/domains/{domain_id}")
+        
+        # Find PDF file
+        pdfs_dir = domain_dir / "pdfs"
+        pdf_files = list(pdfs_dir.glob("*.pdf")) if pdfs_dir.exists() else []
+        
+        if not pdf_files:
+            raise HTTPException(status_code=404, detail="PDF not found")
+        
+        pdf_file = pdf_files[0]
+        
+        # Find article text for search
+        chunks_file = domain_dir / "chunks.jsonl"
+        search_text = f"Điều {article_num}"
+        
+        if chunks_file.exists():
+            with open(chunks_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    try:
+                        chunk = json.loads(line)
+                        if chunk.get('metadata', {}).get('article_num') == article_num:
+                            # Get first 100 chars for highlighting
+                            search_text = chunk.get('content', '')[:100].strip()
+                            break
+                    except:
+                        continue
+        
+        return {
+            "pdf_url": f"/api/pdf-file/{domain_id}/{pdf_file.name}",
+            "search_text": search_text,
+            "article_num": article_num,
+            "domain_id": domain_id
+        }
+        
+    except Exception as e:
+        print(f"[ERROR] get_pdf_info: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
+
+@app.get("/api/pdf-file/{domain_id}/{filename}")
+async def serve_pdf(domain_id: str, filename: str):
+    """Serve PDF file with CORS headers"""
+    pdf_path = Path(f"data/domains/{domain_id}/pdfs/{filename}")
+    
+    if not pdf_path.exists():
+        raise HTTPException(status_code=404, detail="PDF file not found")
+    
+    return FileResponse(
+        path=str(pdf_path),
+        media_type="application/pdf",
+        filename=filename,
+        headers={
+            "Content-Disposition": f"inline; filename={filename}",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "*"
+        }
+    )
 
 # ============================================================================
 # Helper Functions
@@ -448,6 +463,8 @@ def map_json_to_pdf(json_filename: str) -> str:
         'luat_dauthau_hopnhat.json': 'luat_dau_thau.pdf',
         'chuyen_giao_cong_nghe_hopnhat.json': 'luat_chuyen_giao_cong_nghe.pdf',
         'nghi_dinh_214_2025.json': 'nghi_dinh_214_2025.pdf',
+        'luat_hinh_su_hopnhat.json': 'luat_hinh_su.pdf',
+        'luat_so_huu_tri_tue_hopnhat.json': 'luat_so_huu_tri_tue.pdf'
     }
     return json_to_pdf_map.get(json_filename, 'unknown.pdf')
 
@@ -487,7 +504,74 @@ def extract_pdf_metadata(chunk: dict) -> PDFSource:
 # ============================================================================
 # Main Entry Point
 # ============================================================================
+# ...existing code...
 
+@app.get("/api/get-document")
+async def get_document_endpoint(filename: str):
+    """
+    Get PDF document by filename
+    
+    Example: /api/get-document?filename=luat_hon_nhan.pdf
+    """
+    try:
+        print(f"[PDF] 📄 Fetching PDF: {filename}", flush=True)
+        
+        # ✅ Validate filename
+        if not filename or filename == "undefined":
+            raise HTTPException(status_code=400, detail="Invalid filename")
+        
+        # ✅ Map filename to domain
+        domain_map = {
+            'luat_hon_nhan.pdf': 'hon_nhan',
+            'luat_hinh_su.pdf': 'hinh_su',
+            'luat_lao_dong.pdf': 'lao_dong',
+            'luat_dat_dai.pdf': 'dat_dai',
+            'luat_dau_thau.pdf': 'dau_thau',
+        }
+        
+        # Extract domain from filename
+        domain_id = None
+        for pdf_name, domain in domain_map.items():
+            if pdf_name in filename:
+                domain_id = domain
+                break
+        
+        if not domain_id:
+            raise HTTPException(status_code=404, detail=f"Unknown PDF: {filename}")
+        
+        # ✅ Construct path: data/domains/{domain_id}/pdfs/{filename}
+        pdf_path = os.path.join("data", "domains", domain_id, "pdfs", filename)
+        
+        print(f"[PDF] Looking for: {pdf_path}", flush=True)
+        
+        # ✅ Check if file exists
+        if not os.path.exists(pdf_path):
+            print(f"[PDF] ❌ PDF not found: {pdf_path}", flush=True)
+            raise HTTPException(status_code=404, detail=f"PDF file not found: {filename}")
+        
+        # ✅ Read PDF file
+        with open(pdf_path, "rb") as f:
+            pdf_data = f.read()
+        
+        # ✅ Encode to base64
+        import base64
+        pdf_base64 = base64.b64encode(pdf_data).decode('utf-8')
+        
+        print(f"[PDF] ✅ PDF loaded successfully: {filename} ({len(pdf_data)} bytes)", flush=True)
+        
+        return {
+            "filename": filename,
+            "data": pdf_base64,
+            "size": len(pdf_data)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[PDF] ❌ Error loading PDF: {str(e)}", flush=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ...existing code...
 if __name__ == '__main__':
     import uvicorn
     import os

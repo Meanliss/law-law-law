@@ -199,3 +199,74 @@ Ví dụ các câu hỏi hợp lệ:
 • Quy định về độ tuổi kết hôn?
 • Điều kiện mua bán đất đai?
 • Quyền lợi người lao động khi bị sa thải?"""
+
+def format_sources_for_display(sources: List[Dict]) -> dict:
+    """
+    Format sources with proper law names from domain registry
+    RETURNS: Dict with sources array and display text
+    """
+    if not sources:
+        return {"sources": [], "display": ""}
+    
+    # Load registry
+    try:
+        registry_path = Path("data/domain_registry.json")
+        if registry_path.exists():
+            with open(registry_path, 'r', encoding='utf-8') as f:
+                registry = json.load(f)
+        else:
+            registry = {}
+    except Exception as e:
+        print(f"[WARNING] Cannot load registry: {e}")
+        registry = {}
+    
+    # Group by domain
+    by_domain = {}
+    sources_list = []
+    
+    for src in sources:
+        metadata = src.get('metadata', {})
+        law_id = metadata.get('law_id', metadata.get('domain_id', 'unknown'))
+        
+        # Lookup proper name
+        law_name = None
+        
+        # Try exact match
+        if law_id in registry:
+            law_name = registry[law_id]['name']
+        else:
+            # Try without _hopnhat suffix
+            clean_id = law_id.replace('_hopnhat', '').replace('luat_', '')
+            if clean_id in registry:
+                law_name = registry[clean_id]['name']
+        
+        # Fallback to metadata
+        if not law_name:
+            law_name = metadata.get('law_name', law_id)
+        
+        article_num = metadata.get('article_num', '?')
+        
+        # Add to sources list for frontend
+        sources_list.append({
+            "law_name": law_name,
+            "domain_id": law_id,
+            "article_num": str(article_num)
+        })
+        
+        # Group for display text
+        if law_name not in by_domain:
+            by_domain[law_name] = set()
+        by_domain[law_name].add(str(article_num))
+    
+    # Format display text
+    lines = ["📚 Nguồn tham khảo:\n"]
+    for idx, (law_name, articles) in enumerate(by_domain.items(), 1):
+        article_list = sorted(articles, key=lambda x: int(x) if x.isdigit() else 999)
+        lines.append(f"{idx}. **{law_name}**")
+        lines.append(f"   📊 {len(article_list)} điều được tham chiếu")
+        lines.append("")
+    
+    return {
+        "sources": sources_list,
+        "display": "\n".join(lines)
+    }
