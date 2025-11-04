@@ -325,40 +325,41 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                                 </span>
                               </div>
 
-                              <div className="space-y-3">
+                              <div className="flex flex-wrap gap-2">
                                 {message.sources.map((source, idx) => {
                                   const articleNum = source.page?.replace('Điều ', '') || '';
 
                                   return (
-                                    <motion.div
+                                    <motion.a
                                       key={idx}
-                                      initial={{ opacity: 0, x: -10 }}
-                                      animate={{ opacity: 1, x: 0 }}
+                                      initial={{ opacity: 0, scale: 0.9 }}
+                                      animate={{ opacity: 1, scale: 1 }}
                                       transition={{ delay: 0.1 * idx }}
-                                      className="group"
-                                    >
-                                      <button
-                                        onClick={() =>
-                                          source.pdfUrl &&
-                                          handleOpenPDF(source.pdfUrl, source.title, articleNum)
+                                      href={source.pdfUrl || '#'}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      onClick={(e) => {
+                                        if (source.pdfUrl) {
+                                          e.preventDefault();
+                                          handleOpenPDF(source.pdfUrl, source.title, articleNum);
                                         }
-                                        className="w-full flex items-start gap-3 p-3 rounded-2xl backdrop-blur-xl bg-white/60 dark:bg-gray-800/60 hover:bg-white/80 dark:hover:bg-gray-800/80 border border-white/50 dark:border-gray-700/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg text-left"
-                                      >
-                                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white flex items-center justify-center flex-shrink-0 shadow-lg">
-                                          {idx + 1}
-                                        </div>
-                                        <div className="flex-1">
-                                          <div className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">
-                                            {source.title}
-                                          </div>
-                                          {source.page && (
-                                            <div className="text-sm text-blue-600 dark:text-cyan-400 mt-1">
-                                              {source.page}
-                                            </div>
-                                          )}
-                                        </div>
-                                      </button>
-                                    </motion.div>
+                                      }}
+                                      className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 hover:bg-blue-50 dark:hover:bg-blue-900/30 border border-blue-200/50 dark:border-blue-700/50 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                    >
+                                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white flex items-center justify-center text-xs shadow-md group-hover:scale-110 transition-transform">
+                                        {idx + 1}
+                                      </div>
+                                      <div className="flex flex-col">
+                                        <span className="text-sm font-medium text-blue-600 dark:text-cyan-400 group-hover:underline">
+                                          {source.title}
+                                        </span>
+                                        {source.page && (
+                                          <span className="text-xs text-blue-500 dark:text-cyan-500">
+                                            {source.page}
+                                          </span>
+                                        )}
+                                      </div>
+                                    </motion.a>
                                   );
                                 })}
                               </div>
@@ -500,52 +501,17 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex-shrink-0 backdrop-blur-2xl bg-white/60 dark:bg-gray-900/60 border-t border-white/50 dark:border-gray-700/50 p-6"
+          className="flex-shrink-0 backdrop-blur-2xl bg-white/60 dark:bg-gray-900/60 border-t border-white/50 dark:border-gray-700/50 py-3 px-4"
         >
-          <div className="max-w-4xl mx-auto">
-            {/* Mode Selector */}
-            <div className="flex items-center gap-2 mb-4">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant={mode === 'fast' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setMode('fast')}
-                  className={`gap-2 rounded-2xl backdrop-blur-xl border transition-all duration-300 ${
-                    mode === 'fast'
-                      ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white border-blue-400/50 shadow-lg shadow-blue-500/30'
-                      : 'bg-white/60 dark:bg-gray-800/60 border-white/50 dark:border-gray-700/50 hover:bg-blue-500/20'
-                  }`}
-                >
-                  <Zap size={14} />
-                  Fast
-                </Button>
-              </motion.div>
-
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant={mode === 'quality' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setMode('quality')}
-                  className={`gap-2 rounded-2xl backdrop-blur-xl border transition-all duration-300 ${
-                    mode === 'quality'
-                      ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white border-purple-400/50 shadow-lg shadow-purple-500/30'
-                      : 'bg-white/60 dark:bg-gray-800/60 border-white/50 dark:border-gray-700/50 hover:bg-purple-500/20'
-                  }`}
-                >
-                  <Crown size={14} />
-                  Quality
-                </Button>
-              </motion.div>
-            </div>
-
+          <div className="max-w-3xl mx-auto">
             {/* Suggested Prompts - Hiển thị khi có ít nhất 2 tin nhắn */}
             {messages.length > 1 && (
-              <div className="mb-3">
+              <div className="mb-2">
                 <SuggestedPrompts onSelectPrompt={handleSendMessage} />
               </div>
             )}
 
-            <ChatInput onSend={handleSendMessage} disabled={isTyping} isDarkMode={isDarkMode} />
+            <ChatInput onSend={handleSendMessage} disabled={isTyping} isDarkMode={isDarkMode} mode={mode} onModeChange={setMode} />
           </div>
         </motion.div>
       </div>

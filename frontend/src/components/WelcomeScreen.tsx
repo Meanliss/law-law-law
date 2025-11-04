@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Scale, AlertCircle, Sparkles } from 'lucide-react';
 import { QuickActions } from './QuickActions';
+import { PromptGuideDialog } from './PromptGuideDialog';
 
 // 🎨 HƯỚNG DẪN TỰY CHỈNH:
 // 1. Thêm/bớt luật: Chỉnh sửa mảng 'laws' bên dưới
@@ -14,43 +16,18 @@ interface WelcomeScreenProps {
 }
 
 export function WelcomeScreen({ isDarkMode, onSelectQuestion }: WelcomeScreenProps) {
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
+
   // 📝 DANH SÁCH LUẬT - THÊM/BỚT TẠI ĐÂY
   const laws = [
     'Thuế',
     'Lao động',
-    'An toàn lao động',
-    'Bảo hiểm xã hội',
-    'Bảo hiểm thất nghiệp',
-    'Đấu tư',
-    'Thương mại',
-    'Doanh nghiệp',
-    'Kế toán',
     'Sở hữu trí tuệ',
-    'Đất đai - Nhà ở',
-    'Hôn nhân Gia đình',
-    'Dân sự',
+    'Đất đai',
     'Hình sự',
-    'Bảo vệ môi trường',
-    'Phòng chống tham nhũng',
-    'Tư pháp',
     // CÁC LUẬT BÊN PHẢI
     'Đấu thầu',
-    'Xây dựng',
-    'Tài chính ngân hàng',
-    'Bảo hiểm y tế',
-    'Kinh doanh Bất động sản',
-    'Hóa chất',
-    'Khoa học - Công nghệ',
-    'Chứng khoán',
-    'Xuất nhập khẩu',
-    'Giao thông đường bộ',
-    'Thông tin - Truyền thông',
-    'Giáo dục - Đào tạo',
-    'Y tế - Sức khỏe',
-    'Hành chính',
-    'Tài nguyên',
-    'Pháp quyền, phân cấp',
-    'Điện lực',
+    'Hôn nhân Gia đình',
   ];
 
   // ✏️ NỘI DUNG CHÀO MỪNG - CHỈNH SỬA TẠI ĐÂY
@@ -218,7 +195,10 @@ export function WelcomeScreen({ isDarkMode, onSelectQuestion }: WelcomeScreenPro
                   <p className="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-1">
                     {welcomeContent.hintTitle}
                   </p>
-                  <button className="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                  <button 
+                    onClick={() => setIsGuideOpen(true)}
+                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                  >
                     {welcomeContent.hintDescription} →
                   </button>
                 </div>
@@ -232,6 +212,13 @@ export function WelcomeScreen({ isDarkMode, onSelectQuestion }: WelcomeScreenPro
       {onSelectQuestion && (
         <QuickActions onSelectQuestion={onSelectQuestion} isDarkMode={isDarkMode} />
       )}
+
+      {/* Prompt Guide Dialog */}
+      <PromptGuideDialog 
+        isOpen={isGuideOpen}
+        onClose={() => setIsGuideOpen(false)}
+        isDarkMode={isDarkMode}
+      />
     </motion.div>
   );
 }

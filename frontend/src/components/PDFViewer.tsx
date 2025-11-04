@@ -1,17 +1,16 @@
-// src/components/PDFViewer.tsx
 import { motion, AnimatePresence } from 'motion/react';
 import { X, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 
 interface PDFViewerProps {
   isOpen: boolean;
-  pdfUrl: string; // Đổi từ url -> pdfUrl
+  url: string;
   title: string;
   articleNum?: string;
   onClose: () => void;
 }
 
-export function PDFViewer({ isOpen, pdfUrl, title, articleNum, onClose }: PDFViewerProps) {
+export function PDFViewer({ isOpen, url, title, articleNum, onClose }: PDFViewerProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -36,19 +35,19 @@ export function PDFViewer({ isOpen, pdfUrl, title, articleNum, onClose }: PDFVie
             {/* Header with Glass Effect */}
             <div className="flex-shrink-0 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-teal-500/10 dark:from-blue-500/5 dark:via-cyan-500/5 dark:to-teal-500/5" />
-
-              <div className="relative z-10 flex items-center justify-between p-4 md:p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+              
+              <div className="relative z-10 flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-gray-700/50">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 flex items-center justify-center shadow-lg">
                     <FileText size={20} className="text-white" />
                   </div>
                   <div>
-                    <h2 className="font-semibold text-gray-900 dark:text-gray-100 text-sm md:text-base">
+                    <h2 className="font-semibold text-gray-900 dark:text-gray-100">
                       {title}
                     </h2>
                     {articleNum && (
-                      <p className="text-xs md:text-sm text-blue-600 dark:text-cyan-400 font-medium">
-                        📍 Đang xem: Điều {articleNum}
+                      <p className="text-sm text-blue-600 dark:text-cyan-400">
+                        Điều {articleNum}
                       </p>
                     )}
                   </div>
@@ -67,21 +66,12 @@ export function PDFViewer({ isOpen, pdfUrl, title, articleNum, onClose }: PDFVie
             </div>
 
             {/* PDF Content */}
-            <div className="flex-1 overflow-hidden bg-gray-100 dark:bg-gray-900">
-              {pdfUrl ? (
-                <iframe
-                  src={`${pdfUrl}#page=1&zoom=120`}
-                  className="w-full h-full border-0"
-                  title={title}
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4" />
-                    <p className="text-lg font-medium dark:text-gray-100">Đang tải PDF...</p>
-                  </div>
-                </div>
-              )}
+            <div className="flex-1 overflow-hidden">
+              <iframe
+                src={url}
+                className="w-full h-full border-0"
+                title={title}
+              />
             </div>
           </motion.div>
         </>

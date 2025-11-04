@@ -106,3 +106,4 @@ export function ChatMessage({ message, isDarkMode }: ChatMessageProps) {
     </motion.div>
   );
 }
+

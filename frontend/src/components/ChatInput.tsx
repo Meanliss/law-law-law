@@ -1,16 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
-import { Send, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Send, Sparkles, Zap, Crown } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
   disabled?: boolean;
   isDarkMode: boolean;
+  mode?: 'fast' | 'quality';
+  onModeChange?: (mode: 'fast' | 'quality') => void;
 }
 
-export function ChatInput({ onSend, disabled, isDarkMode }: ChatInputProps) {
+export function ChatInput({ onSend, disabled, isDarkMode, mode = 'fast', onModeChange }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -18,7 +19,7 @@ export function ChatInput({ onSend, disabled, isDarkMode }: ChatInputProps) {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`;
     }
   }, [message]);
 
@@ -48,7 +49,7 @@ export function ChatInput({ onSend, disabled, isDarkMode }: ChatInputProps) {
       <div
         className={`relative overflow-hidden rounded-3xl backdrop-blur-2xl border transition-all duration-500 ${
           isFocused
-            ? 'bg-white/80 dark:bg-gray-800/80 border-blue-500/50 dark:border-cyan-500/50 shadow-2xl shadow-blue-500/20 dark:shadow-cyan-500/20 scale-[1.02]'
+            ? 'bg-white/80 dark:bg-gray-800/80 border-blue-500/50 dark:border-cyan-500/50 shadow-2xl shadow-blue-500/20 dark:shadow-cyan-500/20 scale-[1.01]'
             : 'bg-white/60 dark:bg-gray-800/60 border-gray-300/50 dark:border-gray-700/50 shadow-xl shadow-gray-500/10 dark:shadow-gray-900/30'
         }`}
       >
@@ -69,7 +70,41 @@ export function ChatInput({ onSend, disabled, isDarkMode }: ChatInputProps) {
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="relative z-10">
-          <div className="flex items-end gap-3 p-4">
+          <div className="flex items-end gap-2 p-3">
+            {/* Mode Selector - Compact */}
+            {onModeChange && (
+              <div className="flex gap-1 mb-1">
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => onModeChange('fast')}
+                  className={`p-2 rounded-xl transition-all duration-300 ${
+                    mode === 'fast'
+                      ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-md'
+                      : 'bg-white/40 dark:bg-gray-700/40 text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-gray-700/60'
+                  }`}
+                  title="Fast Mode"
+                >
+                  <Zap size={16} />
+                </motion.button>
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => onModeChange('quality')}
+                  className={`p-2 rounded-xl transition-all duration-300 ${
+                    mode === 'quality'
+                      ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-md'
+                      : 'bg-white/40 dark:bg-gray-700/40 text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-gray-700/60'
+                  }`}
+                  title="Quality Mode"
+                >
+                  <Crown size={16} />
+                </motion.button>
+              </div>
+            )}
+
             {/* Textarea */}
             <div className="flex-1 relative">
               <textarea
@@ -82,7 +117,7 @@ export function ChatInput({ onSend, disabled, isDarkMode }: ChatInputProps) {
                 disabled={disabled}
                 placeholder="Nhập câu hỏi của bạn..."
                 rows={1}
-                className="w-full bg-transparent resize-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 max-h-[200px] disabled:opacity-50"
+                className="w-full bg-transparent resize-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 max-h-[150px] disabled:opacity-50"
                 style={{ minHeight: '24px' }}
               />
 
@@ -94,17 +129,17 @@ export function ChatInput({ onSend, disabled, isDarkMode }: ChatInputProps) {
                   transition={{ duration: 2, repeat: Infinity }}
                   className="absolute -top-1 right-0"
                 >
-                  <Sparkles size={16} className="text-blue-500 dark:text-cyan-400" />
+                  <Sparkles size={14} className="text-blue-500 dark:text-cyan-400" />
                 </motion.div>
               )}
             </div>
 
-            {/* Send Button */}
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            {/* Send Button - Compact */}
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="mb-1">
               <Button
                 type="submit"
                 disabled={disabled || !message.trim()}
-                className={`relative overflow-hidden rounded-2xl px-4 py-2 h-auto transition-all duration-300 ${
+                className={`relative overflow-hidden rounded-xl p-2 h-auto transition-all duration-300 ${
                   message.trim() && !disabled
                     ? 'bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-600 hover:via-cyan-600 hover:to-teal-600 text-white shadow-lg shadow-blue-500/30'
                     : 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
@@ -125,29 +160,29 @@ export function ChatInput({ onSend, disabled, isDarkMode }: ChatInputProps) {
                   />
                 )}
 
-                <Send size={18} className="relative z-10" />
+                <Send size={16} className="relative z-10" />
               </Button>
             </motion.div>
           </div>
         </form>
       </div>
 
-      {/* Floating Tips */}
+      {/* Floating Tips - Compact */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2"
+        className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 flex items-center justify-center gap-2"
       >
         <span className="flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600">
+          <kbd className="px-1 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600">
             Enter
           </kbd>
-          để gửi
+          gửi
         </span>
         <span className="text-gray-400">•</span>
         <span className="flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600">
+          <kbd className="px-1 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600">
             Shift + Enter
           </kbd>
           xuống dòng

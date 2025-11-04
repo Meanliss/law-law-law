@@ -2,11 +2,27 @@
  * API Service - Connect to FastAPI Backend
  */
 
-// Use relative path to leverage Vite proxy in development
-// In production, this should be the actual API URL
-const API_BASE = import.meta.env.PROD 
-  ? (import.meta.env.VITE_API_URL || 'http://localhost:7860')
-  : ''; // In dev, use proxy (no base URL needed)
+// Configure API base URL based on environment
+const getAPIBase = (): string => {
+  const isProd = import.meta.env.MODE === 'production';
+  
+  if (isProd) {
+    // Production: use VITE_API_URL or default to localhost
+    return (import.meta.env.VITE_API_URL as string) || 'http://localhost:7860';
+  } else {
+    // Development: use backend directly (proxy won't work reliably with relative paths in all cases)
+    // This ensures requests work whether running in Docker or locally
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      // Running in Docker container or on a different host
+      return 'http://backend:7860';
+    } else {
+      // Running locally on localhost
+      return 'http://localhost:7860';
+    }
+  }
+};
+
+const API_BASE = getAPIBase();
 
 export interface ChatMessage {
   role: 'user' | 'assistant';
