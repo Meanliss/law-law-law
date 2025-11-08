@@ -12,6 +12,11 @@ import { WelcomeScreen } from './WelcomeScreen';
 import { SuggestedPrompts } from './SuggestedPrompts';
 import { LoadingDots } from './LoadingDots';
 import { askQuestion, submitFeedback, getDocument, type ChatMessage as APIChatMessage, type PDFSource } from '../services/api';
+import { SourceLinks } from './SourceLinks';
+
+const submitFeedback = async (question: string, answer: string, context: any[], type: string) => {
+  console.log('Feedback submitted:', { question, answer, context, type });
+};
 
 interface Message {
   id: string;
@@ -69,6 +74,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
     url: string;
     title: string;
     articleNum?: string;
+    pageNum?: number;
   }>({
     isOpen: false,
     url: '',
@@ -96,11 +102,13 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
     }
   }, [messages, isTyping]);
 
-  const handleOpenPDF = (pdfUrl: string, title: string, articleNum?: string) => {
+  const handleOpenPDF = (pdfUrl: string, title: string, articleNum?: string, pageNum?: number) => {
+    console.log('[ChatInterface] handleOpenPDF called:', { pdfUrl, title, articleNum, pageNum });
     if (onOpenPDF) {
       onOpenPDF(pdfUrl, title, articleNum);
     } else {
-      setPdfViewer({ isOpen: true, url: pdfUrl, title, articleNum });
+      console.log('[ChatInterface] Setting PDF viewer state');
+      setPdfViewer({ isOpen: true, url: pdfUrl, title, articleNum, pageNum });
     }
   };
 
@@ -293,94 +301,26 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                     >
-                      <ChatMessage message={message} isDarkMode={isDarkMode} />
+                      <ChatMessage 
+                        message={message} 
+                        isDarkMode={isDarkMode}
+                        onOpenPDF={handleOpenPDF}
+                      />
 
-                      {/* Sources with Glass Effect */}
-                      {message.sender === 'ai' && message.sources && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.3 }}
-                          className="ml-14 mt-4"
-                        >
-                          <div className="relative overflow-hidden rounded-3xl backdrop-blur-2xl bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-teal-500/10 dark:from-blue-500/5 dark:via-cyan-500/5 dark:to-teal-500/5 border border-blue-200/50 dark:border-blue-700/50 p-5 shadow-xl">
-                            {/* Animated Gradient Overlay */}
-                            <motion.div
-                              animate={{
-                                background: [
-                                  'linear-gradient(135deg, rgba(59,130,246,0.1), rgba(6,182,212,0.1))',
-                                  'linear-gradient(225deg, rgba(6,182,212,0.1), rgba(59,130,246,0.1))',
-                                  'linear-gradient(315deg, rgba(59,130,246,0.1), rgba(6,182,212,0.1))',
-                                ],
-                              }}
-                              transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
-                              className="absolute inset-0 opacity-50"
-                            />
-
-                            <div className="relative z-10">
-                              <div className="flex items-center gap-2 mb-4">
-                                <BookOpen size={18} className="text-blue-600 dark:text-cyan-400" />
-                                <span className="font-semibold text-blue-700 dark:text-cyan-300">
-                                  Nguồn tham khảo
-                                </span>
-                              </div>
-
-                              <div className="flex flex-wrap gap-2">
-                                {message.sources.map((source, idx) => {
-                                  const articleNum = source.page?.replace('Điều ', '') || '';
-
-                                  return (
-                                    <motion.a
-                                      key={idx}
-                                      initial={{ opacity: 0, scale: 0.9 }}
-                                      animate={{ opacity: 1, scale: 1 }}
-                                      transition={{ delay: 0.1 * idx }}
-                                      href={source.pdfUrl || '#'}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      onClick={(e) => {
-                                        if (source.pdfUrl) {
-                                          e.preventDefault();
-                                          handleOpenPDF(source.pdfUrl, source.title, articleNum);
-                                        }
-                                      }}
-                                      className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 hover:bg-blue-50 dark:hover:bg-blue-900/30 border border-blue-200/50 dark:border-blue-700/50 transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                                    >
-                                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white flex items-center justify-center text-xs shadow-md group-hover:scale-110 transition-transform">
-                                        {idx + 1}
-                                      </div>
-                                      <div className="flex flex-col">
-                                        <span className="text-sm font-medium text-blue-600 dark:text-cyan-400 group-hover:underline">
-                                          {source.title}
-                                        </span>
-                                        {source.page && (
-                                          <span className="text-xs text-blue-500 dark:text-cyan-500">
-                                            {source.page}
-                                          </span>
-                                        )}
-                                      </div>
-                                    </motion.a>
-                                  );
-                                })}
-                              </div>
-
-                              <motion.p
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.5 }}
-                                className="text-xs text-orange-600 dark:text-orange-400 mt-4 flex items-center gap-2"
-                              >
-                                <span>💡</span>
-                                Click vào các nguồn để xem tài liệu đầy đủ
-                              </motion.p>
-                            </div>
-                          </div>
+                      {/* Sources - Compact Hyperlinks */}
+                      {/* DISABLED: Using inline hyperlinks in MessageContent instead */}
+                      {message.sender === 'ai' && message.sources && false && (
+                        <>
+                          <SourceLinks 
+                            sources={message.sources} 
+                            onOpenPDF={handleOpenPDF}
+                          />
 
                           {/* Feedback Buttons with Glass Effect */}
                           <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: message.feedback ? 0 : 1 }}
-                            className={`flex items-center gap-2 mt-4 transition-all duration-500 ${
+                            className={`flex items-center gap-2 mt-4 ml-14 transition-all duration-500 ${
                               message.feedback ? 'pointer-events-none' : ''
                             }`}
                           >
@@ -415,7 +355,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0 }}
-                                className="mt-4"
+                                className="mt-4 ml-14"
                               >
                                 <div
                                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl backdrop-blur-xl border ${
@@ -457,7 +397,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                               </div>
                             </motion.div>
                           )}
-                        </motion.div>
+                        </>
                       )}
                     </motion.div>
                   ))}
@@ -497,13 +437,14 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
         </div>
 
         {/* Input Area with Glass Effect */}
+        {/* Input Area - ChatGPT Style (No border, centered, floating) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex-shrink-0 backdrop-blur-2xl bg-white/60 dark:bg-gray-900/60 border-t border-white/50 dark:border-gray-700/50 py-3 px-4"
+          className="flex-shrink-0 py-4 px-4"
         >
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             {/* Suggested Prompts - Hiển thị khi có ít nhất 2 tin nhắn */}
             {messages.length > 1 && (
               <div className="mb-2">
@@ -522,7 +463,8 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
         url={pdfViewer.url}
         title={pdfViewer.title}
         articleNum={pdfViewer.articleNum}
-        onClose={() => setPdfViewer({ isOpen: false, url: '', title: '', articleNum: undefined })}
+        pageNum={pdfViewer.pageNum}
+        onClose={() => setPdfViewer({ isOpen: false, url: '', title: '', articleNum: undefined, pageNum: undefined })}
       />
     </div>
   );

@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Send, Sparkles, Zap, Crown } from 'lucide-react';
-import { Button } from './ui/button';
+import { Send, Zap, Crown } from 'lucide-react';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -19,7 +18,7 @@ export function ChatInput({ onSend, disabled, isDarkMode, mode = 'fast', onModeC
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`;
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
     }
   }, [message]);
 
@@ -45,12 +44,12 @@ export function ChatInput({ onSend, disabled, isDarkMode, mode = 'fast', onModeC
       transition={{ duration: 0.5 }}
       className="relative"
     >
-      {/* Glassmorphic Container */}
+      {/* Glassmorphic Container - ChatGPT Style */}
       <div
-        className={`relative overflow-hidden rounded-3xl backdrop-blur-2xl border transition-all duration-500 ${
+        className={`relative overflow-hidden rounded-3xl backdrop-blur-xl border transition-all duration-300 ${
           isFocused
-            ? 'bg-white/80 dark:bg-gray-800/80 border-blue-500/50 dark:border-cyan-500/50 shadow-2xl shadow-blue-500/20 dark:shadow-cyan-500/20 scale-[1.01]'
-            : 'bg-white/60 dark:bg-gray-800/60 border-gray-300/50 dark:border-gray-700/50 shadow-xl shadow-gray-500/10 dark:shadow-gray-900/30'
+            ? 'bg-white/90 dark:bg-gray-800/90 border-gray-300/60 dark:border-gray-600/60 shadow-lg'
+            : 'bg-white/70 dark:bg-gray-800/70 border-gray-300/50 dark:border-gray-700/50 shadow-md'
         }`}
       >
         {/* Animated Gradient Background */}
@@ -70,19 +69,19 @@ export function ChatInput({ onSend, disabled, isDarkMode, mode = 'fast', onModeC
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="relative z-10">
-          <div className="flex items-end gap-2 p-3">
-            {/* Mode Selector - Compact */}
+          <div className="flex items-center gap-2 px-4 py-3">
+            {/* Mode Selector - Hidden, can be toggled via button if needed */}
             {onModeChange && (
-              <div className="flex gap-1 mb-1">
+              <div className="flex gap-1 mr-1">
                 <motion.button
                   type="button"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => onModeChange('fast')}
                   className={`p-2 rounded-xl transition-all duration-300 ${
                     mode === 'fast'
-                      ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-md'
-                      : 'bg-white/40 dark:bg-gray-700/40 text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-gray-700/60'
+                      ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-sm'
+                      : 'bg-transparent text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700/50'
                   }`}
                   title="Fast Mode"
                 >
@@ -90,13 +89,13 @@ export function ChatInput({ onSend, disabled, isDarkMode, mode = 'fast', onModeC
                 </motion.button>
                 <motion.button
                   type="button"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => onModeChange('quality')}
                   className={`p-2 rounded-xl transition-all duration-300 ${
                     mode === 'quality'
-                      ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-md'
-                      : 'bg-white/40 dark:bg-gray-700/40 text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-gray-700/60'
+                      ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-sm'
+                      : 'bg-transparent text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700/50'
                   }`}
                   title="Quality Mode"
                 >
@@ -117,77 +116,30 @@ export function ChatInput({ onSend, disabled, isDarkMode, mode = 'fast', onModeC
                 disabled={disabled}
                 placeholder="Nhập câu hỏi của bạn..."
                 rows={1}
-                className="w-full bg-transparent resize-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 max-h-[150px] disabled:opacity-50"
+                className="w-full bg-transparent resize-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 max-h-[200px] disabled:opacity-50"
                 style={{ minHeight: '24px' }}
               />
-
-              {/* Floating Sparkle Effect on Focus */}
-              {isFocused && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: [0, 1, 0], scale: [0, 1, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -top-1 right-0"
-                >
-                  <Sparkles size={14} className="text-blue-500 dark:text-cyan-400" />
-                </motion.div>
-              )}
             </div>
 
-            {/* Send Button - Compact */}
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="mb-1">
-              <Button
-                type="submit"
-                disabled={disabled || !message.trim()}
-                className={`relative overflow-hidden rounded-xl p-2 h-auto transition-all duration-300 ${
-                  message.trim() && !disabled
-                    ? 'bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-600 hover:via-cyan-600 hover:to-teal-600 text-white shadow-lg shadow-blue-500/30'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
-                }`}
-              >
-                {/* Shimmer Effect */}
-                {message.trim() && !disabled && (
-                  <motion.div
-                    animate={{
-                      x: ['-100%', '200%'],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: 'linear',
-                    }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                  />
-                )}
-
-                <Send size={16} className="relative z-10" />
-              </Button>
-            </motion.div>
+            {/* Send Button - ChatGPT Style */}
+            <motion.button
+              type="submit"
+              disabled={disabled || !message.trim()}
+              whileHover={{ scale: message.trim() && !disabled ? 1.05 : 1 }}
+              whileTap={{ scale: message.trim() && !disabled ? 0.95 : 1 }}
+              className={`relative overflow-hidden rounded-xl p-2 transition-all duration-300 ${
+                message.trim() && !disabled
+                  ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              <Send size={18} className="relative z-10" />
+            </motion.button>
           </div>
         </form>
       </div>
 
-      {/* Floating Tips - Compact */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 flex items-center justify-center gap-2"
-      >
-        <span className="flex items-center gap-1">
-          <kbd className="px-1 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600">
-            Enter
-          </kbd>
-          gửi
-        </span>
-        <span className="text-gray-400">•</span>
-        <span className="flex items-center gap-1">
-          <kbd className="px-1 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600">
-            Shift + Enter
-          </kbd>
-          xuống dòng
-        </span>
-      </motion.div>
+
     </motion.div>
   );
 }

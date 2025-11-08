@@ -20,14 +20,13 @@ export function WelcomeScreen({ isDarkMode, onSelectQuestion }: WelcomeScreenPro
 
   // 📝 DANH SÁCH LUẬT - THÊM/BỚT TẠI ĐÂY
   const laws = [
-    'Thuế',
     'Lao động',
     'Sở hữu trí tuệ',
     'Đất đai',
-    'Hình sự',
     // CÁC LUẬT BÊN PHẢI
     'Đấu thầu',
     'Hôn nhân Gia đình',
+    'Hình sự',
   ];
 
   // ✏️ NỘI DUNG CHÀO MỪNG - CHỈNH SỬA TẠI ĐÂY

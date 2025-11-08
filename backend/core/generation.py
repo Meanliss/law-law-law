@@ -3,6 +3,8 @@ Answer Generation Module - LLM-based answer generation
 """
 
 from typing import List, Dict
+import json
+from pathlib import Path
 
 
 def generate_answer(question: str, context: List[Dict], gemini_model, chat_history: List[Dict] = None, use_advanced: bool = False) -> str:
@@ -37,7 +39,7 @@ def generate_answer(question: str, context: List[Dict], gemini_model, chat_histo
 
     # ✅ CHỌN PROMPT THEO MODE
     if use_advanced:
-        # ========== QUALITY MODE: Deep Analysis Prompt - CHI TIẾT, PHÂN TÍCH SÂU ==========
+        # ========== QUALITY MODE: Deep Analysis Prompt - CHI TIẾT, PHÂN TÍCH SÂU, AGENT STYLE ==========
         prompt = f'''Bạn là chuyên gia pháp lý Việt Nam với khả năng PHÂN TÍCH VÀ SUY LUẬN CHUYÊN SÂU. 
 {f"""═══════════════════════════════════════════════════════════
 📚 LỊCH SỬ HỘI THOẠI (ngữ cảnh tham khảo):
@@ -52,11 +54,12 @@ def generate_answer(question: str, context: List[Dict], gemini_model, chat_histo
 ❓ CÂU HỎI CẦN TƯ VẤN: {question}
 
 ═══════════════════════════════════════════════════════════
-📋 YÊU CẦU TRẢ LỜI (PHÂN TÍCH CHUYÊN SÂU):
+📋 YÊU CẦU TRẢ LỜI (PHÂN TÍCH CHUYÊN SÂU + AGENT STYLE):
 
 **PHẦN 1 - TÓM TẮT KẾT LUẬN:**
 - Đưa ra câu trả lời trực tiếp, rõ ràng (2-4 câu)
 - Nêu kết luận chính về vấn đề pháp lý được hỏi
+- Xác định mức độ rủi ro (Cao/Trung bình/Thấp)
 
 **PHẦN 2 - PHÂN TÍCH CHI TIẾT:**
 Chia nhỏ vấn đề thành các khía cạnh pháp lý cụ thể:
@@ -86,30 +89,42 @@ Chia nhỏ vấn đề thành các khía cạnh pháp lý cụ thể:
 - Cơ quan có thẩm quyền giải quyết (Tòa án, UBND, cơ quan nào?)
 - Thủ tục cần thực hiện (nếu câu hỏi liên quan)
 - Hồ sơ, giấy tờ cần thiết
+- Thời hạn xử lý (nếu có quy định)
 
-**PHẦN 4 - HẬU QUẢ PHÁP LÝ:**
-- Hậu quả nếu vi phạm quy định
-- Chế tài xử phạt (nếu có)
+**PHẦN 4 - HẬU QUẢ PHÁP LÝ & RỦI RO:**
+- Hậu quả nếu VI PHẠM quy định (chính xác + chi tiết):
+  • Nếu bạn làm/không làm A thì sẽ phải chịu hậu quả gì?
+  • Ai sẽ bị xử phạt, mức xử phạt bao nhiêu?
+  • Ảnh hưởng gì đến quyền lợi pháp lý của các bên?
+- Chế tài xử phạt (nếu có): hành chính, dân sự, hình sự
 - Quyền lợi và nghĩa vụ của các bên
+- Những rủi ro/hậu quả phụ (ảnh hưởng không trực tiếp đến quyền lợi)
 
-**PHẦN 5 - LƯU Ý THỰC TẾ:**
+**PHẦN 5 - LƯU Ý THỰC TẾ + KHUYẾN NGHỊ HÀNH ĐỘNG:**
 - Các điểm cần chú ý khi áp dụng
 - Trường hợp ngoại lệ, đặc biệt (nếu có)
 - Các vấn đề phát sinh thường gặp trong thực tiễn
-- Khuyến nghị hành động cụ thể
+- Khuyến nghị hành động CỤ THỂ từng bước (Nên làm gì, không nên làm gì)
+- Các tài liệu/hồ sơ nên chuẩn bị sẵn
+
+**PHẦN 6 - GỢI Ý CÂU HỎI LIÊN QUAN (Agent Style):**
+Dựa trên câu hỏi hiện tại, đề xuất 2-3 câu hỏi tiếp theo có liên quan mà người dùng có thể quan tâm:
+- "Nếu... thì sao?" (Các tình huống tương tự hoặc phát sinh)
+- Các câu hỏi giúp làm rõ thêm vấn đề hoặc các hệ luỵ pháp lý
+- Định dạng: "🤔 Bạn có thể quan tâm: [Câu hỏi 1]? [Câu hỏi 2]? [Câu hỏi 3]?"
 
 ═══════════════════════════════════════════════════════════
-✅ ĐỊNH DẠNG TRÍCH DẪN (BẮT BUỘC):
-- Quy định pháp luật: (Điều X, Khoản Y, Điểm Z) của [Tên văn bản]
+✅ ĐỊNH DẠNG TRÍCH DẪN (BẮT BUỘC PHẢI CHÍNH XÁC):
+- Quy định pháp luật: (Điều X, Khoản Y, Điểm Z) của [Tên văn bản] năm [năm]
 - Trích dẫn nguyên văn: "nội dung chính xác từ nguồn tham khảo"
 - Ví dụ: Theo (Điều 8, Khoản 1, Điểm a) của Luật Hôn nhân và Gia đình năm 2014, "Nam từ đủ 20 tuổi trở lên..."
 
 ═══════════════════════════════════════════════════════════
-📌 VÍ DỤ TRẢ LỜI CHUẨN (Quality Mode):
+📌 VÍ DỤ TRẢ LỜI CHUẨN (Quality Mode - Có Agent Style):
 
 **1. Tóm tắt câu trả lời:**
 
-Việc UBND xã A ban hành Quyết định hủy việc kết hôn giữa anh D và chị P, đồng thời thu hồi Giấy chứng nhận kết hôn là KHÔNG đúng thẩm quyền. Thẩm quyền giải quyết yêu cầu hủy việc kết hôn trái pháp luật (do vi phạm điều kiện một vợ một chồng) thuộc về Tòa án, không phải UBND xã.
+Việc UBND xã A ban hành Quyết định hủy việc kết hôn giữa anh D và chị P, đồng thời thu hồi Giấy chứng nhận kết hôn là KHÔNG đúng thẩm quyền. Thẩm quyền giải quyết yêu cầu hủy việc kết hôn trái pháp luật (do vi phạm điều kiện một vợ một chồng) thuộc về Tòa án, không phải UBND xã. [Mức rủi ro: CAO - Quyết định này có thể bị cách chức công chức, chị P có thể khởi kiện]
 
 **2. Phân tích chi tiết:**
 
@@ -133,35 +148,83 @@ Việc UBND xã A ban hành Quyết định hủy việc kết hôn giữa anh D
 - **Cơ quan có thẩm quyền:** Tòa án nhân dân cấp huyện nơi các bên hoặc một bên cư trú (theo quy định tố tụng dân sự).
 - **Người có quyền yêu cầu:** Chị P (người bị lừa dối về tình trạng hôn nhân), hoặc Viện kiểm sát, cơ quan có thẩm quyền theo (Điều 10, Khoản 2).
 - **Thủ tục:** Nộp đơn yêu cầu Tòa án giải quyết hủy việc kết hôn trái pháp luật theo quy định của Bộ luật Tố tụng dân sự.
+- **Thời hạn:** Có thể yêu cầu hủy bất cứ lúc nào (không bị hạn chế thời gian theo luật).
 
-**4. Hậu quả pháp lý:**
+**4. Hậu quả pháp lý & Rủi ro:**
 
-- Quyết định của UBND xã A là KHÔNG đúng thẩm quyền, có thể bị xem xét là không có giá trị pháp lý.
-- Quan hệ hôn nhân giữa anh D và chị P vẫn tồn tại về mặt hình thức (do chưa được Tòa án tuyên bố hủy) cho đến khi có Bản án/Quyết định của Tòa án.
-- Quan hệ hôn nhân giữa anh D và người vợ ở quê vẫn HỢP PHÁP, có giá trị pháp lý đầy đủ.
+- **Hậu quả nếu không khắc phục:**
+  • Chị P sẽ không thể làm lại thủ tục hôn nhân hợp pháp với bất kỳ ai cho đến khi Tòa án tuyên bố hủy
+  • Nếu chị P sinh con với anh D, con sẽ có tình trạng pháp lý phức tạp (được sinh trong hôn nhân không hợp pháp)
+  • Chị P mất bảo vệ pháp lý về tài sản chung, quyền kế thừa (vì hôn nhân không hợp pháp)
+  • Anh D có thể bị xử phạt hành chính hoặc hình sự nếu khai man thông tin để xin Giấy chứng thực độc thân
 
-**5. Lưu ý thực tế:**
+- **Chế tài xử phạt:**
+  • Anh D: Vi phạm hành chính theo (Luật Hộ tịch) - phạt 1-3 triệu đồng hoặc xử phạt khác
+  • Anh D: Nếu khai man để lấy Giấy chứng thực độc thân - có thể bị truy cứu trách nhiệm hình sự (làm giả tài liệu)
+  • UBND xã A: Công chức ban hành quyết định sai có thể bị kiểm điểm, giáng chức, sa thải
 
-- Việc anh D xin được giấy xác nhận "độc thân" dù đã có vợ cho thấy có sai sót trong quản lý hộ tịch hoặc hành vi gian dối. Anh D có thể bị xử lý về hành vi làm giả giấy tờ hoặc khai man.
-- Chị P NÊN NHANH CHÓNG nộp đơn lên Tòa án để chấm dứt hợp pháp quan hệ hôn nhân trái pháp luật này.
-- Khuyến nghị chị P tham khảo ý kiến luật sư để được tư vấn cụ thể về quyền lợi (tài sản chung, con cái nếu có...) và thủ tục tố tụng.
+- **Ảnh hưởng đến quyền lợi:**
+  • Chị P mất quyền thừa kế từ anh D (vì hôn nhân không hợp pháp)
+  • Tài sản chung (nếu có) sẽ bị xử lý phức tạp khi hủy hôn nhân
+  • Anh D và người vợ cũ không thể ly hôn để thành hôn nhân mới (do hôn nhân thứ hai với chị P không hợp pháp)
+
+**5. Lưu ý thực tế + Khuyến nghị hành động:**
+
+- **Điểm cần chú ý:**
+  • Việc anh D xin được giấy xác nhận "độc thân" dù đã có vợ cho thấy có sai sót trong quản lý hộ tịch hoặc hành vi gian dối. Anh D có thể bị xử lý về hành vi làm giả giấy tờ hoặc khai man.
+  • UBND xã A KHÔNG có quyền hủy việc kết hôn trái pháp luật đơn phương mà không có lệnh từ Tòa án.
+
+- **Khuyến nghị hành động:**
+  • **Bước 1 (Ngay):** Chị P nên nộp đơn lên Tòa án nhân dân cấp huyện yêu cầu tuyên bố hủy việc kết hôn trái pháp luật
+  • **Bước 2 (Song song):** Liên hệ UBND xã A để yêu cầu giải thích lý do ban hành Quyết định hủy kết hôn (yêu cầu bằng văn bản)
+  • **Bước 3 (Nếu cần):** Tham vấn luật sư để được hỗ trợ trong kỳ kiểm tóa và bảo vệ quyền lợi về tài sản chung
+  • **Tài liệu chuẩn bị:** Giấy chứng nhận kết hôn, Giấy tờ tuỳ thân, Bằng chứng chị P không biết anh D đã có vợ (nếu có)
+
+**6. Gợi ý câu hỏi liên quan (Agent Style):**
+
+🤔 Bạn có thể quan tâm đến các câu hỏi tiếp theo:
+- "Nếu chị P sinh con với anh D trong thời gian chờ Tòa án tuyên bố hủy hôn nhân thì tình trạng pháp lý của con sao?"
+- "Tài sản chung mà chị P và anh D đã tích lũy sẽ được chia như thế nào khi hôn nhân bị hủy?"
+- "Anh D có thể bị xử phạt hình sự vì hành vi khai man để lấy Giấy chứng thực độc thân không?"
+
 ═══════════════════════════════════════════════════════════
 
-HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU:'''
+HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU, CÓ AGENT STYLE:'''
     else:
-        # ========== FAST MODE: Concise prompt ==========
-        prompt = f'''Bạn là chuyên gia pháp lý Việt Nam. Trả lời NGẮN GỌN, CHÍNH XÁC.
+        # ========== FAST MODE: Concise prompt - NGẮN GỌN NHƯNG VẪN CHÍNH XÁC ==========
+        prompt = f'''Bạn là chuyên gia pháp lý Việt Nam. Trả lời NGẮN GỌN, CHÍNH XÁC, TRỰC TIẾP.
 
-NGUỒN THAM KHẢO:
+{f"""═══════════════════════════════════════════════════════════
+📚 NGỮ CẢNH HỘI THOẠI:
+{history_text}
+
+""" if history_text else ""}═══════════════════════════════════════════════════════════
+📖 NGUỒN THAM KHẢO:
 {context_text}
 
-CÂU HỎI: {question}
+═══════════════════════════════════════════════════════════
+❓ CÂU HỎI: {question}
 
-YÊU CẦU:
-- Trả lời TỐI ĐA 4-6 câu, súc tích
-- Trích dẫn chính xác (Điều X, Khoản Y)
-- Đi thẳng vào vấn đề, không dài dòng
-- Không cần phân tích sâu
+═══════════════════════════════════════════════════════════
+📋 YÊU CẦU (FAST MODE - NGẮN GỌN):
+
+**Cấu trúc trả lời (4-6 câu tối đa):**
+
+1. **Kết luận trực tiếp** (1-2 câu): Đáp án chính xác, rõ ràng
+2. **Cơ sở pháp lý** (1-2 câu): Trích dẫn điều luật liên quan (Điều X, Khoản Y) + nội dung ngắn gọn
+3. **Hậu quả/Rủi ro** (1 câu nếu có): Hậu quả nếu vi phạm (mục đích cảnh báo người dùng)
+4. **Hành động cần làm** (1 câu nếu có): Khuyến nghị cụ thể
+
+**Yêu cầu bắt buộc:**
+✅ CHÍNH XÁC - trích dẫn chính xác điều luật, không truy cập dự đoán
+✅ TRỰC TIẾP - không dài dòng, đi thẳng vào vấn đề
+✅ RÕ RÀNG - dễ hiểu, không mơ hồ
+✅ ĐỊNH DẠNG - (Điều X, Khoản Y) của [Tên văn bản]
+
+**Không cần:**
+❌ Phân tích chi tiết, so sánh trường hợp tương tự
+❌ Ví dụ dài dòng hoặc giả định
+❌ Gợi ý câu hỏi tiếp theo
 
 TRẢ LỜI:'''
     

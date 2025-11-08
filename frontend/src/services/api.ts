@@ -3,26 +3,34 @@
  */
 
 // Configure API base URL based on environment
+// 100% Docker setup + browser access from host machine
 const getAPIBase = (): string => {
-  const isProd = import.meta.env.MODE === 'production';
-  
-  if (isProd) {
-    // Production: use VITE_API_URL or default to localhost
-    return (import.meta.env.VITE_API_URL as string) || 'http://localhost:7860';
-  } else {
-    // Development: use backend directly (proxy won't work reliably with relative paths in all cases)
-    // This ensures requests work whether running in Docker or locally
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      // Running in Docker container or on a different host
-      return 'http://backend:7860';
-    } else {
-      // Running locally on localhost
-      return 'http://localhost:7860';
+  // ✅ Priority 1: Check VITE_API_URL environment variable (set in docker-compose.yml)
+  if (import.meta.env.VITE_API_URL) {
+    let apiUrl = import.meta.env.VITE_API_URL as string;
+    console.log('[API] VITE_API_URL from env:', apiUrl);
+    
+    // ✅ Priority 2: Detect if running in browser (máy host) vs container
+    // Nếu chạy trong browser trên máy host, cần replace "backend" → "localhost"
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      // Browser trên máy host → replace backend → localhost
+      apiUrl = apiUrl.replace('http://backend:', 'http://localhost:');
+      console.log('[API] Detected browser on host machine → using:', apiUrl);
+    } else if (typeof window !== 'undefined') {
+      // Browser trên container hoặc khác → giữ nguyên
+      console.log('[API] Detected container environment → using:', apiUrl);
     }
+    
+    return apiUrl;
   }
+
+  // ✅ Fallback
+  console.log('[API] ⚠️ Fallback to http://localhost:7860');
+  return 'http://localhost:7860';
 };
 
 const API_BASE = getAPIBase();
+console.log('[API] API_BASE initialized:', API_BASE);
 
 export interface ChatMessage {
   role: 'user' | 'assistant';
@@ -207,6 +215,35 @@ export async function getDocument(filename: string): Promise<{ filename: string;
     reader.onerror = reject;
     reader.readAsDataURL(blob);
   });
+}
+
+/**
+ * ✅ NEW: Build PDF URL from backend
+ * Gets the direct URL to PDF from backend (không cần base64)
+ */
+export function getPDFUrl(pdfFile: string): string {
+  const domainMap: Record<string, string> = {
+    'luat_hon_nhan.pdf': 'hon_nhan',
+    'luat_hinh_su.pdf': 'hinh_su',
+    'luat_lao_dong.pdf': 'lao_dong',
+    'luat_dat_dai.pdf': 'dat_dai',
+    'luat_dau_thau.pdf': 'dau_thau',
+    'luat_chuyen_giao_cong_nghe.pdf': 'chuyen_giao_cong_nghe',
+    'nghi_dinh_214_2025.pdf': 'nghi_dinh_214',
+    'luat_so_huu_tri_tue.pdf': 'lshtt',
+  };
+
+  let domain_id = 'hon_nhan'; // default
+  for (const [pdf, domain] of Object.entries(domainMap)) {
+    if (pdfFile.includes(pdf)) {
+      domain_id = domain;
+      break;
+    }
+  }
+
+  const pdfUrl = `${API_BASE}/api/pdf-file/${domain_id}/${pdfFile}`;
+  console.log('[API] getPDFUrl:', { pdfFile, domain_id, pdfUrl });
+  return pdfUrl;
 }
 
 /**

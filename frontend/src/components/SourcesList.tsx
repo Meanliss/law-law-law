@@ -1,92 +1,61 @@
-import React, { useState } from 'react';
-import { PDFViewer } from './PDFViewer';
+import { motion } from 'motion/react';
+
+// Component hiển thị sources dạng hyperlink theo từng điều luật
+// Mỗi điều luật là 1 link riêng, compact và đẹp mắt
 
 interface Source {
-  law_name: string;
-  article_num: string;
-  domain_id: string;
+  title: string;
+  page?: string;
+  pdfUrl?: string;
+  articleNum?: string;
 }
 
-interface SourcesListProps {
+interface SourceLinksProps {
   sources: Source[];
+  onOpenPDF: (url: string, title: string, articleNum?: string) => void;
 }
 
-export const SourcesList: React.FC<SourcesListProps> = ({ sources }) => {
-  const [selectedArticle, setSelectedArticle] = useState<{
-    domainId: string;
-    articleNum: string;
-  } | null>(null);
-
-  const handleArticleClick = (domainId: string, articleNum: string) => {
-    setSelectedArticle({ domainId, articleNum });
-  };
+export function SourceLinks({ sources, onOpenPDF }: SourceLinksProps) {
+  if (!sources || sources.length === 0) return null;
 
   return (
-    <>
-      <div className="sources-list">
-        <h3>📚 Nguồn tham khảo:</h3>
-        
-        {sources.map((source, idx) => (
-          <div key={idx} className="source-item">
-            <strong>{idx + 1}. {source.law_name}</strong>
-            <button
-              onClick={() => handleArticleClick(source.domain_id, source.article_num)}
-              className="view-pdf-btn"
-            >
-              📄 Xem Điều {source.article_num}
-            </button>
-          </div>
-        ))}
-        
-        <p className="hint">💡 Click vào nút để xem tài liệu gốc với highlight</p>
-      </div>
-      
-      {selectedArticle && (
-        <PDFViewer
-          domainId={selectedArticle.domainId}
-          articleNum={selectedArticle.articleNum}
-          onClose={() => setSelectedArticle(null)}
-        />
-      )}
-      
-      <style jsx>{`
-        .sources-list {
-          margin-top: 1rem;
-          padding: 1rem;
-          background: #f8f9fa;
-          border-radius: 8px;
-        }
-        
-        .source-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0.5rem;
-          margin: 0.5rem 0;
-          background: white;
-          border-radius: 4px;
-        }
-        
-        .view-pdf-btn {
-          background: #007bff;
-          color: white;
-          border: none;
-          padding: 0.5rem 1rem;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: background 0.3s;
-        }
-        
-        .view-pdf-btn:hover {
-          background: #0056b3;
-        }
-        
-        .hint {
-          margin-top: 1rem;
-          color: #666;
-          font-size: 0.9rem;
-        }
-      `}</style>
-    </>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="ml-14 mt-3 flex flex-wrap gap-2"
+    >
+      {sources.map((source, idx) => {
+        return (
+          <motion.a
+            key={idx}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 * idx }}
+            href={source.pdfUrl || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl backdrop-blur-xl bg-blue-500/10 dark:bg-blue-500/5 hover:bg-blue-500/20 dark:hover:bg-blue-500/10 border border-blue-500/30 dark:border-blue-500/20 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+          >
+            {/* Số thứ tự */}
+            <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-white flex items-center justify-center text-xs font-medium shadow-md group-hover:scale-110 transition-transform">
+              {idx + 1}
+            </div>
+
+            {/* Tên luật và điều */}
+            <div className="flex flex-col">
+              <span className="text-xs font-medium text-blue-600 dark:text-cyan-400 group-hover:underline">
+                {source.title}
+              </span>
+              {source.page && (
+                <span className="text-xs text-blue-500 dark:text-cyan-500">
+                  {source.page}
+                </span>
+              )}
+            </div>
+          </motion.a>
+        );
+      })}
+    </motion.div>
   );
-};
+}

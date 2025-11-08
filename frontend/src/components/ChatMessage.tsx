@@ -1,9 +1,6 @@
-import { Card } from './ui/card';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
 import { motion } from 'motion/react';
 import { User, Sparkles } from 'lucide-react';
+import { MessageContent } from './MessageContent';
 
 interface ChatMessageProps {
   message: {
@@ -11,11 +8,13 @@ interface ChatMessageProps {
     text: string;
     sender: 'user' | 'ai';
     timestamp: Date;
+    pdf_sources?: Array<{ json_file?: string; pdf_file?: string; article_num?: string; page_num?: number }>;
   };
   isDarkMode: boolean;
+  onOpenPDF?: (url: string, title: string, articleNum?: string, pageNum?: number) => void;
 }
 
-export function ChatMessage({ message, isDarkMode }: ChatMessageProps) {
+export function ChatMessage({ message, isDarkMode, onOpenPDF }: ChatMessageProps) {
   const isUser = message.sender === 'user';
 
   return (
@@ -89,7 +88,17 @@ export function ChatMessage({ message, isDarkMode }: ChatMessageProps) {
 
           {/* Message Content */}
           <div className="relative z-10 whitespace-pre-wrap break-words">
-            {message.text}
+            {isUser ? (
+              // User message: render as plain text
+              message.text
+            ) : (
+              // AI message: render with hyperlinks for articles
+              <MessageContent 
+                text={message.text} 
+                pdfSources={message.pdf_sources}
+                onOpenPDF={onOpenPDF} 
+              />
+            )}
           </div>
 
           {/* Time Stamp */}
@@ -106,4 +115,3 @@ export function ChatMessage({ message, isDarkMode }: ChatMessageProps) {
     </motion.div>
   );
 }
-
