@@ -14,9 +14,9 @@ def generate_answer(question: str, context: List[Dict], gemini_model, chat_histo
     Args:
         question: User question
         context: List of relevant document chunks
-        gemini_model: Gemini model instance (Flash for Quality, Lite for Fast)
-        chat_history: Optional chat history for context (only for quality mode)
-        use_advanced: True = Quality mode (reasoning prompt), False = Fast mode (concise prompt)
+        gemini_model: Gemini model instance (always Flash)
+        chat_history: Optional chat history for context
+        use_advanced: True = Detail mode (reasoning prompt), False = Summary mode (concise prompt)
     
     Returns:
         Generated answer
@@ -39,7 +39,7 @@ def generate_answer(question: str, context: List[Dict], gemini_model, chat_histo
 
     # ✅ CHỌN PROMPT THEO MODE
     if use_advanced:
-        # ========== QUALITY MODE: Deep Analysis Prompt - CHI TIẾT, PHÂN TÍCH SÂU, AGENT STYLE ==========
+        # ========== DETAIL MODE: Deep Analysis Prompt - CHI TIẾT, PHÂN TÍCH SÂU, AGENT STYLE ==========
         prompt = f'''Bạn là chuyên gia pháp lý Việt Nam với khả năng PHÂN TÍCH VÀ SUY LUẬN CHUYÊN SÂU. 
 {f"""═══════════════════════════════════════════════════════════
 📚 LỊCH SỬ HỘI THOẠI (ngữ cảnh tham khảo):
@@ -120,7 +120,7 @@ Dựa trên câu hỏi hiện tại, đề xuất 2-3 câu hỏi tiếp theo có
 - Ví dụ: Theo (Điều 8, Khoản 1, Điểm a) của Luật Hôn nhân và Gia đình năm 2014, "Nam từ đủ 20 tuổi trở lên..."
 
 ═══════════════════════════════════════════════════════════
-📌 VÍ DỤ TRẢ LỜI CHUẨN (Quality Mode - Có Agent Style):
+📌 VÍ DỤ TRẢ LỜI CHUẨN (Detail Mode - Có Agent Style):
 
 **1. Tóm tắt câu trả lời:**
 
@@ -191,7 +191,7 @@ Việc UBND xã A ban hành Quyết định hủy việc kết hôn giữa anh D
 
 HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU, CÓ AGENT STYLE:'''
     else:
-        # ========== FAST MODE: Concise prompt - NGẮN GỌN NHƯNG VẪN CHÍNH XÁC ==========
+        # ========== SUMMARY MODE: Concise prompt - NGẮN GỌN NHƯNG VẪN CHÍNH XÁC ==========
         prompt = f'''Bạn là chuyên gia pháp lý Việt Nam. Trả lời NGẮN GỌN, CHÍNH XÁC, TRỰC TIẾP.
 
 {f"""═══════════════════════════════════════════════════════════
@@ -206,7 +206,7 @@ HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU, CÓ AGENT 
 ❓ CÂU HỎI: {question}
 
 ═══════════════════════════════════════════════════════════
-📋 YÊU CẦU (FAST MODE - NGẮN GỌN):
+📋 YÊU CẦU (SUMMARY MODE - NGẮN GỌN):
 
 **Cấu trúc trả lời (4-6 câu tối đa):**
 
@@ -233,7 +233,7 @@ TRẢ LỜI:'''
         answer = response.text.strip()
         
         # Log mode
-        mode_name = "QUALITY (Reasoning)" if use_advanced else "FAST (Concise)"
+        mode_name = "DETAIL (Deep Reasoning)" if use_advanced else "SUMMARY (Concise)"
         print(f'[GENERATION] Mode: {mode_name}, Length: {len(answer)} chars')
         
         return answer

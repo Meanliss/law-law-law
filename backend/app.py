@@ -185,7 +185,8 @@ async def ask_question(request: QuestionRequest):
     intent_start = time.time()
     
     use_advanced = (request.model_mode == "detail")
-    decompose_model = gemini_flash_model if use_advanced else gemini_lite_model
+    # ✅ Always use Lite for intent detection (fast + cheap)
+    decompose_model = gemini_lite_model
     
     intent_result = enhanced_decompose_query(
         question=request.question,
@@ -223,8 +224,8 @@ async def ask_question(request: QuestionRequest):
             sub_questions=sub_questions,
             domain_manager=domain_manager,
             tokenize_fn=tokenize_vi,
-            gemini_model=gemini_lite_model if use_advanced else None,  # ✅ Use Lite for re-ranking (fast & cheap)
-            use_advanced=use_advanced,
+            gemini_model=gemini_lite_model,  # ✅ Use Lite for re-ranking (fast + cheap)
+            use_advanced=True,  # ✅ Always enable re-ranking (both modes)
             top_k=5
         )
     else:
@@ -236,8 +237,8 @@ async def ask_question(request: QuestionRequest):
             domain_manager=domain_manager,
             tokenize_fn=tokenize_vi,
             intent_data=intent_result,
-            gemini_model=gemini_lite_model if use_advanced else None,  # ✅ Use Lite for re-ranking (fast & cheap)
-            use_advanced=use_advanced,
+            gemini_model=gemini_lite_model,  # ✅ Use Lite for re-ranking (fast + cheap)
+            use_advanced=True,  # ✅ Always enable re-ranking (both modes)
             top_k=5
         )
     
@@ -258,15 +259,17 @@ async def ask_question(request: QuestionRequest):
     # ===== PHASE 3: Generate Answer =====
     gen_start = time.time()
     
-    # Select model based on mode: Flash for both (Detail uses detailed prompt, Summary uses concise)
-    answer_model = gemini_flash_model  # Always use Flash for answer generation
+    # ✅ Always use Flash for answer generation (both modes)
+    # Detail mode: uses detailed reasoning prompt
+    # Summary mode: uses concise prompt
+    answer_model = gemini_flash_model
     
     answer = generate_answer(
         question=request.question,
         context=relevant_chunks,
         gemini_model=answer_model,
         chat_history=request.chat_history if hasattr(request, 'chat_history') else None,
-        use_advanced=use_advanced  # ✅ CRITICAL: Pass mode to enable detail prompt
+        use_advanced=use_advanced  # ✅ Controls prompt style (detail vs summary)
     )
     
     timing['generation_ms'] = round((time.time() - gen_start) * 1000, 2)
@@ -334,9 +337,8 @@ async def get_stats():
         "domains": domains_info,
         "models": {
             "embedder": EMBEDDING_MODEL,
-            "llm_flash": f"{GEMINI_FLASH_MODEL} (summary mode answer)",
-            "llm_pro": f"{GEMINI_PRO_MODEL} (detail mode answer)",
-            "llm_lite": f"{GEMINI_LITE_MODEL} (intent detection, decomposition)"
+            "llm_flash": f"{GEMINI_FLASH_MODEL} (answer generation only)",
+            "llm_lite": f"{GEMINI_LITE_MODEL} (intent detection + search rerank)"
         },
         "intent_cache_size": get_cache_size()
     }
