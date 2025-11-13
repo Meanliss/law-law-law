@@ -233,7 +233,7 @@ async def ask_question(request: QuestionRequest):
         query = intent_result.get('refined_query', request.question)
         print(f'[SEARCH] Single-query mode: "{query}"', flush=True)
         relevant_chunks = search_with_domains(
-            query=query,
+            query=query,123123
             domain_manager=domain_manager,
             tokenize_fn=tokenize_vi,
             intent_data=intent_result,
