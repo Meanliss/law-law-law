@@ -33,7 +33,7 @@ export function WelcomeScreen({ isDarkMode, onSelectQuestion }: WelcomeScreenPro
   const welcomeContent = {
     title: 'AI pháp luật',
     description:
-      'Chào mừng bạn đến với AI pháp luật - Cổng pháp luật quốc gia. Rất vui được hỗ trợ bạn trong việc giải đáp các thắc mắc về pháp luật ở 34 lĩnh vực:',
+      'Chào mừng bạn đến với AI pháp luật - Cổng pháp luật quốc gia. Rất vui được hỗ trợ bạn trong việc giải đáp các thắc mắc về pháp luật ở 6 lĩnh vực:',
     warningTitle: '⚠️ AI pháp luật luôn đang hoàn thiện từng ngày với mục tiêu trở thành Trợ lý pháp lý toàn diện ở mọi lĩnh vực.',
     warningDescription:
       'Thông tin từ AI pháp luật có tính chất tham khảo, không thay thế tư vấn pháp lý chính thức từ luật sư, chuyên gia hoặc cơ quan có thẩm quyền.',
