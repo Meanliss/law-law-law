@@ -107,10 +107,9 @@ Chia nhỏ vấn đề thành các khía cạnh pháp lý cụ thể:
 - Khuyến nghị hành động CỤ THỂ từng bước (Nên làm gì, không nên làm gì)
 - Các tài liệu/hồ sơ nên chuẩn bị sẵn
 
-**PHẦN 6 - GỢI Ý CÂU HỎI:**
-Dựa trên câu hỏi hiện tại, gợi ý 2-3 câu hỏi khác mà người dùng có thể quan tâm:
-- Các câu hỏi liên quan hoặc mở rộng vấn đề
-- Định dạng: "💡 Bạn có thể quan tâm: [Câu hỏi 1]? [Câu hỏi 2]? [Câu hỏi 3]?"
+**PHẦN 6 - GỢI Ý FOLLOW-UP:**
+Dựa trên câu hỏi hiện tại, gợi ý 1 vấn đề liên quan mà người dùng có thể quan tâm:
+- Định dạng: "💭 Có lẽ bạn sẽ quan tâm đến [vấn đề], có cần tôi trả lời cho bạn không?"
 
 ═══════════════════════════════════════════════════════════
 ✅ ĐỊNH DẠNG TRÍCH DẪN (BẮT BUỘC PHẢI CHÍNH XÁC):
@@ -179,9 +178,9 @@ Việc UBND xã A ban hành Quyết định hủy việc kết hôn giữa anh D
   • **Bước 3 (Nếu cần):** Tham vấn luật sư để được hỗ trợ trong kỳ kiểm tóa và bảo vệ quyền lợi về tài sản chung
   • **Tài liệu chuẩn bị:** Giấy chứng nhận kết hôn, Giấy tờ tuỳ thân, Bằng chứng chị P không biết anh D đã có vợ (nếu có)
 
-**6. Gợi ý câu hỏi:**
+**6. Gợi ý follow-up:**
 
-💡 Bạn có thể quan tâm: Nếu chị P sinh con với anh D trong thời gian chờ Tòa án tuyên bố hủy hôn nhân thì tình trạng pháp lý của con sao? Tài sản chung sẽ được chia như thế nào khi hôn nhân bị hủy? Anh D có thể bị xử phạt hình sự không?
+💭 Có lẽ bạn sẽ quan tâm đến tình trạng pháp lý của con nếu chị P sinh con với anh D trong thời gian chờ Tòa án tuyên bố hủy hôn nhân, có cần tôi trả lời cho bạn không?
 
 ═══════════════════════════════════════════════════════════
 
@@ -221,9 +220,9 @@ HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU:'''
 ❌ Phân tích chi tiết, so sánh trường hợp tương tự
 ❌ Ví dụ dài dòng hoặc giả định
 
-**Phần 5 - GỢI Ý CÂU HỎI (2-3 câu):**
-- Gợi ý 2-3 câu hỏi khác liên quan mà người dùng có thể quan tâm
-- Định dạng: "💡 Bạn có thể quan tâm: [Câu hỏi 1]? [Câu hỏi 2]? [Câu hỏi 3]?"
+**Phần 5 - GỢI Ý FOLLOW-UP (1 vấn đề):**
+- Gợi ý 1 vấn đề liên quan mà người dùng có thể quan tâm
+- Định dạng: "💭 Có lẽ bạn sẽ quan tâm đến [vấn đề], có cần tôi trả lời cho bạn không?"
 
 TRẢ LỜI:'''
     
