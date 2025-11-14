@@ -107,11 +107,10 @@ Chia nhỏ vấn đề thành các khía cạnh pháp lý cụ thể:
 - Khuyến nghị hành động CỤ THỂ từng bước (Nên làm gì, không nên làm gì)
 - Các tài liệu/hồ sơ nên chuẩn bị sẵn
 
-**PHẦN 6 - GỢI Ý CÂU HỎI LIÊN QUAN (Agent Style):**
-Dựa trên câu hỏi hiện tại, đề xuất 2-3 câu hỏi tiếp theo có liên quan mà người dùng có thể quan tâm:
-- "Nếu... thì sao?" (Các tình huống tương tự hoặc phát sinh)
-- Các câu hỏi giúp làm rõ thêm vấn đề hoặc các hệ luỵ pháp lý
-- Định dạng: "🤔 Bạn có thể quan tâm: [Câu hỏi 1]? [Câu hỏi 2]? [Câu hỏi 3]?"
+**PHẦN 6 - GỢI Ý CÂU HỎI:**
+Dựa trên câu hỏi hiện tại, gợi ý 2-3 câu hỏi khác mà người dùng có thể quan tâm:
+- Các câu hỏi liên quan hoặc mở rộng vấn đề
+- Định dạng: "💡 Bạn có thể quan tâm: [Câu hỏi 1]? [Câu hỏi 2]? [Câu hỏi 3]?"
 
 ═══════════════════════════════════════════════════════════
 ✅ ĐỊNH DẠNG TRÍCH DẪN (BẮT BUỘC PHẢI CHÍNH XÁC):
@@ -180,16 +179,13 @@ Việc UBND xã A ban hành Quyết định hủy việc kết hôn giữa anh D
   • **Bước 3 (Nếu cần):** Tham vấn luật sư để được hỗ trợ trong kỳ kiểm tóa và bảo vệ quyền lợi về tài sản chung
   • **Tài liệu chuẩn bị:** Giấy chứng nhận kết hôn, Giấy tờ tuỳ thân, Bằng chứng chị P không biết anh D đã có vợ (nếu có)
 
-**6. Gợi ý câu hỏi liên quan (Agent Style):**
+**6. Gợi ý câu hỏi:**
 
-🤔 Bạn có thể quan tâm đến các câu hỏi tiếp theo:
-- "Nếu chị P sinh con với anh D trong thời gian chờ Tòa án tuyên bố hủy hôn nhân thì tình trạng pháp lý của con sao?"
-- "Tài sản chung mà chị P và anh D đã tích lũy sẽ được chia như thế nào khi hôn nhân bị hủy?"
-- "Anh D có thể bị xử phạt hình sự vì hành vi khai man để lấy Giấy chứng thực độc thân không?"
+💡 Bạn có thể quan tâm: Nếu chị P sinh con với anh D trong thời gian chờ Tòa án tuyên bố hủy hôn nhân thì tình trạng pháp lý của con sao? Tài sản chung sẽ được chia như thế nào khi hôn nhân bị hủy? Anh D có thể bị xử phạt hình sự không?
 
 ═══════════════════════════════════════════════════════════
 
-HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU, CÓ AGENT STYLE:'''
+HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU:'''
     else:
         # ========== SUMMARY MODE: Concise prompt - NGẮN GỌN NHƯNG VẪN CHÍNH XÁC ==========
         prompt = f'''Bạn là chuyên gia pháp lý Việt Nam. Trả lời NGẮN GỌN, CHÍNH XÁC, TRỰC TIẾP.
@@ -224,7 +220,10 @@ HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU, CÓ AGENT 
 **Không cần:**
 ❌ Phân tích chi tiết, so sánh trường hợp tương tự
 ❌ Ví dụ dài dòng hoặc giả định
-❌ Gợi ý câu hỏi tiếp theo
+
+**Phần 5 - GỢI Ý CÂU HỎI (2-3 câu):**
+- Gợi ý 2-3 câu hỏi khác liên quan mà người dùng có thể quan tâm
+- Định dạng: "💡 Bạn có thể quan tâm: [Câu hỏi 1]? [Câu hỏi 2]? [Câu hỏi 3]?"
 
 TRẢ LỜI:'''
     
