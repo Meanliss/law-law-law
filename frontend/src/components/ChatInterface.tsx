@@ -74,7 +74,6 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
     url: string;
     title: string;
     articleNum?: string;
-    pageNum?: number;
   }>({
     isOpen: false,
     url: '',
@@ -102,13 +101,11 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
     }
   }, [messages, isTyping]);
 
-  const handleOpenPDF = (pdfUrl: string, title: string, articleNum?: string, pageNum?: number) => {
-    console.log('[ChatInterface] handleOpenPDF called:', { pdfUrl, title, articleNum, pageNum });
+  const handleOpenPDF = (pdfUrl: string, title: string, articleNum?: string) => {
     if (onOpenPDF) {
       onOpenPDF(pdfUrl, title, articleNum);
     } else {
-      console.log('[ChatInterface] Setting PDF viewer state');
-      setPdfViewer({ isOpen: true, url: pdfUrl, title, articleNum, pageNum });
+      setPdfViewer({ isOpen: true, url: pdfUrl, title, articleNum });
     }
   };
 
@@ -301,15 +298,10 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                     >
-                      <ChatMessage 
-                        message={message} 
-                        isDarkMode={isDarkMode}
-                        onOpenPDF={handleOpenPDF}
-                      />
+                      <ChatMessage message={message} isDarkMode={isDarkMode} />
 
                       {/* Sources - Compact Hyperlinks */}
-                      {/* DISABLED: Using inline hyperlinks in MessageContent instead */}
-                      {message.sender === 'ai' && message.sources && false && (
+                      {message.sender === 'ai' && message.sources && (
                         <>
                           <SourceLinks 
                             sources={message.sources} 
@@ -463,8 +455,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
         url={pdfViewer.url}
         title={pdfViewer.title}
         articleNum={pdfViewer.articleNum}
-        pageNum={pdfViewer.pageNum}
-        onClose={() => setPdfViewer({ isOpen: false, url: '', title: '', articleNum: undefined, pageNum: undefined })}
+        onClose={() => setPdfViewer({ isOpen: false, url: '', title: '', articleNum: undefined })}
       />
     </div>
   );
