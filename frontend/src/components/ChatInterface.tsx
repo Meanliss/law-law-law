@@ -9,7 +9,6 @@ import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { ThumbsUp, ThumbsDown, Zap, Crown, Clock, BookOpen, Scale } from 'lucide-react';
 import { WelcomeScreen } from './WelcomeScreen';
-import { SuggestedPrompts } from './SuggestedPrompts';
 import { LoadingDots } from './LoadingDots';
 import { askQuestion, submitFeedback, getDocument, suggestQuestions, type ChatMessage as APIChatMessage, type PDFSource } from '../services/api';
 import { SourceLinks } from './SourceLinks';
@@ -465,13 +464,6 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                 onClear={() => setSuggestedQuestions([])}
                 isDarkMode={isDarkMode}
               />
-            )}
-
-            {/* Suggested Prompts - Hiển thị khi có ít nhất 2 tin nhắn và KHÔNG có suggested questions */}
-            {messages.length > 1 && suggestedQuestions.length === 0 && (
-              <div className="mb-2">
-                <SuggestedPrompts onSelectPrompt={handleSendMessage} />
-              </div>
             )}
 
             <ChatInput onSend={handleSendMessage} disabled={isTyping} isDarkMode={isDarkMode} mode={mode} onModeChange={setMode} />
