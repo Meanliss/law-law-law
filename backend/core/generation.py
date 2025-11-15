@@ -107,10 +107,6 @@ Chia nhỏ vấn đề thành các khía cạnh pháp lý cụ thể:
 - Khuyến nghị hành động CỤ THỂ từng bước (Nên làm gì, không nên làm gì)
 - Các tài liệu/hồ sơ nên chuẩn bị sẵn
 
-**PHẦN 6 - GỢI Ý FOLLOW-UP:**
-Dựa trên câu hỏi hiện tại, gợi ý 1 vấn đề liên quan mà người dùng có thể quan tâm:
-- Định dạng: "💭 Có lẽ bạn sẽ quan tâm đến [vấn đề], có cần tôi trả lời cho bạn không?"
-
 ═══════════════════════════════════════════════════════════
 ✅ ĐỊNH DẠNG TRÍCH DẪN (BẮT BUỘC PHẢI CHÍNH XÁC):
 - Quy định pháp luật: (Điều X, Khoản Y, Điểm Z) của [Tên văn bản] năm [năm]
@@ -178,10 +174,6 @@ Việc UBND xã A ban hành Quyết định hủy việc kết hôn giữa anh D
   • **Bước 3 (Nếu cần):** Tham vấn luật sư để được hỗ trợ trong kỳ kiểm tóa và bảo vệ quyền lợi về tài sản chung
   • **Tài liệu chuẩn bị:** Giấy chứng nhận kết hôn, Giấy tờ tuỳ thân, Bằng chứng chị P không biết anh D đã có vợ (nếu có)
 
-**6. Gợi ý follow-up:**
-
-💭 Có lẽ bạn sẽ quan tâm đến tình trạng pháp lý của con nếu chị P sinh con với anh D trong thời gian chờ Tòa án tuyên bố hủy hôn nhân, có cần tôi trả lời cho bạn không?
-
 ═══════════════════════════════════════════════════════════
 
 HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU:'''
@@ -216,14 +208,6 @@ HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU:'''
 ✅ RÕ RÀNG - dễ hiểu, không mơ hồ
 ✅ ĐỊNH DẠNG - (Điều X, Khoản Y) của [Tên văn bản]
 
-**Không cần:**
-❌ Phân tích chi tiết, so sánh trường hợp tương tự
-❌ Ví dụ dài dòng hoặc giả định
-
-**Phần 5 - GỢI Ý FOLLOW-UP (1 vấn đề):**
-- Gợi ý 1 vấn đề liên quan mà người dùng có thể quan tâm
-- Định dạng: "💭 Có lẽ bạn sẽ quan tâm đến [vấn đề], có cần tôi trả lời cho bạn không?"
-
 TRẢ LỜI:'''
     
     try:
@@ -238,6 +222,51 @@ TRẢ LỜI:'''
     except Exception as e:
         print(f'[ERROR] Gemini API error: {e}')
         return 'Xin lỗi, không thể tạo câu trả lời lúc này.'
+
+
+def generate_suggested_questions(question: str, answer: str, gemini_model, max_questions: int = 3) -> List[str]:
+    """
+    Generate suggested follow-up questions based on the answer
+    
+    Args:
+        question: Original user question
+        answer: Generated answer
+        gemini_model: Gemini model instance
+        max_questions: Maximum number of questions to suggest (default 3)
+    
+    Returns:
+        List of suggested questions
+    """
+    try:
+        prompt = f"""Dựa trên câu hỏi và câu trả lời về pháp luật sau, hãy gợi ý {max_questions} câu hỏi tiếp theo mà người dùng có thể quan tâm.
+
+CÂU HỎI GỐC: {question}
+
+CÂU TRẢ LỜI: {answer[:500]}...
+
+YÊU CẦU:
+- Gợi ý {max_questions} câu hỏi liên quan hoặc mở rộng vấn đề
+- Mỗi câu hỏi trên 1 dòng
+- Format: "💭 Có lẽ bạn sẽ quan tâm đến [vấn đề], có cần tôi trả lời cho bạn không?"
+- Ngắn gọn, dễ hiểu, liên quan trực tiếp
+
+CHỈ TRẢ LỜI CÁC CÂU HỎI, KHÔNG GIẢI THÍCH:"""
+        
+        response = gemini_model.generate_content(prompt)
+        text = response.text.strip()
+        
+        # Parse questions
+        questions = []
+        for line in text.split('\n'):
+            line = line.strip()
+            if line and ('💭' in line or 'quan tâm' in line.lower()):
+                questions.append(line)
+        
+        return questions[:max_questions]
+    
+    except Exception as e:
+        print(f'[ERROR] Failed to generate suggested questions: {e}')
+        return []
 
 
 def get_rejection_message() -> str:

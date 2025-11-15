@@ -11,8 +11,9 @@ import { ThumbsUp, ThumbsDown, Zap, Crown, Clock, BookOpen, Scale } from 'lucide
 import { WelcomeScreen } from './WelcomeScreen';
 import { SuggestedPrompts } from './SuggestedPrompts';
 import { LoadingDots } from './LoadingDots';
-import { askQuestion, submitFeedback, getDocument, type ChatMessage as APIChatMessage, type PDFSource } from '../services/api';
+import { askQuestion, submitFeedback, getDocument, suggestQuestions, type ChatMessage as APIChatMessage, type PDFSource } from '../services/api';
 import { SourceLinks } from './SourceLinks';
+import { SuggestedQuestions } from './SuggestedQuestions';
 
 const submitFeedback = async (question: string, answer: string, context: any[], type: string) => {
   console.log('Feedback submitted:', { question, answer, context, type });
@@ -68,7 +69,8 @@ const formatLawName = (jsonFile: string | undefined): string => {
 export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, onOpenPDF, onUpdateConversation }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [mode, setMode] = useState<'fast' | 'quality'>('fast');
+  const [mode, setMode] = useState<'summary' | 'detail'>('summary');
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([]);
   const [pdfViewer, setPdfViewer] = useState<{
     isOpen: boolean;
     url: string;
@@ -119,6 +121,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
 
     setMessages((prev) => [...prev, userMessage]);
     setIsTyping(true);
+    setSuggestedQuestions([]); // Clear old suggestions
 
     // Update conversation title with first message
     if (onUpdateConversation && messages.length <= 1) {
@@ -126,7 +129,16 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
     }
 
     try {
-      const response = await askQuestion(text, mode, chatHistory);
+      // ✅ Build context from last 2 Q&A pairs (4 messages)
+      const recentMessages = messages.slice(-4);
+      let previousContext = '';
+      if (recentMessages.length > 0) {
+        previousContext = recentMessages
+          .map((msg) => `${msg.sender === 'user' ? 'Q' : 'A'}: ${msg.text.slice(0, 200)}`)
+          .join(' | ');
+      }
+
+      const response = await askQuestion(text, mode, chatHistory, previousContext);
 
       const displaySources = response.pdf_sources.slice(0, 3).map((pdfSource) => ({
         title: formatLawName(pdfSource.json_file),
@@ -155,6 +167,14 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
         { role: 'user', content: text },
         { role: 'assistant', content: response.answer },
       ]);
+
+      // ✅ Get suggested questions after answer
+      try {
+        const suggestions = await suggestQuestions(text, response.answer, 3);
+        setSuggestedQuestions(suggestions);
+      } catch (err) {
+        console.error('Error getting suggestions:', err);
+      }
     } catch (error) {
       console.error('Error asking question:', error);
       const errorMessage: Message = {
@@ -437,8 +457,18 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
           className="flex-shrink-0 py-4 px-4"
         >
           <div className="max-w-4xl mx-auto">
-            {/* Suggested Prompts - Hiển thị khi có ít nhất 2 tin nhắn */}
-            {messages.length > 1 && (
+            {/* Suggested Questions - Hiển thị sau mỗi câu trả lời */}
+            {suggestedQuestions.length > 0 && (
+              <SuggestedQuestions
+                questions={suggestedQuestions}
+                onSelectQuestion={handleSendMessage}
+                onClear={() => setSuggestedQuestions([])}
+                isDarkMode={isDarkMode}
+              />
+            )}
+
+            {/* Suggested Prompts - Hiển thị khi có ít nhất 2 tin nhắn và KHÔNG có suggested questions */}
+            {messages.length > 1 && suggestedQuestions.length === 0 && (
               <div className="mb-2">
                 <SuggestedPrompts onSelectPrompt={handleSendMessage} />
               </div>

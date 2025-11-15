@@ -7,11 +7,11 @@ interface ChatInputProps {
   onSend: (message: string) => void;
   disabled?: boolean;
   isDarkMode: boolean;
-  mode?: 'fast' | 'quality';
-  onModeChange?: (mode: 'fast' | 'quality') => void;
+  mode?: 'summary' | 'detail';
+  onModeChange?: (mode: 'summary' | 'detail') => void;
 }
 
-export function ChatInput({ onSend, disabled, isDarkMode, mode = 'fast', onModeChange }: ChatInputProps) {
+export function ChatInput({ onSend, disabled, isDarkMode, mode = 'summary', onModeChange }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -65,8 +65,8 @@ export function ChatInput({ onSend, disabled, isDarkMode, mode = 'fast', onModeC
   };
 
   const modes = [
-    { id: 'fast' as const, label: 'Summary', icon: Zap, color: 'from-blue-500 to-cyan-500' },
-    { id: 'quality' as const, label: 'Overall', icon: Crown, color: 'from-purple-500 to-pink-500' },
+    { id: 'summary' as const, label: 'Summary', icon: Zap, color: 'from-blue-500 to-cyan-500' },
+    { id: 'detail' as const, label: 'Overall', icon: Crown, color: 'from-purple-500 to-pink-500' },
   ];
 
   const currentMode = modes.find(m => m.id === mode) || modes[0];
@@ -177,20 +177,20 @@ export function ChatInput({ onSend, disabled, isDarkMode, mode = 'fast', onModeC
                                 : ''
                             }`}
                           >
-                            <div className={`mt-0.5 p-1.5 rounded-lg ${m.id === 'fast' ? 'bg-blue-500/20' : 'bg-purple-500/20'}`}>
-                              <ModeIcon size={16} className={m.id === 'fast' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400'} />
+                            <div className={`mt-0.5 p-1.5 rounded-lg ${m.id === 'summary' ? 'bg-blue-500/20' : 'bg-purple-500/20'}`}>
+                              <ModeIcon size={16} className={m.id === 'summary' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400'} />
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
                                 <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                                  {m.id === 'fast' ? 'Summary' : 'Overall'}
+                                  {m.id === 'summary' ? 'Summary' : 'Detail'}
                                 </span>
                                 {mode === m.id && (
                                   <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
                                 )}
                               </div>
                               <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
-                                {m.id === 'fast' ? 'Tóm tắt nhanh' : 'Phân tích toàn diện'}
+                                {m.id === 'summary' ? 'Tóm tắt nhanh' : 'Phân tích chi tiết'}
                               </p>
                             </div>
                           </motion.button>

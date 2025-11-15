@@ -71,7 +71,7 @@ BẮT ĐẦU PHÂN LOẠI:"""
         return None
 
 
-def detect_intent_and_refine(query: str, gemini_lite_model) -> tuple:
+def detect_intent_and_refine(query: str, gemini_lite_model, previous_context: str = None) -> tuple:
     """
     Sử dụng LLM Lite để:
     1. Phát hiện intent (câu hỏi có liên quan pháp luật không)
@@ -80,6 +80,7 @@ def detect_intent_and_refine(query: str, gemini_lite_model) -> tuple:
     Args:
         query: User query
         gemini_lite_model: Gemini lite model instance
+        previous_context: Context từ 2 câu hỏi/trả lời trước (optional)
     
     Returns:
         (intent_result, refined_query)
@@ -87,10 +88,22 @@ def detect_intent_and_refine(query: str, gemini_lite_model) -> tuple:
         refined_query: Câu hỏi đã được tinh chỉnh
     """
     try:
-        prompt = f"""Phân tích câu hỏi: "{query}"
+        # ✅ Thêm context section nếu có
+        context_section = ""
+        if previous_context:
+            context_section = f"""
+════════════════════════════════════════
+📚 NGỮ CẢNH HỘI THOẠI TRƯỚC:
+{previous_context}
+════════════════════════════════════════
+
+"""
+        
+        prompt = f"""{context_section}Phân tích câu hỏi: "{query}"
 
 NHIỆM VỤ 1: Câu hỏi có liên quan đến PHÁP LUẬT VIỆT NAM không?
 - Pháp luật bao gồm: Luật, Nghị định, Thông tư, Quy định về hôn nhân, lao động, đất đai, hình sự, dân sự, hành chính, v.v.
+- ✅ NẾU CÓ NGỮ CẢNH PHÁP LUẬT TRƯỚC: Câu hỏi follow-up (như "còn trường hợp này thì sao?", "cảm ơn", "giải thích thêm") cũng được coi là câu hỏi pháp luật
 
 NHIỆM VỤ 2: Tinh chỉnh câu hỏi (nếu là câu hỏi pháp luật):
 - Chuẩn hóa ngôn ngữ (sửa lỗi chính tả, ngữ pháp)
@@ -172,7 +185,7 @@ BẮT ĐẦU PHÂN TÍCH:"""
         }, query
 
 
-def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_model=None, use_advanced=False, domain_manager=None) -> Dict:
+def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_model=None, use_advanced=False, domain_manager=None, previous_context: str = None) -> Dict:
     """
     Intent detection + Query refinement + Smart decomposition + Domain detection
     
@@ -182,6 +195,7 @@ def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_mode
         gemini_flash_model: Gemini flash model instance (for Quality mode) - OPTIONAL
         use_advanced: True = Quality mode (dùng Flash cho decompose), False = Fast mode (dùng Lite)
         domain_manager: DomainManager instance for domain detection - OPTIONAL
+        previous_context: Context từ 2 câu hỏi/trả lời trước (optional)
     
     Returns:
         {
@@ -196,7 +210,7 @@ def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_mode
     
     # ✅ Step 1: Intent detection + Query refinement (luôn dùng Lite - nhanh)
     print(f'\n[INTENT+REFINE] Analyzing: "{question}"', flush=True)
-    intent, refined_query = detect_intent_and_refine(question, gemini_lite_model)
+    intent, refined_query = detect_intent_and_refine(question, gemini_lite_model, previous_context=previous_context)
     
     # ✅ Step 2: Reject if not legal
     if not intent['is_legal'] and intent['confidence'] >= INTENT_CONFIDENCE_REJECT_THRESHOLD:

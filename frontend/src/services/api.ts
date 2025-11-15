@@ -40,8 +40,9 @@ export interface ChatMessage {
 export interface QuestionRequest {
   question: string;
   use_advanced: boolean;
-  model_mode: 'fast' | 'quality';
+  model_mode: 'summary' | 'detail';
   chat_history: ChatMessage[];
+  previous_context?: string;
 }
 
 export interface PDFSource {
@@ -96,8 +97,9 @@ export interface StatsResponse {
  */
 export async function askQuestion(
   question: string,
-  mode: 'fast' | 'quality' = 'quality',
-  chatHistory: ChatMessage[] = []
+  mode: 'summary' | 'detail' = 'detail',
+  chatHistory: ChatMessage[] = [],
+  previousContext?: string
 ): Promise<AnswerResponse> {
   const response = await fetch(`${API_BASE}/ask`, {
     method: 'POST',
@@ -109,6 +111,7 @@ export async function askQuestion(
       use_advanced: true,
       model_mode: mode,
       chat_history: chatHistory,
+      previous_context: previousContext,
     } as QuestionRequest),
   });
 
@@ -117,6 +120,40 @@ export async function askQuestion(
   }
 
   return response.json();
+}
+
+/**
+ * Get suggested follow-up questions
+ */
+export async function suggestQuestions(
+  question: string,
+  answer: string,
+  maxQuestions: number = 3
+): Promise<string[]> {
+  try {
+    const response = await fetch(`${API_BASE}/suggest-questions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        question,
+        answer,
+        max_questions: maxQuestions,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('[API] Failed to get suggestions:', response.status);
+      return [];
+    }
+
+    const data = await response.json();
+    return data.questions || [];
+  } catch (error) {
+    console.error('[API] Error getting suggestions:', error);
+    return [];
+  }
 }
 
 /**

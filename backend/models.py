@@ -41,6 +41,18 @@ class AnswerResponse(BaseModel):
     timing_ms: Optional[float] = None  # Simple timing for domain-based
 
 
+class SuggestQuestionsRequest(BaseModel):
+    """Request for generating suggested questions"""
+    question: str
+    answer: str
+    max_questions: int = 3
+
+
+class SuggestQuestionsResponse(BaseModel):
+    """Response with suggested questions"""
+    questions: List[str]
+
+
 class FeedbackRequest(BaseModel):
     """User feedback on answer quality"""
     query: str

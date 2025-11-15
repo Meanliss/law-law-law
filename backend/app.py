@@ -24,13 +24,13 @@ from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 from pathlib import Path
 # Import models
-from models import QuestionRequest, AnswerResponse, HealthResponse, PDFSource, FeedbackRequest, FeedbackResponse
+from models import QuestionRequest, AnswerResponse, HealthResponse, PDFSource, FeedbackRequest, FeedbackResponse, SuggestQuestionsRequest, SuggestQuestionsResponse
 
 # Import core functions
 from core.document_processor import xu_ly_van_ban_phap_luat_json
 from core.search import advanced_hybrid_search, simple_search
 from core.search_domains import search_with_domains, search_multi_query_with_domains  # ✅ New
-from core.generation import generate_answer, get_rejection_message
+from core.generation import generate_answer, get_rejection_message, generate_suggested_questions
 from core.intent_detection import get_cache_size, enhanced_decompose_query
 from core.domain_manager import DomainManager  # ✅ New
 from faiss import logger
@@ -188,12 +188,25 @@ async def ask_question(request: QuestionRequest):
     # ✅ Always use Lite for intent detection (fast + cheap)
     decompose_model = gemini_lite_model
     
+    # ✅ Prepare context from chat history (last 2 Q&A pairs)
+    previous_context = None
+    if request.chat_history and len(request.chat_history) > 0:
+        recent = request.chat_history[-4:]  # Last 4 messages (2 Q&A pairs)
+        context_lines = []
+        for msg in recent:
+            role = "👤 User" if msg.get('role') == 'user' else "🤖 Assistant"
+            content = msg.get('content', '')[:150]  # Limit to 150 chars
+            context_lines.append(f"{role}: {content}")
+        previous_context = '\n'.join(context_lines)
+        print(f'[CONTEXT] Using {len(recent)} previous messages', flush=True)
+    
     intent_result = enhanced_decompose_query(
         question=request.question,
         gemini_lite_model=gemini_lite_model,
         gemini_flash_model=decompose_model,
         use_advanced=use_advanced,
-        domain_manager=domain_manager  # ✅ Pass domain_manager for domain detection
+        domain_manager=domain_manager,
+        previous_context=previous_context  # ✅ Pass context
     )
     
     timing['intent_ms'] = round((time.time() - intent_start) * 1000, 2)
@@ -342,6 +355,26 @@ async def get_stats():
         },
         "intent_cache_size": get_cache_size()
     }
+
+
+@app.post("/suggest-questions", response_model=SuggestQuestionsResponse)
+async def suggest_questions(request: SuggestQuestionsRequest):
+    """Generate suggested follow-up questions based on Q&A"""
+    if not gemini_lite_model:
+        raise HTTPException(status_code=503, detail="LLM model not loaded")
+    
+    try:
+        questions = generate_suggested_questions(
+            question=request.question,
+            answer=request.answer,
+            gemini_model=gemini_lite_model,
+            max_questions=request.max_questions
+        )
+        
+        return {"questions": questions}
+    except Exception as e:
+        print(f'[ERROR] Failed to generate suggestions: {e}', flush=True)
+        return {"questions": []}
 
 
 @app.post("/feedback", response_model=FeedbackResponse)
