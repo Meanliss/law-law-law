@@ -293,13 +293,8 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col">
-        {/* Header with Glass Effect */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex-shrink-0 backdrop-blur-2xl bg-white/60 dark:bg-gray-900/60 border-b border-white/50 dark:border-gray-700/50 px-6 py-5"
-        >
+        {/* Header with Glass Effect - FIXED POSITION, NO ANIMATION ON CONVERSATION CHANGE */}
+        <div className="flex-shrink-0 backdrop-blur-2xl bg-white/60 dark:bg-gray-900/60 border-b border-white/50 dark:border-gray-700/50 px-6 py-5">
           <div className="max-w-5xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4">
               {/* Logo with Glass Effect */}
@@ -323,10 +318,10 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
 
             <DarkModeToggle isDark={isDarkMode} onToggle={onToggleDarkMode} />
           </div>
-        </motion.div>
+        </div>
 
-        {/* Messages Area */}
-        <div className="flex-1 relative">
+        {/* Messages Area - ANIMATE ONLY THIS PART */}
+        <div className="flex-1 relative" key={conversationId}>
           <div className="absolute inset-0">
             <ScrollArea className="h-full">
               <div className="max-w-4xl mx-auto p-6 space-y-6">
@@ -479,14 +474,8 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
           </div>
         </div>
 
-        {/* Input Area with Glass Effect */}
-        {/* Input Area - ChatGPT Style (No border, centered, floating) */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex-shrink-0 py-4 px-4"
-        >
+        {/* Input Area - FIXED POSITION, NO ANIMATION ON CONVERSATION CHANGE */}
+        <div className="flex-shrink-0 py-4 px-4">
           <div className="max-w-4xl mx-auto">
             {/* Suggested Questions - Hiển thị sau mỗi câu trả lời */}
             {suggestedQuestions.length > 0 && (
@@ -500,7 +489,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
 
             <ChatInput onSend={handleSendMessage} disabled={isTyping} isDarkMode={isDarkMode} mode={mode} onModeChange={setMode} />
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* PDF Viewer */}
