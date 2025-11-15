@@ -16,21 +16,20 @@ export function PDFViewer({ isOpen, url, title, articleNum, pageNum, onClose }: 
   const [searchQuery, setSearchQuery] = useState('');
   const [pdfLoaded, setPdfLoaded] = useState(false);
 
-  // ✅ Build URL with page number for auto-scroll
-  const pdfUrlWithPage = pageNum && pageNum > 0 ? `${url}#page=${pageNum}` : url;
+  // ✅ SIMPLE: Just open PDF, page number will be added later
+  const pdfUrl = url;
 
-  // ✅ Notification khi mở PDF với điều cụ thể
+  // ✅ Log for debugging
   useEffect(() => {
-    console.log('[PDFViewer] useEffect:', { isOpen, articleNum, pageNum, url });
-    if (isOpen && articleNum) {
-      setPdfLoaded(false);
-      const searchText = `Điều ${articleNum}`;
-      setSearchQuery(searchText);
-      
-      // Delay để hiển thị notification
-      setTimeout(() => setPdfLoaded(true), 500);
+    if (isOpen) {
+      console.log('[PDFViewer] Opening PDF:', { 
+        url, 
+        title,
+        articleNum, 
+        pageNum
+      });
     }
-  }, [isOpen, articleNum, pageNum]);
+  }, [isOpen, url, title, articleNum, pageNum]);
 
   return (
     <AnimatePresence>
@@ -87,53 +86,37 @@ export function PDFViewer({ isOpen, url, title, articleNum, pageNum, onClose }: 
                   </motion.div>
                 </div>
 
-                {/* Search/Highlight Box */}
+                {/* Article info */}
                 {articleNum && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-500/10 dark:bg-blue-500/5 border border-blue-500/30 dark:border-blue-500/20"
-                  >
-                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
-                      <FileText size={16} className="text-blue-600 dark:text-cyan-400" />
-                    </motion.div>
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-500/10 dark:bg-blue-500/5 border border-blue-500/30 dark:border-blue-500/20">
+                    <FileText size={16} className="text-blue-600 dark:text-cyan-400" />
                     <span className="text-sm text-blue-600 dark:text-cyan-400 font-medium">
-                      🔍 Tìm kiếm: Điều {articleNum}
+                      📄 Xem Điều {articleNum}
                     </span>
-                  </motion.div>
+                  </div>
                 )}
               </div>
             </div>
 
             {/* PDF Content */}
             <div className="flex-1 overflow-hidden bg-gray-100 dark:bg-gray-950">
-              {/* ✅ Cách 1: Dùng embed tag (tốt hơn iframe cho PDF) */}
-              <embed
-                src={pdfUrlWithPage}
-                type="application/pdf"
-                className="w-full h-full"
+              {/* ✅ Use iframe for better search support */}
+              <iframe
+                src={pdfUrl}
+                className="w-full h-full border-0"
                 title={title}
               />
               
-              {/* ✅ Fallback: Nếu PDF không load, show button để open ở tab mới */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-950 pointer-events-none">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 2 }}
-                  className="pointer-events-auto text-center space-y-4"
+              {/* ✅ Open in new tab button */}
+              <div className="absolute bottom-4 right-4 z-10">
+                <Button
+                  onClick={() => window.open(pdfUrl, '_blank')}
+                  className="gap-2 bg-blue-600 hover:bg-blue-700 shadow-lg"
+                  size="sm"
                 >
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    Không thể hiển thị PDF trong trình duyệt
-                  </p>
-                  <Button
-                    onClick={() => window.open(pdfUrlWithPage, '_blank')}
-                    className="gap-2 bg-blue-600 hover:bg-blue-700"
-                  >
-                    <ExternalLink size={16} />
-                    Mở PDF ở tab mới
-                  </Button>
-                </motion.div>
+                  <ExternalLink size={16} />
+                  Mở ở tab mới
+                </Button>
               </div>
             </div>
           </motion.div>

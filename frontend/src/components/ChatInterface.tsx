@@ -5,18 +5,12 @@ import { ChatInput } from './ChatInput';
 import { DarkModeToggle } from './DarkModeToggle';
 import { PDFViewer } from './PDFViewer';
 import { ScrollArea } from './ui/scroll-area';
-import { Card } from './ui/card';
 import { Button } from './ui/button';
-import { ThumbsUp, ThumbsDown, Zap, Crown, Clock, BookOpen, Scale } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Zap, Clock, Scale } from 'lucide-react';
 import { WelcomeScreen } from './WelcomeScreen';
 import { LoadingDots } from './LoadingDots';
-import { askQuestion, submitFeedback, getDocument, suggestQuestions, type ChatMessage as APIChatMessage, type PDFSource } from '../services/api';
-import { SourceLinks } from './SourceLinks';
+import { askQuestion, submitFeedback as apiSubmitFeedback, suggestQuestions } from '../services/api';
 import { SuggestedQuestions } from './SuggestedQuestions';
-
-const submitFeedback = async (question: string, answer: string, context: any[], type: string) => {
-  console.log('Feedback submitted:', { question, answer, context, type });
-};
 
 interface Message {
   id: string;
@@ -243,7 +237,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
           }
         }
 
-        await submitFeedback(
+        await apiSubmitFeedback(
           userQuestion,
           message.text,
           message.context,
@@ -344,17 +338,12 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                     >
-                      <ChatMessage message={message} isDarkMode={isDarkMode} />
+                      <ChatMessage message={message} isDarkMode={isDarkMode} onOpenPDF={handleOpenPDF} />
 
-                      {/* Sources - Compact Hyperlinks */}
-                      {message.sender === 'ai' && message.sources && (
+                      {/* Feedback Buttons - Show for AI messages */}
+                      {message.sender === 'ai' && (
                         <>
-                          <SourceLinks 
-                            sources={message.sources} 
-                            onOpenPDF={handleOpenPDF}
-                          />
-
-                          {/* Feedback Buttons with Glass Effect */}
+                          {/* Feedback Buttons with Glass Effect */
                           <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: message.feedback ? 0 : 1 }}

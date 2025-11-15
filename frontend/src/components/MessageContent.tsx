@@ -159,8 +159,16 @@ function ArticleLink({
       const pdfUrl = getPDFUrl(lawInfo.pdfName);
       
       const articleRef = khoans ? `${articleNum} Khoản ${khoans}` : articleNum;
-      console.log('[ArticleLink] Opening:', { pdfUrl, lawInfo, articleRef, pageNum });
+      console.log('[ArticleLink] Click:', { 
+        articleNum, 
+        lawFile, 
+        pdfName: lawInfo.pdfName,
+        pdfUrl, 
+        pageNum,
+        hasPageNum: pageNum !== undefined && pageNum > 0
+      });
       
+      // Pass article number for PDF search
       onOpenPDF(pdfUrl, lawInfo.displayName, articleNum, pageNum);
     }
   };
