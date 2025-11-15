@@ -84,17 +84,49 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
   const [chatHistory, setChatHistory] = useState<any[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Load messages from localStorage when conversationId changes
   useEffect(() => {
-    setMessages([
-      {
-        id: '1',
-        text: 'Xin chào! Tôi là trợ lý pháp luật AI. Tôi có thể giúp bạn tư vấn về các vấn đề pháp luật tại Việt Nam. Bạn có câu hỏi gì không?',
-        sender: 'ai',
-        timestamp: new Date(),
-      },
-    ]);
+    const savedMessages = localStorage.getItem(`messages_${conversationId}`);
+    if (savedMessages) {
+      try {
+        const parsed = JSON.parse(savedMessages);
+        setMessages(parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp),
+        })));
+      } catch (error) {
+        console.error('Failed to parse saved messages:', error);
+        // Fallback to default message
+        setMessages([
+          {
+            id: '1',
+            text: 'Xin chào! Tôi là trợ lý pháp luật AI. Tôi có thể giúp bạn tư vấn về các vấn đề pháp luật tại Việt Nam. Bạn có câu hỏi gì không?',
+            sender: 'ai',
+            timestamp: new Date(),
+          },
+        ]);
+      }
+    } else {
+      // New conversation - set default message
+      setMessages([
+        {
+          id: '1',
+          text: 'Xin chào! Tôi là trợ lý pháp luật AI. Tôi có thể giúp bạn tư vấn về các vấn đề pháp luật tại Việt Nam. Bạn có câu hỏi gì không?',
+          sender: 'ai',
+          timestamp: new Date(),
+        },
+      ]);
+    }
     setChatHistory([]);
+    setSuggestedQuestions([]);
   }, [conversationId]);
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem(`messages_${conversationId}`, JSON.stringify(messages));
+    }
+  }, [messages, conversationId]);
 
   useEffect(() => {
     if (scrollRef.current) {
