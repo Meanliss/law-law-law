@@ -14,36 +14,40 @@ interface MessageContentProps {
   onOpenPDF?: (url: string, title: string, articleNum?: string, pageNum?: number) => void;
 }
 
-// Map filename → {displayName}
-// PDF filename được generate từ json filename
-const lawFileMap: Record<string, { pdfName: string; displayName: string }> = {
-  'luat_hon_nhan_hopnhat.json': {
-    pdfName: 'luat_hon_nhan.pdf',
-    displayName: 'Luật Hôn nhân và Gia đình',
+// Map json_file → domain_id (from domain_registry.json structure)
+const jsonToDomainMap: Record<string, string> = {
+  'luat_lao_donghopnhat.json': 'lao_dong',
+  'luat_dauthau_hopnhat.json': 'dau_thau',
+  'nghi_dinh_214_2025.json': 'dau_thau',
+  'luat_dat_dai_hopnhat.json': 'dat_dai',
+  'luat_hon_nhan_hopnhat.json': 'hon_nhan',
+  'chuyen_giao_cong_nghe_hopnhat.json': 'chuyen_giao_cong_nghe',
+  'luat_so_huu_tri_tue_hopnhat.json': 'lshtt',
+  'luat_hinh_su_hopnhat.json': 'hinh_su',
+};
+
+// Map domain_id → display_name (pdf_file comes from backend)
+const domainInfoMap: Record<string, { displayName: string }> = {
+  'lao_dong': {
+    displayName: 'Luật Lao động',
   },
-  'luat_hinh_su_hopnhat.json': {
-    pdfName: 'luat_hinh_su.pdf',
-    displayName: 'Bộ luật Hình sự',
-  },
-  'luat_lao_donghopnhat.json': {
-    pdfName: 'luat_lao_dong.pdf',
-    displayName: 'Bộ luật Lao động',
-  },
-  'luat_dat_dai_hopnhat.json': {
-    pdfName: 'luat_dat_dai.pdf',
-    displayName: 'Luật Đất đai',
-  },
-  'luat_dauthau_hopnhat.json': {
-    pdfName: 'luat_dau_thau.pdf',
+  'dau_thau': {
     displayName: 'Luật Đấu thầu',
   },
-  'chuyen_giao_cong_nghe_hopnhat.json': {
-    pdfName: 'luat_chuyen_giao_cong_nghe.pdf',
+  'dat_dai': {
+    displayName: 'Luật Đất đai',
+  },
+  'hon_nhan': {
+    displayName: 'Luật Hôn nhân và Gia đình',
+  },
+  'chuyen_giao_cong_nghe': {
     displayName: 'Luật Chuyển giao công nghệ',
   },
-  'luat_so_huu_tri_tue_hopnhat.json': {
-    pdfName: 'luat_so_huu_tri_tue.pdf',
+  'lshtt': {
     displayName: 'Bộ luật Sở hữu trí tuệ',
+  },
+  'hinh_su': {
+    displayName: 'Bộ luật Hình sự',
   },
 };
 
@@ -68,15 +72,21 @@ export function MessageContent({ text, pdfSources, onOpenPDF }: MessageContentPr
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
 
-  // ✅ Build map từ pdfSources: article_num → json_file
-  const articleToJsonMap: Record<string, string> = {};
+  // ✅ Build map từ pdfSources: article_num → {json_file, pdf_file}
+  const articleToSourceMap: Record<string, { json_file: string; pdf_file: string }> = {};
   if (pdfSources && Array.isArray(pdfSources)) {
     pdfSources.forEach((source) => {
-      if (source.article_num && source.json_file) {
-        // Map article "Điều XXX" to JSON filename
+      if (source.article_num && source.json_file && source.pdf_file) {
         const articleKey = source.article_num;
-        articleToJsonMap[articleKey] = source.json_file;
-        console.log('[MessageContent] Mapped article:', { articleKey, jsonFile: source.json_file });
+        articleToSourceMap[articleKey] = {
+          json_file: source.json_file,
+          pdf_file: source.pdf_file,
+        };
+        console.log('[MessageContent] Mapped article:', { 
+          articleKey, 
+          jsonFile: source.json_file,
+          pdfFile: source.pdf_file 
+        });
       }
     });
   }
@@ -100,8 +110,11 @@ export function MessageContent({ text, pdfSources, onOpenPDF }: MessageContentPr
       parts.push(cleanText.substring(lastIndex, match.index));
     }
 
-    // ✅ Lấy JSON filename từ map
-    const jsonFile = articleToJsonMap[articleNum] || 'luat_hon_nhan_hopnhat.json';
+    // ✅ Lấy source info từ map (json_file + pdf_file)
+    const sourceInfo = articleToSourceMap[articleNum] || {
+      json_file: 'luat_hon_nhan_hopnhat.json',
+      pdf_file: 'luat_hon_nhan.pdf',
+    };
 
     // Add hyperlink
     parts.push(
@@ -110,7 +123,8 @@ export function MessageContent({ text, pdfSources, onOpenPDF }: MessageContentPr
         articleNum={articleNum}
         khoans={khoans}
         displayText={fullText}
-        lawFile={jsonFile}
+        jsonFile={sourceInfo.json_file}
+        pdfFile={sourceInfo.pdf_file}
         pageNum={pdfSources?.find(s => s.article_num === articleNum)?.page_num}
         onOpenPDF={onOpenPDF}
       />
@@ -134,7 +148,8 @@ interface ArticleLinkProps {
   articleNum: string;
   khoans: string;
   displayText: string;
-  lawFile: string;
+  jsonFile: string;
+  pdfFile: string;
   pageNum?: number;
   onOpenPDF?: (url: string, title: string, articleNum?: string, pageNum?: number) => void;
 }
@@ -143,33 +158,37 @@ function ArticleLink({
   articleNum,
   khoans,
   displayText,
-  lawFile,
+  jsonFile,
+  pdfFile,
   pageNum,
   onOpenPDF,
 }: ArticleLinkProps) {
-  const lawInfo = lawFileMap[lawFile] || {
-    pdfName: 'luat_hon_nhan.pdf',
-    displayName: 'Văn bản pháp luật',
-  };
+  // ✅ Step 1: json_file → domain_id
+  const domainId = jsonToDomainMap[jsonFile] || 'hon_nhan';
+  
+  // ✅ Step 2: domain_id → displayName
+  const displayName = domainInfoMap[domainId]?.displayName || 'Văn bản pháp luật';
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (onOpenPDF) {
-      // Use getPDFUrl to build correct URL with API_BASE detection
-      const pdfUrl = getPDFUrl(lawInfo.pdfName);
+      // ✅ Build correct PDF URL: backend/data/domains/{domain_id}/pdfs/{pdf_file}
+      // Use actual pdf_file from backend instead of hardcoded mapping
+      const pdfUrl = getPDFUrl(pdfFile);
       
       const articleRef = khoans ? `${articleNum} Khoản ${khoans}` : articleNum;
       console.log('[ArticleLink] Click:', { 
         articleNum, 
-        lawFile, 
-        pdfName: lawInfo.pdfName,
+        jsonFile,
+        pdfFile,
+        domainId,
         pdfUrl, 
         pageNum,
         hasPageNum: pageNum !== undefined && pageNum > 0
       });
       
-      // Pass article number for PDF search
-      onOpenPDF(pdfUrl, lawInfo.displayName, articleNum, pageNum);
+      // ✅ Pass pageNum to open correct page in PDF
+      onOpenPDF(pdfUrl, displayName, articleNum, pageNum);
     }
   };
 
@@ -177,7 +196,7 @@ function ArticleLink({
     <button
       onClick={handleClick}
       className="inline-flex items-center gap-1 text-blue-600 dark:text-cyan-400 hover:underline hover:text-blue-700 dark:hover:text-cyan-300 font-medium transition-colors cursor-pointer bg-transparent border-none p-0"
-      title={`Click để xem ${lawInfo.displayName} - Điều ${articleNum}`}
+      title={`Click để xem ${displayName} - Điều ${articleNum}`}
     >
       <span>{displayText}</span>
       <FileText size={12} className="inline opacity-60" />

@@ -467,7 +467,7 @@ async def get_pdf_info(domain_id: str, article_num: str):
 
 @app.get("/api/pdf-file/{domain_id}/{filename}")
 async def serve_pdf(domain_id: str, filename: str):
-    """Serve PDF file with CORS headers"""
+    """Serve PDF file with CORS headers and allow iframe embedding"""
     pdf_path = Path(f"data/domains/{domain_id}/pdfs/{filename}")
     
     if not pdf_path.exists():
@@ -476,12 +476,13 @@ async def serve_pdf(domain_id: str, filename: str):
     return FileResponse(
         path=str(pdf_path),
         media_type="application/pdf",
-        filename=filename,
         headers={
-            "Content-Disposition": f"inline; filename={filename}",
+            "Content-Disposition": "inline",
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET, OPTIONS",
-            "Access-Control-Allow-Headers": "*"
+            "Access-Control-Allow-Headers": "*",
+            "X-Frame-Options": "ALLOWALL",  # Allow iframe embedding
+            "Content-Security-Policy": "frame-ancestors *"  # Modern alternative
         }
     )
 

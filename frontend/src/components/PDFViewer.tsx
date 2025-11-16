@@ -16,8 +16,29 @@ export function PDFViewer({ isOpen, url, title, articleNum, pageNum, onClose }: 
   const [searchQuery, setSearchQuery] = useState('');
   const [pdfLoaded, setPdfLoaded] = useState(false);
 
-  // ✅ SIMPLE: Just open PDF, page number will be added later
-  const pdfUrl = url;
+  // ✅ Build PDF URL with page number and timestamp to bypass IDM
+  const pdfUrl = (() => {
+    // Default to page 1 if no pageNum provided
+    const targetPage = pageNum && pageNum > 0 ? pageNum : 1;
+    
+    // Add timestamp query param to bypass IDM detection
+    // IDM ignores URLs with query parameters that look like API calls
+    const timestamp = Date.now();
+    const separator = url.includes('?') ? '&' : '?';
+    const urlWithTimestamp = `${url}${separator}_t=${timestamp}`;
+    
+    // Add #page=X to URL for PDF viewer to jump to specific page
+    const urlWithPage = `${urlWithTimestamp}#page=${targetPage}`;
+    
+    console.log('[PDFViewer] Built URL:', { 
+      originalUrl: url,
+      pageNum,
+      targetPage,
+      finalUrl: urlWithPage
+    });
+    
+    return urlWithPage;
+  })();
 
   // ✅ Log for debugging
   useEffect(() => {
@@ -26,10 +47,11 @@ export function PDFViewer({ isOpen, url, title, articleNum, pageNum, onClose }: 
         url, 
         title,
         articleNum, 
-        pageNum
+        pageNum,
+        pdfUrl
       });
     }
-  }, [isOpen, url, title, articleNum, pageNum]);
+  }, [isOpen, url, title, articleNum, pageNum, pdfUrl]);
 
   return (
     <AnimatePresence>

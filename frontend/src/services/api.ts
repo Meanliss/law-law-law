@@ -259,24 +259,29 @@ export async function getDocument(filename: string): Promise<{ filename: string;
  * Gets the direct URL to PDF from backend (không cần base64)
  */
 export function getPDFUrl(pdfFile: string): string {
+  // ✅ Extract base filename without version/year suffix
+  // Example: "luat_dau_thau(57_2024).pdf" → "luat_dau_thau"
+  const baseFilename = pdfFile.replace(/\([^)]*\)/, '').replace('.pdf', '');
+  
   const domainMap: Record<string, string> = {
-    'luat_hon_nhan.pdf': 'hon_nhan',
-    'luat_hinh_su.pdf': 'hinh_su',
-    'luat_lao_dong.pdf': 'lao_dong',
-    'luat_dat_dai.pdf': 'dat_dai',
-    'luat_dau_thau.pdf': 'dau_thau',
-    'luat_chuyen_giao_cong_nghe.pdf': 'chuyen_giao_cong_nghe',
-    'nghi_dinh_214_2025.pdf': 'nghi_dinh_214',
-    'luat_so_huu_tri_tue.pdf': 'lshtt',
+    'luat_hon_nhan': 'hon_nhan',
+    'luat_hinh_su': 'hinh_su',
+    'luat_lao_dong': 'lao_dong',
+    'luat_dat_dai': 'dat_dai',
+    'luat_dau_thau': 'dau_thau',
+    'luat_chuyen_giao_cong_nghe': 'chuyen_giao_cong_nghe',
+    'nghi_dinh_214_2025': 'dau_thau',  // Nghị định 214 thuộc domain dau_thau
+    'luat_so_huu_tri_tue': 'lshtt',
   };
 
-  let domain_id = 'hon_nhan'; // default
-  for (const [pdf, domain] of Object.entries(domainMap)) {
-    if (pdfFile.includes(pdf)) {
-      domain_id = domain;
-      break;
-    }
-  }
+  // Match base filename to domain
+  let domain_id = domainMap[baseFilename] || 'hon_nhan';
+  
+  console.log('[API] getPDFUrl:', { 
+    pdfFile, 
+    baseFilename, 
+    domain_id 
+  });
 
   const pdfUrl = `${API_BASE}/api/pdf-file/${domain_id}/${pdfFile}`;
   console.log('[API] getPDFUrl:', { pdfFile, domain_id, pdfUrl });

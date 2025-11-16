@@ -34,7 +34,7 @@ interface ChatInterfaceProps {
   conversationId: string;
   isDarkMode: boolean;
   onToggleDarkMode: () => void;
-  onOpenPDF?: (pdfUrl: string, title: string, articleNum?: string) => void;
+  onOpenPDF?: (pdfUrl: string, title: string, articleNum?: string, pageNum?: number) => void;
   onUpdateConversation?: (id: string, firstMessage: string) => void;
 }
 
@@ -69,11 +69,13 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
     url: string;
     title: string;
     articleNum?: string;
+    pageNum?: number;
   }>({
     isOpen: false,
     url: '',
     title: '',
     articleNum: undefined,
+    pageNum: undefined,
   });
   const [chatHistory, setChatHistory] = useState<any[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -128,11 +130,11 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
     }
   }, [messages, isTyping]);
 
-  const handleOpenPDF = (pdfUrl: string, title: string, articleNum?: string) => {
+  const handleOpenPDF = (pdfUrl: string, title: string, articleNum?: string, pageNum?: number) => {
     if (onOpenPDF) {
-      onOpenPDF(pdfUrl, title, articleNum);
+      onOpenPDF(pdfUrl, title, articleNum, pageNum);
     } else {
-      setPdfViewer({ isOpen: true, url: pdfUrl, title, articleNum });
+      setPdfViewer({ isOpen: true, url: pdfUrl, title, articleNum, pageNum });
     }
   };
 
@@ -487,7 +489,8 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
         url={pdfViewer.url}
         title={pdfViewer.title}
         articleNum={pdfViewer.articleNum}
-        onClose={() => setPdfViewer({ isOpen: false, url: '', title: '', articleNum: undefined })}
+        pageNum={pdfViewer.pageNum}
+        onClose={() => setPdfViewer({ isOpen: false, url: '', title: '', articleNum: undefined, pageNum: undefined })}
       />
     </div>
   );

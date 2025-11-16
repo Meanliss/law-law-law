@@ -145,11 +145,36 @@ def build_domain(domain_id: str):
                 if not content.strip():
                     continue
                 
-                # Find corresponding PDF file
+                # ✅ Find corresponding PDF file based on nguon_sua_doi
                 pdf_file = ''
                 pdf_files = list((domain_dir / "pdfs").glob("*.pdf"))
+                
                 if pdf_files:
-                    pdf_file = pdf_files[0].name  # Use first PDF
+                    # Check if there's nguon_sua_doi in any khoan
+                    nguon_sua_doi = ''
+                    if 'khoan' in item:
+                        for khoan in item['khoan']:
+                            if khoan.get('nguon_sua_doi'):
+                                nguon_sua_doi = khoan.get('nguon_sua_doi', '')
+                                break
+                    
+                    # Map nguon_sua_doi → pdf_file for dau_thau domain
+                    if domain_id == 'dau_thau' and nguon_sua_doi:
+                        if '90/2025' in nguon_sua_doi or 'Luật 90/2025' in nguon_sua_doi:
+                            # Find luat_dau_thau(90_2025).pdf
+                            matched_pdf = [f for f in pdf_files if '90_2025' in f.name or '90/2025' in f.name]
+                            pdf_file = matched_pdf[0].name if matched_pdf else pdf_files[0].name
+                        elif '57/2024' in nguon_sua_doi or 'Luật 57/2024' in nguon_sua_doi:
+                            # Find luat_dau_thau(57_2024).pdf
+                            matched_pdf = [f for f in pdf_files if '57_2024' in f.name or '57/2024' in f.name]
+                            pdf_file = matched_pdf[0].name if matched_pdf else pdf_files[0].name
+                        else:
+                            # Default: luat_dau_thau.pdf (no version in filename)
+                            matched_pdf = [f for f in pdf_files if f.stem == 'luat_dau_thau']
+                            pdf_file = matched_pdf[0].name if matched_pdf else pdf_files[0].name
+                    else:
+                        # Other domains or no nguon_sua_doi: use first PDF
+                        pdf_file = pdf_files[0].name
                 
                 chunks.append({
                     'id': f"{domain_id}_{len(chunks)}",
