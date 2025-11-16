@@ -343,7 +343,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                       {/* Feedback Buttons - Show for AI messages */}
                       {message.sender === 'ai' && (
                         <>
-                          {/* Feedback Buttons with Glass Effect */
+                          {/* Feedback Buttons with Glass Effect */}
                           <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: message.feedback ? 0 : 1 }}
