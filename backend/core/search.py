@@ -1,5 +1,5 @@
 """
-Search Module - BM25 + FAISS Hybrid Search with RRF (Reciprocal Rank Fusion)
+Search Module - BM25 + FAISS Hybrid Search with LLM Re-ranking
 """
 
 import re
@@ -7,9 +7,6 @@ import numpy as np
 from collections import defaultdict
 from typing import List, Dict
 from config import BM25_WEIGHT, FAISS_WEIGHT
-
-# RRF parameters
-RRF_K = 16  
 
 
 def rerank_with_llm(query: str, candidates: List[Dict], gemini_model, top_k: int = 5) -> List[Dict]:
@@ -165,23 +162,27 @@ def advanced_hybrid_search(
         faiss_lib.normalize_L2(query_embedding)
         faiss_distances, faiss_indices = faiss_index.search(query_embedding, top_k * 2)
         
-        # ✅ RRF: Apply Reciprocal Rank Fusion
-        # Formula: RRF(d) = sum of 1 / (RRF_K + rank)
+        # ✅ Normalize BM25 scores
+        bm25_scores_subset = bm25_scores[bm25_top_indices]
+        if len(bm25_scores_subset) > 0:
+            bm25_min = bm25_scores_subset.min()
+            bm25_max = bm25_scores_subset.max()
+            bm25_range = bm25_max - bm25_min
+            
+            if bm25_range > 0:
+                for idx in bm25_top_indices:
+                    normalized_bm25 = (bm25_scores[idx] - bm25_min) / bm25_range
+                    combined_scores[idx] += normalized_bm25 * BM25_WEIGHT
+            else:
+                for idx in bm25_top_indices:
+                    combined_scores[idx] += 0.5 * BM25_WEIGHT
         
-        # BM25 ranks
-        for rank, idx in enumerate(bm25_top_indices):
-            rrf_score = 1.0 / (RRF_K + rank + 1)
-            combined_scores[idx] += rrf_score * BM25_WEIGHT
-            if rank < 3:
-                print(f'[BM25-RRF] Chunk {idx}: rank={rank} → RRF={rrf_score:.4f}', flush=True)
-        
-        # FAISS ranks
+        # ✅ Normalize FAISS scores
         for rank, idx in enumerate(faiss_indices[0]):
             if idx != -1:
-                rrf_score = 1.0 / (RRF_K + rank + 1)
-                combined_scores[idx] += rrf_score * FAISS_WEIGHT
-                if rank < 3:
-                    print(f'[FAISS-RRF] Chunk {idx}: rank={rank} → RRF={rrf_score:.4f}', flush=True)
+                distance = faiss_distances[0][rank]
+                similarity = 1 / (1 + distance)
+                combined_scores[idx] += similarity * FAISS_WEIGHT
         
         seen_chunks.update(bm25_top_indices)
         seen_chunks.update(faiss_indices[0])
@@ -230,7 +231,7 @@ def simple_search(
     top_k: int = 8
 ) -> List[Dict]:
     """
-    Tìm kiếm đơn giản - BM25 + FAISS kết hợp với RRF (Reciprocal Rank Fusion)
+    Tìm kiếm đơn giản - BM25 + FAISS kết hợp với Min-Max Normalization
     
     Args:
         query: User query
@@ -255,33 +256,47 @@ def simple_search(
     faiss_lib.normalize_L2(query_embedding)
     faiss_distances, faiss_indices = faiss_index.search(query_embedding, top_k * 2)
     
-    # ===== RRF: Reciprocal Rank Fusion =====
+    # ===== Normalize scores to [0, 1] =====
     combined_scores = defaultdict(float)
     
-    # ✅ BM25 RRF scores
-    for rank, idx in enumerate(bm25_top_indices):
-        rrf_score = 1.0 / (RRF_K + rank + 1)
-        combined_scores[idx] += rrf_score * BM25_WEIGHT
+    # ✅ Normalize BM25 scores using Min-Max scaling
+    bm25_scores_subset = bm25_scores[bm25_top_indices]
+    if len(bm25_scores_subset) > 0:
+        bm25_min = bm25_scores_subset.min()
+        bm25_max = bm25_scores_subset.max()
+        bm25_range = bm25_max - bm25_min
         
-        if idx < 5:  # Log first few for debugging
-            print(f'[BM25-RRF] Chunk {idx}: rank={rank} → RRF={rrf_score:.4f}', flush=True)
+        if bm25_range > 0:
+            for idx in bm25_top_indices:
+                # Normalize to [0, 1]
+                normalized_bm25 = (bm25_scores[idx] - bm25_min) / bm25_range
+                combined_scores[idx] += normalized_bm25 * BM25_WEIGHT
+                
+                if idx < 5:  # Log first few for debugging
+                    print(f'[BM25] Chunk {idx}: raw={bm25_scores[idx]:.2f} → norm={normalized_bm25:.3f}', flush=True)
+        else:
+            # All scores are the same, give equal weight
+            for idx in bm25_top_indices:
+                combined_scores[idx] += 0.5 * BM25_WEIGHT
     
-    # ✅ FAISS RRF scores
+    # ✅ FAISS: Convert L2 distance to similarity score [0, 1]
     for rank, idx in enumerate(faiss_indices[0]):
         if idx != -1:
-            rrf_score = 1.0 / (RRF_K + rank + 1)
-            combined_scores[idx] += rrf_score * FAISS_WEIGHT
+            distance = faiss_distances[0][rank]
+            # Convert distance to similarity: closer = higher score
+            similarity = 1 / (1 + distance)
+            combined_scores[idx] += similarity * FAISS_WEIGHT
             
             if rank < 5:  # Log first few for debugging
-                print(f'[FAISS-RRF] Chunk {idx}: rank={rank} → RRF={rrf_score:.4f}', flush=True)
+                print(f'[FAISS] Chunk {idx}: dist={distance:.2f} → sim={similarity:.3f}', flush=True)
     
     # Sort and return top_k
     ranked = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
     
     # Log final scores
-    print(f'[RRF-HYBRID] Top results:', flush=True)
+    print(f'[HYBRID] Top results:', flush=True)
     for rank, (idx, score) in enumerate(ranked[:3]):
-        print(f'  #{rank+1}: Chunk {idx} (RRF_score={score:.4f})', flush=True)
+        print(f'  #{rank+1}: Chunk {idx} (score={score:.3f})', flush=True)
     
     results = [all_chunks[idx] for idx, _ in ranked]
     
