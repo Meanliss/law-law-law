@@ -29,8 +29,12 @@ def detect_domain_with_llm(question: str, gemini_lite_model, domain_manager) -> 
         # Get available domains
         domains_info = []
         for domain_id in domain_manager.list_domains():
-            domain_meta = domain_manager.domains.get(domain_id, {})
-            domain_name = domain_meta.get('name', domain_id)
+            # ✅ Fix: Access domain object correctly (not dict)
+            domain_obj = domain_manager.domains.get(domain_id)
+            if domain_obj:
+                domain_name = domain_obj.domain_name
+            else:
+                domain_name = domain_id
             domains_info.append(f"- {domain_id}: {domain_name}")
         
         domains_list = "\n".join(domains_info)
@@ -232,15 +236,38 @@ def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_mode
     print(f'[DECOMPOSE] Using {model_name} model for query: "{refined_query}"', flush=True)
     decompose_result = decompose_query_smart(refined_query, decompose_model)
     
-    # ✅ Step 4: Detect domain for each sub-question using LLM
+    # ✅ Step 4: ALWAYS keep original question as first query (preserve full context)
     sub_questions = []
+    
+    # Detect domain for original question
+    original_domain = None
+    if domain_manager:
+        original_domain = detect_domain_with_llm(refined_query, gemini_lite_model, domain_manager)
+        if not original_domain:
+            original_domain = domain_manager.detect_domain_from_keywords(refined_query)
+        if original_domain:
+            print(f'🎯 [DOMAIN] Original query → {original_domain}', flush=True)
+    
+    # Add original question as FIRST sub-question
+    sub_questions.append({
+        'question': refined_query,
+        'domain': original_domain,
+        'is_original': True  # Mark as original
+    })
+    
+    # Then add decomposed sub-questions (if any)
     for sub_query in decompose_result['sub_queries']:
+        # Skip if sub_query is too similar to original (avoid duplication)
+        if sub_query.strip().lower() == refined_query.strip().lower():
+            continue
+            
         sub_q_obj = {
             'question': sub_query,
-            'domain': None
+            'domain': None,
+            'is_original': False
         }
         
-        # Detect domain if DomainManager is available
+        # Detect domain for sub-question
         if domain_manager:
             # Use LLM to detect domain (more accurate than keywords)
             detected_domain = detect_domain_with_llm(sub_query, gemini_lite_model, domain_manager)
