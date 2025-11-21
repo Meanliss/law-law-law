@@ -57,9 +57,13 @@ def generate_answer(question: str, context: List[Dict], gemini_model, chat_histo
 📋 YÊU CẦU TRẢ LỜI (PHÂN TÍCH CHUYÊN SÂU + AGENT STYLE):
 
 **PHẦN 1 - TÓM TẮT KẾT LUẬN:**
+
 - Đưa ra câu trả lời trực tiếp, rõ ràng (2-4 câu)
 - Nêu kết luận chính về vấn đề pháp lý được hỏi
 - Xác định mức độ rủi ro (Cao/Trung bình/Thấp)
+
+⚠️ **NẾU KHÔNG CHẮC CHẮN:** Nếu thông tin trong nguồn tham khảo không đủ để đưa ra câu trả lời chắc chắn, hãy bắt đầu bằng:
+"⚠️ Tôi không hoàn toàn chắc chắn với câu trả lời này do [lý do: thiếu thông tin/nguồn không rõ ràng/vấn đề phức tạp], nhưng dựa trên nguồn hiện có, đây là câu trả lời bạn có thể tham khảo:"
 
 **PHẦN 2 - PHÂN TÍCH CHI TIẾT:**
 Chia nhỏ vấn đề thành các khía cạnh pháp lý cụ thể:
@@ -195,12 +199,31 @@ HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU:'''
 ═══════════════════════════════════════════════════════════
 📋 YÊU CẦU (SUMMARY MODE - NGẮN GỌN):
 
-**Cấu trúc trả lời (4-6 câu tối đa):**
+**Cấu trúc trả lời:**
 
-1. **Kết luận trực tiếp** (1-2 câu): Đáp án chính xác, rõ ràng
-2. **Cơ sở pháp lý** (1-2 câu): Trích dẫn điều luật liên quan (Điều X, Khoản Y) + nội dung ngắn gọn
-3. **Hậu quả/Rủi ro** (1 câu nếu có): Hậu quả nếu vi phạm (mục đích cảnh báo người dùng)
-4. **Hành động cần làm** (1 câu nếu có): Khuyến nghị cụ thể
+⚠️ **NẾU KHÔNG CHẮC CHẮN:** Bắt đầu bằng:
+"⚠️ Tôi không hoàn toàn chắc chắn với câu trả lời này do [lý do], nhưng dựa trên nguồn hiện có, đây là câu trả lời bạn có thể tham khảo:"
+
+**1. Kết luận trực tiếp** (1-2 câu):
+
+- Đáp án chính xác, rõ ràng
+- Đi thẳng vào vấn đề được hỏi
+
+**2. Cơ sở pháp lý** (2-3 điểm):
+
+- Trích dẫn điều luật: (Điều X, Khoản Y) của [Tên văn bản]
+- Nội dung ngắn gọn của quy định
+- Cách áp dụng vào trường hợp cụ thể
+
+**3. Hậu quả/Rủi ro** (nếu có):
+
+- Hậu quả nếu vi phạm quy định
+- Mức xử phạt hoặc chế tài (nếu có)
+
+**4. Hành động cần làm** (nếu có):
+
+- Khuyến nghị cụ thể, thực tế
+- Cơ quan có thẩm quyền giải quyết
 
 **Yêu cầu bắt buộc:**
 ✅ CHÍNH XÁC - trích dẫn chính xác điều luật, không truy cập dự đoán
