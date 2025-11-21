@@ -6,6 +6,7 @@ Sử dụng LLM Lite để:
 """
 
 import re
+import json
 from typing import Dict, Tuple
 from config import INTENT_CONFIDENCE_REJECT_THRESHOLD
 
@@ -191,10 +192,10 @@ BẮT ĐẦU PHÂN TÍCH:"""
 
 def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_model=None, use_advanced=False, domain_manager=None, previous_context: str = None) -> Dict:
     """
-    Intent detection + Query refinement + Smart decomposition + Domain detection
+    Intent detection + Smart decomposition (with refinement) + Domain detection
     
     Args:
-        question: User question
+        question: User question (ORIGINAL - không refine trước)
         gemini_lite_model: Gemini lite model instance (for Fast mode)
         gemini_flash_model: Gemini flash model instance (for Quality mode) - OPTIONAL
         use_advanced: True = Quality mode (dùng Flash cho decompose), False = Fast mode (dùng Lite)
@@ -203,18 +204,40 @@ def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_mode
     
     Returns:
         {
-            'sub_questions': List[{'question': str, 'domain': str}],  # ✅ Each sub has domain
+            'sub_questions': List[{'question': str, 'domain': str}],  # Includes ORIGINAL + decomposed (refined inside)
             'intent': dict,
             'should_process': bool,
-            'method': str,
-            'refined_query': str
+            'method': str
         }
     """
     from .query_expansion import decompose_query_smart
     
-    # ✅ Step 1: Intent detection + Query refinement (luôn dùng Lite - nhanh)
-    print(f'\n[INTENT+REFINE] Analyzing: "{question}"', flush=True)
-    intent, refined_query = detect_intent_and_refine(question, gemini_lite_model, previous_context=previous_context)
+    # ✅ Step 1: Intent detection ONLY (không refine riêng nữa)
+    print(f'\n[INTENT] Checking if legal: "{question}"', flush=True)
+    
+    # Detect intent without refining (refine will be inside decompose)
+    prompt = f"""Câu hỏi: "{question}"
+
+Đây có phải câu hỏi pháp luật Việt Nam không?
+- YES nếu hỏi về luật, quy định, quyền lợi, nghĩa vụ, thủ tục pháp lý
+- NO nếu: chào hỏi, toán học, lập trình, nấu ăn, du lịch, giải trí, thể thao, v.v.
+
+Trả lời JSON:
+{{"is_legal": true/false, "confidence": 0.0-1.0, "reason": "..."}}"""
+    
+    try:
+        response = gemini_lite_model.generate_content(prompt)
+        result_text = response.text.strip()
+        
+        # Parse JSON
+        json_match = re.search(r'\{[^}]+\}', result_text)
+        if json_match:
+            intent = json.loads(json_match.group(0))
+        else:
+            intent = {'is_legal': True, 'confidence': 0.5, 'reason': 'Cannot parse, assume legal'}
+    except Exception as e:
+        print(f'[INTENT] Error: {e}', flush=True)
+        intent = {'is_legal': True, 'confidence': 0.4, 'reason': 'LLM error, fallback to accept'}
     
     # ✅ Step 2: Reject if not legal
     if not intent['is_legal'] and intent['confidence'] >= INTENT_CONFIDENCE_REJECT_THRESHOLD:
@@ -223,46 +246,45 @@ def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_mode
             'sub_questions': [],
             'intent': intent,
             'should_process': False,
-            'method': 'rejected',
-            'refined_query': question  # Không refine nếu bị reject
+            'method': 'rejected'
         }
     
-    # ✅ Step 3: Smart decomposition
+    # ✅ Step 3: Smart decomposition (bao gồm cả refine + decompose)
     # Quality mode: Dùng Flash (reasoning tốt hơn, tách câu phức tạp chính xác hơn)
     # Fast mode: Dùng Lite (nhanh hơn)
     decompose_model = gemini_flash_model if (use_advanced and gemini_flash_model) else gemini_lite_model
     model_name = "Flash (Quality)" if (use_advanced and gemini_flash_model) else "Lite (Fast)"
     
-    print(f'[DECOMPOSE] Using {model_name} model for query: "{refined_query}"', flush=True)
-    decompose_result = decompose_query_smart(refined_query, decompose_model)
+    print(f'[DECOMPOSE+REFINE] Using {model_name} for: "{question}"', flush=True)
+    decompose_result = decompose_query_smart(question, decompose_model)  # ✅ Truyền original question
     
-    # ✅ Step 4: ALWAYS keep original question as first query (preserve full context)
+    # ✅ Step 4: Build sub_questions with original + decomposed (refined)
     sub_questions = []
     
     # Detect domain for original question
     original_domain = None
     if domain_manager:
-        original_domain = detect_domain_with_llm(refined_query, gemini_lite_model, domain_manager)
+        original_domain = detect_domain_with_llm(question, gemini_lite_model, domain_manager)
         if not original_domain:
-            original_domain = domain_manager.detect_domain_from_keywords(refined_query)
+            original_domain = domain_manager.detect_domain_from_keywords(question)
         if original_domain:
             print(f'🎯 [DOMAIN] Original query → {original_domain}', flush=True)
     
-    # Add original question as FIRST sub-question
+    # Add ORIGINAL question as FIRST sub-question (không refine)
     sub_questions.append({
-        'question': refined_query,
+        'question': question,  # ✅ Giữ nguyên câu hỏi gốc
         'domain': original_domain,
         'is_original': True  # Mark as original
     })
     
-    # Then add decomposed sub-questions (if any)
+    # Then add decomposed (refined) sub-questions
     for sub_query in decompose_result['sub_queries']:
-        # Skip if sub_query is too similar to original (avoid duplication)
-        if sub_query.strip().lower() == refined_query.strip().lower():
+        # Skip if sub_query giống hệt original (avoid duplication)
+        if sub_query.strip().lower() == question.strip().lower():
             continue
             
         sub_q_obj = {
-            'question': sub_query,
+            'question': sub_query,  # ✅ Đây là câu đã refined + decomposed
             'domain': None,
             'is_original': False
         }
@@ -284,11 +306,10 @@ def enhanced_decompose_query(question: str, gemini_lite_model, gemini_flash_mode
         sub_questions.append(sub_q_obj)
     
     return {
-        'sub_questions': sub_questions,  # ✅ Now with domain info
+        'sub_questions': sub_questions,  # ✅ Original + refined/decomposed
         'intent': intent,
         'should_process': decompose_result['should_process'],
-        'method': decompose_result['method'],
-        'refined_query': refined_query
+        'method': decompose_result['method']
     }
 
 

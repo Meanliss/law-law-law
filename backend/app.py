@@ -310,6 +310,7 @@ async def ask_question(request: QuestionRequest):
             json_file=chunk.get('json_file', ''),
             page_num=page_num,
             article_num=chunk.get('article_num', ''),
+            domain_id=chunk.get('domain_id', ''),  # ✅ Add domain_id
             content=chunk.get('content', '')[:500],  # Limit to 500 chars
             highlight_text=chunk.get('content', '')[:200]  # First 200 chars for highlight
         ))
