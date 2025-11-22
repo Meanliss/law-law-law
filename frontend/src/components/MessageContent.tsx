@@ -130,6 +130,14 @@ export function MessageContent({ text, pdfSources, onOpenPDF }: MessageContentPr
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={components}
+        urlTransform={(uri) => {
+          // ✅ Preserve custom article: protocol, don't sanitize it
+          if (uri.startsWith('article:')) {
+            return uri;
+          }
+          // For other URIs, use default behavior
+          return uri;
+        }}
       >
         {markdownText}
       </ReactMarkdown>
