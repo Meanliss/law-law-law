@@ -70,23 +70,35 @@ def decompose_query_smart(question: str, gemini_lite_model) -> Dict:
     
     # Step 3: Fallback to LLM decomposition cho câu phức tạp
     try:
-        prompt = f"""Phân tích câu hỏi pháp luật thành các khía cạnh cần tìm hiểu.
+        prompt = f"""Phân tích câu hỏi thành các TRUY VẤN PHÁP LÝ để tìm kiếm trong văn bản luật.
 
-Câu hỏi: {question}
+CÂU HỎI: "{question}"
 
-Trả về danh sách các câu hỏi con (2-4 câu), mỗi dòng 1 câu:
-1. [câu hỏi chính]
-2. [khía cạnh liên quan 1]
-3. [khía cạnh liên quan 2]
+YÊU CẦU:
+1. Trừu tượng hóa - BỎ TÊN RIÊNG (người, công ty, địa danh cụ thể)
+2. Tập trung vào KHÁI NIỆM PHÁP LÝ và HÀNH VI
+3. Mỗi truy vấn phải NGẮN GỌN, DỄ TÌM KIẾM trong văn bản luật
+4. Tránh câu dài, chỉ giữ yếu tố pháp lý cốt lõi
+5. Trả về 2-4 truy vấn, mỗi dòng 1 truy vấn
 
 VÍ DỤ:
-Input: "Độ tuổi kết hôn ở Việt Nam?"
+Input: "Anh A mua nhà của bà B nhưng không làm sổ đỏ, có hợp pháp không?"
 Output:
-1. Quy định về độ tuổi kết hôn
-2. Điều kiện kết hôn
-3. Trường hợp đặc biệt về tuổi kết hôn"""
+1. Mua bán nhà đất không làm sổ đỏ có hợp pháp không?
+2. Quy định về đăng ký quyền sở hữu nhà đất
+3. Hậu quả pháp lý khi không đăng ký quyền sử dụng đất
+
+BẮT ĐẦU:"""
         
-        response = gemini_lite_model.generate_content(prompt)
+        # ✅ Use LOW temperature for consistent, focused decomposition
+        response = gemini_lite_model.generate_content(
+            prompt,
+            generation_config={
+                'temperature': 0.3,  # Slightly higher for variety in phrasing
+                'top_p': 0.85,
+                'top_k': 30
+            }
+        )
         text = response.text.strip()
         
         # Parse numbered list

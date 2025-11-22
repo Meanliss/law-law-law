@@ -27,15 +27,15 @@ def detect_domain_with_llm(question: str, gemini_lite_model, domain_manager) -> 
         domain_id (str) or None if cannot detect
     """
     try:
-        # Get available domains
+        # Get available domains - list_domains() returns list of dicts
+        domains_list_data = domain_manager.list_domains()
+        domain_ids = [d['id'] for d in domains_list_data]
+        
+        # Build domain info for prompt
         domains_info = []
-        for domain_id in domain_manager.list_domains():
-            # ✅ Fix: Access domain object correctly (not dict)
-            domain_obj = domain_manager.domains.get(domain_id)
-            if domain_obj:
-                domain_name = domain_obj.domain_name
-            else:
-                domain_name = domain_id
+        for domain_dict in domains_list_data:
+            domain_id = domain_dict['id']
+            domain_name = domain_dict['name']
             domains_info.append(f"- {domain_id}: {domain_name}")
         
         domains_list = "\n".join(domains_info)
@@ -66,7 +66,8 @@ BẮT ĐẦU PHÂN LOẠI:"""
         domain_match = re.search(r'DOMAIN:\s*(\w+)', text, re.IGNORECASE)
         if domain_match:
             domain = domain_match.group(1).strip()
-            if domain.upper() != 'NONE' and domain in domain_manager.list_domains():
+            # ✅ Fix: Check in list of domain IDs (strings), not dicts
+            if domain.upper() != 'NONE' and domain in domain_ids:
                 return domain
         
         return None
