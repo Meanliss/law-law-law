@@ -110,9 +110,12 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
 
             # Process clause without points
             if not khoan.get('diem'):
+                # ✅ Contextual Chunking: Prepend Article content
+                full_content = f"{base_content}\n{khoan_content}" if base_content else khoan_content
+                
                 chunks.append({
                     'source': khoan_source,
-                    'content': khoan_content,
+                    'content': full_content,
                     'metadata': khoan_metadata
                 })
                 continue
@@ -132,9 +135,20 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
                     diem_source += f' (sua doi boi {diem["nguon_sua_doi"]})'
                     diem_metadata['modified_by'] = diem['nguon_sua_doi']
                 
+                # ✅ Contextual Chunking: Prepend Article + Clause content
+                # This ensures the point has full context
+                context_parts = []
+                if base_content:
+                    context_parts.append(base_content)
+                if khoan_content:
+                    context_parts.append(khoan_content)
+                context_parts.append(diem_content)
+                
+                full_point_content = "\n".join(context_parts)
+                
                 chunks.append({
                     'source': diem_source,
-                    'content': diem_content,
+                    'content': full_point_content,
                     'metadata': diem_metadata
                 })
                         

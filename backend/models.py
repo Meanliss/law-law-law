@@ -28,6 +28,7 @@ class PDFSource(BaseModel):
     content: str
     highlight_text: str  # Text to highlight in PDF
     json_file: Optional[str] = None
+    domain_id: Optional[str] = None  # ✅ Add domain_id for correct mapping
     article_num: Optional[str] = None
 
 

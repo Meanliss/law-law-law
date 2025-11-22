@@ -57,9 +57,13 @@ def generate_answer(question: str, context: List[Dict], gemini_model, chat_histo
 📋 YÊU CẦU TRẢ LỜI (PHÂN TÍCH CHUYÊN SÂU + AGENT STYLE):
 
 **PHẦN 1 - TÓM TẮT KẾT LUẬN:**
+
 - Đưa ra câu trả lời trực tiếp, rõ ràng (2-4 câu)
 - Nêu kết luận chính về vấn đề pháp lý được hỏi
 - Xác định mức độ rủi ro (Cao/Trung bình/Thấp)
+
+⚠️ **NẾU KHÔNG CHẮC CHẮN:** Nếu thông tin trong nguồn tham khảo không đủ để đưa ra câu trả lời chắc chắn, hãy bắt đầu bằng:
+"⚠️ Tôi không hoàn toàn chắc chắn với câu trả lời này do [lý do: thiếu thông tin/nguồn không rõ ràng/vấn đề phức tạp], nhưng dựa trên nguồn hiện có, đây là câu trả lời bạn có thể tham khảo:"
 
 **PHẦN 2 - PHÂN TÍCH CHI TIẾT:**
 Chia nhỏ vấn đề thành các khía cạnh pháp lý cụ thể:
@@ -108,71 +112,17 @@ Chia nhỏ vấn đề thành các khía cạnh pháp lý cụ thể:
 - Các tài liệu/hồ sơ nên chuẩn bị sẵn
 
 ═══════════════════════════════════════════════════════════
+⚠️ QUY TẮC TRÌNH BÀY (BẮT BUỘC):
+- Sử dụng **dấu gạch đầu dòng** (-) cho tất cả các danh sách.
+- **Xuống dòng KÉP** (2 lần enter) giữa các đoạn văn và các mục để tạo khoảng trắng thoáng mắt.
+- **In đậm** các từ khóa quan trọng.
+- KHÔNG viết thành các khối văn bản dày đặc (wall of text).
+
+═══════════════════════════════════════════════════════════
 ✅ ĐỊNH DẠNG TRÍCH DẪN (BẮT BUỘC PHẢI CHÍNH XÁC):
 - Quy định pháp luật: (Điều X, Khoản Y, Điểm Z) của [Tên văn bản] năm [năm]
 - Trích dẫn nguyên văn: "nội dung chính xác từ nguồn tham khảo"
 - Ví dụ: Theo (Điều 8, Khoản 1, Điểm a) của Luật Hôn nhân và Gia đình năm 2014, "Nam từ đủ 20 tuổi trở lên..."
-
-═══════════════════════════════════════════════════════════
-📌 VÍ DỤ TRẢ LỜI CHUẨN (Detail Mode - Có Agent Style):
-
-**1. Tóm tắt câu trả lời:**
-
-Việc UBND xã A ban hành Quyết định hủy việc kết hôn giữa anh D và chị P, đồng thời thu hồi Giấy chứng nhận kết hôn là KHÔNG đúng thẩm quyền. Thẩm quyền giải quyết yêu cầu hủy việc kết hôn trái pháp luật (do vi phạm điều kiện một vợ một chồng) thuộc về Tòa án, không phải UBND xã. [Mức rủi ro: CAO - Quyết định này có thể bị cách chức công chức, chị P có thể khởi kiện]
-
-**2. Phân tích chi tiết:**
-
-*   **Bản chất của việc kết hôn giữa anh D và chị P:**
-    - Anh D đã có vợ (đã đăng ký kết hôn hợp pháp) nhưng lại đăng ký kết hôn với chị P. Đây là vi phạm nghiêm trọng điều kiện kết hôn cơ bản: nguyên tắc "một vợ một chồng".
-    - Theo (Điều 8, Khoản 1, Điểm b) của Luật Hôn nhân và Gia đình năm 2014, một trong những điều kiện kết hôn là "Không đang có vợ, có chồng". Việc anh D kết hôn với chị P khi vẫn còn hôn nhân với người vợ ở quê là vi phạm điều kiện này.
-    - Mặc dù việc đăng ký đã được thực hiện, nhưng do vi phạm điều kiện kết hôn nên được coi là "kết hôn trái pháp luật" theo (Điều 11, Khoản 1).
-
-*   **Thẩm quyền giải quyết việc hủy kết hôn trái pháp luật:**
-    - Theo (Điều 10, Khoản 1), "Người bị cưỡng ép kết hôn, bị lừa dối kết hôn... có quyền... yêu cầu Tòa án hủy việc kết hôn trái pháp luật..."
-    - Theo (Điều 11, Khoản 1), "Việc kết hôn vi phạm quy định tại khoản 1 Điều 8... thì Tòa án tuyên bố hủy việc kết hôn trái pháp luật..."
-    - Nguyên tắc chung: Việc hủy kết hôn trái pháp luật (do vi phạm điều kiện kết hôn) thuộc THẨM QUYỀN CỦA TÒA ÁN, không phải cơ quan hành chính.
-
-*   **Phân biệt với trường hợp đăng ký không đúng thẩm quyền:**
-    - (Điều 13) quy định "Xử lý việc đăng ký kết hôn không đúng thẩm quyền" - áp dụng khi cơ quan đăng ký không có thẩm quyền về địa hạt hoặc pháp lý (ví dụ: UBND xã đăng ký cho người nước ngoài).
-    - (Điều 13, Khoản 3): "Cơ quan nhà nước có thẩm quyền... thu hồi, hủy bỏ giấy chứng nhận kết hôn..." CHỈ áp dụng cho trường hợp đăng ký KHÔNG đúng thẩm quyền.
-    - Trong tình huống này, UBND xã A có đầy đủ thẩm quyền đăng ký (theo địa hạt nơi chị P thường trú). Vấn đề không phải là THẨM QUYỀN ĐĂNG KÝ mà là VI PHẠM ĐIỀU KIỆN KẾT HÔN. Do đó, (Điều 13) KHÔNG áp dụng.
-
-**3. Thẩm quyền và Thủ tục:**
-
-- **Cơ quan có thẩm quyền:** Tòa án nhân dân cấp huyện nơi các bên hoặc một bên cư trú (theo quy định tố tụng dân sự).
-- **Người có quyền yêu cầu:** Chị P (người bị lừa dối về tình trạng hôn nhân), hoặc Viện kiểm sát, cơ quan có thẩm quyền theo (Điều 10, Khoản 2).
-- **Thủ tục:** Nộp đơn yêu cầu Tòa án giải quyết hủy việc kết hôn trái pháp luật theo quy định của Bộ luật Tố tụng dân sự.
-- **Thời hạn:** Có thể yêu cầu hủy bất cứ lúc nào (không bị hạn chế thời gian theo luật).
-
-**4. Hậu quả pháp lý & Rủi ro:**
-
-- **Hậu quả nếu không khắc phục:**
-  • Chị P sẽ không thể làm lại thủ tục hôn nhân hợp pháp với bất kỳ ai cho đến khi Tòa án tuyên bố hủy
-  • Nếu chị P sinh con với anh D, con sẽ có tình trạng pháp lý phức tạp (được sinh trong hôn nhân không hợp pháp)
-  • Chị P mất bảo vệ pháp lý về tài sản chung, quyền kế thừa (vì hôn nhân không hợp pháp)
-  • Anh D có thể bị xử phạt hành chính hoặc hình sự nếu khai man thông tin để xin Giấy chứng thực độc thân
-
-- **Chế tài xử phạt:**
-  • Anh D: Vi phạm hành chính theo (Luật Hộ tịch) - phạt 1-3 triệu đồng hoặc xử phạt khác
-  • Anh D: Nếu khai man để lấy Giấy chứng thực độc thân - có thể bị truy cứu trách nhiệm hình sự (làm giả tài liệu)
-  • UBND xã A: Công chức ban hành quyết định sai có thể bị kiểm điểm, giáng chức, sa thải
-
-- **Ảnh hưởng đến quyền lợi:**
-  • Chị P mất quyền thừa kế từ anh D (vì hôn nhân không hợp pháp)
-  • Tài sản chung (nếu có) sẽ bị xử lý phức tạp khi hủy hôn nhân
-  • Anh D và người vợ cũ không thể ly hôn để thành hôn nhân mới (do hôn nhân thứ hai với chị P không hợp pháp)
-
-**5. Lưu ý thực tế + Khuyến nghị hành động:**
-
-- **Điểm cần chú ý:**
-  • Việc anh D xin được giấy xác nhận "độc thân" dù đã có vợ cho thấy có sai sót trong quản lý hộ tịch hoặc hành vi gian dối. Anh D có thể bị xử lý về hành vi làm giả giấy tờ hoặc khai man.
-  • UBND xã A KHÔNG có quyền hủy việc kết hôn trái pháp luật đơn phương mà không có lệnh từ Tòa án.
-
-- **Khuyến nghị hành động:**
-  • **Bước 1 (Ngay):** Chị P nên nộp đơn lên Tòa án nhân dân cấp huyện yêu cầu tuyên bố hủy việc kết hôn trái pháp luật
-  • **Bước 2 (Song song):** Liên hệ UBND xã A để yêu cầu giải thích lý do ban hành Quyết định hủy kết hôn (yêu cầu bằng văn bản)
-  • **Bước 3 (Nếu cần):** Tham vấn luật sư để được hỗ trợ trong kỳ kiểm tóa và bảo vệ quyền lợi về tài sản chung
-  • **Tài liệu chuẩn bị:** Giấy chứng nhận kết hôn, Giấy tờ tuỳ thân, Bằng chứng chị P không biết anh D đã có vợ (nếu có)
 
 ═══════════════════════════════════════════════════════════
 
@@ -195,20 +145,40 @@ HÃY TRẢ LỜI THEO CẤU TRÚC TRÊN, CHI TIẾT VÀ CHUYÊN SÂU:'''
 ═══════════════════════════════════════════════════════════
 📋 YÊU CẦU (SUMMARY MODE - NGẮN GỌN):
 
-**Cấu trúc trả lời (4-6 câu tối đa):**
+**Cấu trúc trả lời:**
 
-1. **Kết luận trực tiếp** (1-2 câu): Đáp án chính xác, rõ ràng
-2. **Cơ sở pháp lý** (1-2 câu): Trích dẫn điều luật liên quan (Điều X, Khoản Y) + nội dung ngắn gọn
-3. **Hậu quả/Rủi ro** (1 câu nếu có): Hậu quả nếu vi phạm (mục đích cảnh báo người dùng)
-4. **Hành động cần làm** (1 câu nếu có): Khuyến nghị cụ thể
+⚠️ **NẾU KHÔNG CHẮC CHẮN:** Bắt đầu bằng:
+"⚠️ Tôi không hoàn toàn chắc chắn với câu trả lời này do [lý do], nhưng dựa trên nguồn hiện có, đây là câu trả lời bạn có thể tham khảo:"
+
+**1. Kết luận trực tiếp** (1-2 câu):
+
+- Đáp án chính xác, rõ ràng
+- Đi thẳng vào vấn đề được hỏi
+
+**2. Cơ sở pháp lý** (2-3 điểm):
+
+- Trích dẫn điều luật: (Điều X, Khoản Y) của [Tên văn bản]
+- Nội dung ngắn gọn của quy định
+- Cách áp dụng vào trường hợp cụ thể
+
+**3. Hậu quả/Rủi ro** (nếu có):
+
+- Hậu quả nếu vi phạm quy định
+- Mức xử phạt hoặc chế tài (nếu có)
+
+**4. Hành động cần làm** (nếu có):
+
+- Khuyến nghị cụ thể, thực tế
+- Cơ quan có thẩm quyền giải quyết
 
 **Yêu cầu bắt buộc:**
 ✅ CHÍNH XÁC - trích dẫn chính xác điều luật, không truy cập dự đoán
 ✅ TRỰC TIẾP - không dài dòng, đi thẳng vào vấn đề
 ✅ RÕ RÀNG - dễ hiểu, không mơ hồ
 ✅ ĐỊNH DẠNG - (Điều X, Khoản Y) của [Tên văn bản]
+✅ TRÌNH BÀY - Sử dụng gạch đầu dòng và xuống dòng kép để dễ đọc.
 
-TRẢ LỜI:'''
+TRẢ LỜI (Nhớ dùng Markdown thoáng mắt):'''
     
     try:
         response = gemini_model.generate_content(prompt)

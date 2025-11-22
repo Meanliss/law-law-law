@@ -1,5 +1,5 @@
 """
-Search Module - BM25 + FAISS Hybrid Search with RRF (Reciprocal Rank Fusion)
+Search Module - BM25 + FAISS Hybrid Search with LLM Re-ranking
 """
 
 import re
@@ -8,8 +8,26 @@ from collections import defaultdict
 from typing import List, Dict
 from config import BM25_WEIGHT, FAISS_WEIGHT
 
-# RRF parameters
-RRF_K = 16  
+
+def reciprocal_rank_fusion(rank_lists: List[List[int]], k: int = 60) -> Dict[int, float]:
+    """
+    Reciprocal Rank Fusion (RRF)
+    Score = sum(1 / (k + rank))
+    
+    Args:
+        rank_lists: List of lists, where each list contains indices in ranked order
+        k: Constant (default 60)
+    
+    Returns:
+        Dictionary mapping index -> RRF score
+    """
+    rrf_scores = defaultdict(float)
+    
+    for rank_list in rank_lists:
+        for rank, idx in enumerate(rank_list):
+            rrf_scores[idx] += 1 / (k + rank + 1)
+            
+    return rrf_scores
 
 
 def rerank_with_llm(query: str, candidates: List[Dict], gemini_model, top_k: int = 5) -> List[Dict]:
@@ -165,23 +183,16 @@ def advanced_hybrid_search(
         faiss_lib.normalize_L2(query_embedding)
         faiss_distances, faiss_indices = faiss_index.search(query_embedding, top_k * 2)
         
-        # ✅ RRF: Apply Reciprocal Rank Fusion
-        # Formula: RRF(d) = sum of 1 / (RRF_K + rank)
+        # ✅ Collect rankings for RRF
+        bm25_rank_list = list(bm25_top_indices)
+        faiss_rank_list = list(faiss_indices[0])
         
-        # BM25 ranks
-        for rank, idx in enumerate(bm25_top_indices):
-            rrf_score = 1.0 / (RRF_K + rank + 1)
-            combined_scores[idx] += rrf_score * BM25_WEIGHT
-            if rank < 3:
-                print(f'[BM25-RRF] Chunk {idx}: rank={rank} → RRF={rrf_score:.4f}', flush=True)
+        # Apply RRF
+        rrf_scores = reciprocal_rank_fusion([bm25_rank_list, faiss_rank_list], k=60)
         
-        # FAISS ranks
-        for rank, idx in enumerate(faiss_indices[0]):
-            if idx != -1:
-                rrf_score = 1.0 / (RRF_K + rank + 1)
-                combined_scores[idx] += rrf_score * FAISS_WEIGHT
-                if rank < 3:
-                    print(f'[FAISS-RRF] Chunk {idx}: rank={rank} → RRF={rrf_score:.4f}', flush=True)
+        # Merge into combined scores
+        for idx, score in rrf_scores.items():
+            combined_scores[idx] += score
         
         seen_chunks.update(bm25_top_indices)
         seen_chunks.update(faiss_indices[0])
@@ -230,7 +241,7 @@ def simple_search(
     top_k: int = 8
 ) -> List[Dict]:
     """
-    Tìm kiếm đơn giản - BM25 + FAISS kết hợp với RRF (Reciprocal Rank Fusion)
+    Tìm kiếm đơn giản - BM25 + FAISS kết hợp với Min-Max Normalization
     
     Args:
         query: User query
@@ -255,33 +266,24 @@ def simple_search(
     faiss_lib.normalize_L2(query_embedding)
     faiss_distances, faiss_indices = faiss_index.search(query_embedding, top_k * 2)
     
-    # ===== RRF: Reciprocal Rank Fusion =====
-    combined_scores = defaultdict(float)
+    # ✅ Use Reciprocal Rank Fusion (RRF)
+    bm25_rank_list = list(bm25_top_indices)
+    faiss_rank_list = list(faiss_indices[0])
     
-    # ✅ BM25 RRF scores
-    for rank, idx in enumerate(bm25_top_indices):
-        rrf_score = 1.0 / (RRF_K + rank + 1)
-        combined_scores[idx] += rrf_score * BM25_WEIGHT
-        
-        if idx < 5:  # Log first few for debugging
-            print(f'[BM25-RRF] Chunk {idx}: rank={rank} → RRF={rrf_score:.4f}', flush=True)
+    combined_scores = reciprocal_rank_fusion([bm25_rank_list, faiss_rank_list], k=60)
     
-    # ✅ FAISS RRF scores
-    for rank, idx in enumerate(faiss_indices[0]):
-        if idx != -1:
-            rrf_score = 1.0 / (RRF_K + rank + 1)
-            combined_scores[idx] += rrf_score * FAISS_WEIGHT
-            
-            if rank < 5:  # Log first few for debugging
-                print(f'[FAISS-RRF] Chunk {idx}: rank={rank} → RRF={rrf_score:.4f}', flush=True)
+    # Log top RRF scores
+    sorted_debug = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)[:5]
+    for idx, score in sorted_debug:
+        print(f'[RRF] Chunk {idx}: score={score:.4f}', flush=True)
     
     # Sort and return top_k
     ranked = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
     
     # Log final scores
-    print(f'[RRF-HYBRID] Top results:', flush=True)
+    print(f'[HYBRID] Top results:', flush=True)
     for rank, (idx, score) in enumerate(ranked[:3]):
-        print(f'  #{rank+1}: Chunk {idx} (RRF_score={score:.4f})', flush=True)
+        print(f'  #{rank+1}: Chunk {idx} (score={score:.3f})', flush=True)
     
     results = [all_chunks[idx] for idx, _ in ranked]
     

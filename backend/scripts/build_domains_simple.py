@@ -122,26 +122,41 @@ def build_domain(domain_id: str):
                 print(f"  ⚠️ Unknown format in {json_path.name}")
                 continue
             
-            # Process each item
+            # Process each item (Keep whole article as one chunk - NO splitting by clauses)
             for item in items:
-                # Create content from available fields
+                # ✅ NEW: Build complete article content (keep all clauses together)
                 if 'content' in item:
+                    # Already has pre-built content
                     content = item['content']
                 else:
-                    # Build content from legal document structure
+                    # Build content from legal document structure (KEEP WHOLE ARTICLE)
                     parts = []
-                    if 'chuong' in item:
+                    
+                    # Chapter title
+                    if 'chuong' in item and item['chuong']:
                         parts.append(item['chuong'])
-                    if 'tieu_de' in item:
+                    
+                    # Article title
+                    if 'tieu_de' in item and item['tieu_de']:
                         parts.append(item['tieu_de'])
+                    
+                    # Article description (if any)
                     if 'mo_ta' in item and item['mo_ta']:
                         parts.append(item['mo_ta'])
+                    
+                    # ✅ IMPORTANT: Keep ALL clauses in the same chunk
                     if 'khoan' in item and isinstance(item['khoan'], list):
                         for khoan in item['khoan']:
                             if isinstance(khoan, dict) and 'noi_dung' in khoan:
-                                parts.append(khoan['noi_dung'])
+                                # Format: "1. Content..." or just "Content..."
+                                khoan_text = khoan['noi_dung']
+                                if 'khoan_so' in khoan:
+                                    khoan_text = f"{khoan['khoan_so']}. {khoan_text}"
+                                parts.append(khoan_text)
+                    
                     content = '\n'.join(parts)
                 
+                # Skip empty content
                 if not content.strip():
                     continue
                 
@@ -176,6 +191,7 @@ def build_domain(domain_id: str):
                         # Other domains or no nguon_sua_doi: use first PDF
                         pdf_file = pdf_files[0].name
                 
+                # ✅ Create ONE chunk per article (not per clause)
                 chunks.append({
                     'id': f"{domain_id}_{len(chunks)}",
                     'content': content,
