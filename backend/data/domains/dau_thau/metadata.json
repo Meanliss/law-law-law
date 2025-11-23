@@ -1,7 +1,7 @@
 {
   "domain_id": "dau_thau",
   "domain_name": "Luật Đấu thầu",
-  "total_chunks": 242,
+  "total_chunks": 1095,
   "json_files": [
     "luat_dauthau_hopnhat.json",
     "nghi_dinh_214_2025.json"

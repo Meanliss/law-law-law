@@ -4,6 +4,7 @@ Document Processor - Load and process legal JSON documents
 
 import json
 import os
+import re
 from typing import List, Dict, Tuple
 
 
@@ -36,7 +37,6 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
     
     # ✅ Extract domain_id from filename
     # Example: "luat_hinh_su_hopnhat.json" → "hinh_su"
-    import re
     domain_id = json_filename.lower()
     domain_id = re.sub(r'^luat_', '', domain_id)  # Remove "luat_" prefix
     domain_id = re.sub(r'_hopnhat\.json$|\.json$', '', domain_id)  # Remove suffixes
@@ -111,7 +111,8 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
             # Process clause without points
             if not khoan.get('diem'):
                 # ✅ Contextual Chunking: Prepend Article content
-                full_content = f"{base_content}\n{khoan_content}" if base_content else khoan_content
+                # FIX: Put specific content FIRST to avoid truncation
+                full_content = f"{khoan_content}\n\n--- Context ---\n{base_content}" if base_content else khoan_content
                 
                 chunks.append({
                     'source': khoan_source,
@@ -137,14 +138,15 @@ def xu_ly_van_ban_phap_luat_json(file_path: str) -> Tuple[List[Dict], str]:
                 
                 # ✅ Contextual Chunking: Prepend Article + Clause content
                 # This ensures the point has full context
+                # FIX: Put specific content FIRST
                 context_parts = []
                 if base_content:
                     context_parts.append(base_content)
                 if khoan_content:
                     context_parts.append(khoan_content)
-                context_parts.append(diem_content)
                 
-                full_point_content = "\n".join(context_parts)
+                full_context = "\n".join(context_parts)
+                full_point_content = f"{diem_content}\n\n--- Context ---\n{full_context}" if full_context else diem_content
                 
                 chunks.append({
                     'source': diem_source,

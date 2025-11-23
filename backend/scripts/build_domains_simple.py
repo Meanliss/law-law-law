@@ -109,96 +109,45 @@ def build_domain(domain_id: str):
         with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
             
-            # Handle different JSON formats
-            if isinstance(data, dict) and 'du_lieu' in data:
-                # Format: { "nguon": "...", "du_lieu": [...] }
-                items = data['du_lieu']
-                print(f"  📄 {json_path.name}: {len(items)} articles")
-            elif isinstance(data, list):
-                # Format: [{ ... }, { ... }]
-                items = data
-                print(f"  📄 {json_path.name}: {len(items)} items")
-            else:
-                print(f"  ⚠️ Unknown format in {json_path.name}")
-                continue
+            # ✅ Use shared document processor for consistent chunking
+            # This supports the new "Reverse Context" strategy (Specific Content -> Context)
+            from core.document_processor import xu_ly_van_ban_phap_luat_json
             
-            # Process each item (Keep whole article as one chunk - NO splitting by clauses)
-            for item in items:
-                # ✅ NEW: Build complete article content (keep all clauses together)
-                if 'content' in item:
-                    # Already has pre-built content
-                    content = item['content']
-                else:
-                    # Build content from legal document structure (KEEP WHOLE ARTICLE)
-                    parts = []
-                    
-                    # Chapter title
-                    if 'chuong' in item and item['chuong']:
-                        parts.append(item['chuong'])
-                    
-                    # Article title
-                    if 'tieu_de' in item and item['tieu_de']:
-                        parts.append(item['tieu_de'])
-                    
-                    # Article description (if any)
-                    if 'mo_ta' in item and item['mo_ta']:
-                        parts.append(item['mo_ta'])
-                    
-                    # ✅ IMPORTANT: Keep ALL clauses in the same chunk
-                    if 'khoan' in item and isinstance(item['khoan'], list):
-                        for khoan in item['khoan']:
-                            if isinstance(khoan, dict) and 'noi_dung' in khoan:
-                                # Format: "1. Content..." or just "Content..."
-                                khoan_text = khoan['noi_dung']
-                                if 'khoan_so' in khoan:
-                                    khoan_text = f"{khoan['khoan_so']}. {khoan_text}"
-                                parts.append(khoan_text)
-                    
-                    content = '\n'.join(parts)
-                
-                # Skip empty content
-                if not content.strip():
-                    continue
-                
-                # ✅ Find corresponding PDF file based on nguon_sua_doi
+            processed_chunks, nguon_luat = xu_ly_van_ban_phap_luat_json(str(json_path))
+            print(f"  📄 {json_path.name}: {len(processed_chunks)} chunks (granular)")
+            
+            for p_chunk in processed_chunks:
+                # Find PDF file based on modification source (if any)
                 pdf_file = ''
                 pdf_files = list((domain_dir / "pdfs").glob("*.pdf"))
                 
                 if pdf_files:
-                    # Check if there's nguon_sua_doi in any khoan
-                    nguon_sua_doi = ''
-                    if 'khoan' in item:
-                        for khoan in item['khoan']:
-                            if khoan.get('nguon_sua_doi'):
-                                nguon_sua_doi = khoan.get('nguon_sua_doi', '')
-                                break
+                    nguon_sua_doi = p_chunk['metadata'].get('modified_by', '')
                     
                     # Map nguon_sua_doi → pdf_file for dau_thau domain
                     if domain_id == 'dau_thau' and nguon_sua_doi:
                         if '90/2025' in nguon_sua_doi or 'Luật 90/2025' in nguon_sua_doi:
-                            # Find luat_dau_thau(90_2025).pdf
                             matched_pdf = [f for f in pdf_files if '90_2025' in f.name or '90/2025' in f.name]
                             pdf_file = matched_pdf[0].name if matched_pdf else pdf_files[0].name
                         elif '57/2024' in nguon_sua_doi or 'Luật 57/2024' in nguon_sua_doi:
-                            # Find luat_dau_thau(57_2024).pdf
                             matched_pdf = [f for f in pdf_files if '57_2024' in f.name or '57/2024' in f.name]
                             pdf_file = matched_pdf[0].name if matched_pdf else pdf_files[0].name
                         else:
-                            # Default: luat_dau_thau.pdf (no version in filename)
                             matched_pdf = [f for f in pdf_files if f.stem == 'luat_dau_thau']
                             pdf_file = matched_pdf[0].name if matched_pdf else pdf_files[0].name
                     else:
-                        # Other domains or no nguon_sua_doi: use first PDF
                         pdf_file = pdf_files[0].name
-                
-                # ✅ Create ONE chunk per article (not per clause)
+
+                # Create final chunk
                 chunks.append({
                     'id': f"{domain_id}_{len(chunks)}",
-                    'content': content,
+                    'content': p_chunk['content'],
+                    'source': p_chunk['source'],  # Keep the source string (Dieu X, Khoan Y...)
                     'json_file': json_path.name,
                     'pdf_file': pdf_file,
-                    'article_num': item.get('article_num', item.get('dieu_so', '')),
-                    'page_num': item.get('page_num', ''),
+                    'article_num': p_chunk['metadata'].get('article_num', ''),
+                    'clause_num': p_chunk['metadata'].get('clause_num', ''),
+                    'point_num': p_chunk['metadata'].get('point_num', ''),
                     'domain_id': domain_id,
                     'domain_name': DOMAIN_REGISTRY.get(domain_id, {}).get('name', domain_id)
                 })

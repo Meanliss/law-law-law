@@ -9,23 +9,27 @@ from typing import List, Dict
 from config import BM25_WEIGHT, FAISS_WEIGHT
 
 
-def reciprocal_rank_fusion(rank_lists: List[List[int]], k: int = 60) -> Dict[int, float]:
+def reciprocal_rank_fusion(rank_lists: List[List[int]], weights: List[float] = None, k: int = 60) -> Dict[int, float]:
     """
-    Reciprocal Rank Fusion (RRF)
-    Score = sum(1 / (k + rank))
+    Weighted Reciprocal Rank Fusion (RRF)
+    Score = sum(weight * (1 / (k + rank)))
     
     Args:
         rank_lists: List of lists, where each list contains indices in ranked order
+        weights: List of weights for each rank list
         k: Constant (default 60)
     
     Returns:
         Dictionary mapping index -> RRF score
     """
+    if weights is None:
+        weights = [1.0] * len(rank_lists)
+        
     rrf_scores = defaultdict(float)
     
-    for rank_list in rank_lists:
+    for rank_list, weight in zip(rank_lists, weights):
         for rank, idx in enumerate(rank_list):
-            rrf_scores[idx] += 1 / (k + rank + 1)
+            rrf_scores[idx] += weight * (1 / (k + rank + 1))
             
     return rrf_scores
 
@@ -49,7 +53,8 @@ def rerank_with_llm(query: str, candidates: List[Dict], gemini_model, top_k: int
         docs_text = ""
         for i, doc in enumerate(candidates):
             # Giới hạn độ dài mỗi document để tránh prompt quá dài
-            content = doc['content'][:300]
+            # FIX: Increased limit to 8000 chars to avoid truncation
+            content = doc['content'][:8000]
             docs_text += f"\n[{i}] {content}...\n"
         
         prompt = f"""Bạn là chuyên gia pháp lý Việt Nam. Đánh giá mức độ liên quan của các đoạn văn bản pháp luật với câu hỏi.
@@ -187,8 +192,12 @@ def advanced_hybrid_search(
         bm25_rank_list = list(bm25_top_indices)
         faiss_rank_list = list(faiss_indices[0])
         
-        # Apply RRF
-        rrf_scores = reciprocal_rank_fusion([bm25_rank_list, faiss_rank_list], k=60)
+        # Apply RRF with weights
+        rrf_scores = reciprocal_rank_fusion(
+            [bm25_rank_list, faiss_rank_list], 
+            weights=[BM25_WEIGHT, FAISS_WEIGHT],
+            k=60
+        )
         
         # Merge into combined scores
         for idx, score in rrf_scores.items():
@@ -200,25 +209,14 @@ def advanced_hybrid_search(
     if not combined_scores:
         return []
     
-    # Step 4: Rerank top candidates with semantic similarity
+    # Step 4: Sort by RRF score
     ranked = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)[:top_k * 2]
+    results = [all_chunks[idx] for idx, _ in ranked]
     
-    candidates = [all_chunks[idx] for idx, _ in ranked]
-    candidate_texts = [c['content'] for c in candidates]
-    
-    query_emb = embedder.encode([query], convert_to_numpy=True)
-    candidate_embs = embedder.encode(candidate_texts, convert_to_numpy=True)
-    
-    query_norm = query_emb / np.linalg.norm(query_emb)
-    candidate_norms = candidate_embs / np.linalg.norm(candidate_embs, axis=1, keepdims=True)
-    semantic_scores = np.dot(candidate_norms, query_norm.T).flatten()
-    
-    reranked_indices = np.argsort(semantic_scores)[::-1][:top_k * 2]
-    results = [candidates[i] for i in reranked_indices]
-    
-    # ✅ Step 5: LLM Re-ranking (chỉ cho Quality mode)
-    if use_advanced and gemini_model and len(results) > top_k:
-        print(f'[RE-RANK] Quality mode: Re-ranking {len(results)} candidates with LLM...')
+    # ✅ Step 5: LLM Re-ranking (Unified & Final)
+    # Removed intermediate Semantic Reranking (Step 4 in old code)
+    if use_advanced and gemini_model and len(results) > 0:
+        print(f'[RE-RANK] Quality mode: Re-ranking {len(results)} candidates with LLM (Lite)...')
         results = rerank_with_llm(
             query=refined_query,
             candidates=results,
@@ -266,11 +264,15 @@ def simple_search(
     faiss_lib.normalize_L2(query_embedding)
     faiss_distances, faiss_indices = faiss_index.search(query_embedding, top_k * 2)
     
-    # ✅ Use Reciprocal Rank Fusion (RRF)
+    # ✅ Use Weighted Reciprocal Rank Fusion (RRF)
     bm25_rank_list = list(bm25_top_indices)
     faiss_rank_list = list(faiss_indices[0])
     
-    combined_scores = reciprocal_rank_fusion([bm25_rank_list, faiss_rank_list], k=60)
+    combined_scores = reciprocal_rank_fusion(
+        [bm25_rank_list, faiss_rank_list], 
+        weights=[BM25_WEIGHT, FAISS_WEIGHT],
+        k=60
+    )
     
     # Log top RRF scores
     sorted_debug = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)[:5]

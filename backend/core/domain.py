@@ -165,9 +165,10 @@ class Domain:
         )
         
         # ===== Normalize and Merge Scores =====
+        from config import BM25_WEIGHT, FAISS_WEIGHT
         combined_scores = {}
         
-        # BM25 normalization (40%)
+        # BM25 normalization
         if len(bm25_top_indices) > 0:
             bm25_subset = bm25_scores[bm25_top_indices]
             bm25_min, bm25_max = bm25_subset.min(), bm25_subset.max()
@@ -176,13 +177,13 @@ class Domain:
             if bm25_range > 0:
                 for idx in bm25_top_indices:
                     normalized = (bm25_scores[idx] - bm25_min) / bm25_range
-                    combined_scores[int(idx)] = normalized * 0.4
+                    combined_scores[int(idx)] = normalized * BM25_WEIGHT
         
-        # FAISS contribution (60%)
+        # FAISS contribution
         for rank, idx in enumerate(faiss_indices[0]):
             distance = faiss_distances[0][rank]
             similarity = 1 / (1 + distance)
-            combined_scores[int(idx)] = combined_scores.get(int(idx), 0) + similarity * 0.6
+            combined_scores[int(idx)] = combined_scores.get(int(idx), 0) + similarity * FAISS_WEIGHT
         
         # ===== Sort and Load Top Chunks =====
         sorted_indices = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)

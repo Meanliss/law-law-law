@@ -1,7 +1,7 @@
 {
   "domain_id": "hon_nhan",
   "domain_name": "Luật Hôn nhân và Gia đình",
-  "total_chunks": 131,
+  "total_chunks": 331,
   "json_files": [
     "luat_hon_nhan_hopnhat.json"
   ],

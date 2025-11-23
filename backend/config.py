@@ -22,8 +22,8 @@ EMBEDDING_MODEL = 'keepitreal/vietnamese-sbert'  # Vietnamese-optimized SBERT (7
 
 # Search Parameters
 DEFAULT_TOP_K = 8
-BM25_WEIGHT = 0.4
-FAISS_WEIGHT = 0.6
+BM25_WEIGHT = 0.7
+FAISS_WEIGHT = 0.3
 
 # Cache Paths
 CACHE_DIR = 'cache'
