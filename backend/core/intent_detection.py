@@ -14,7 +14,7 @@ from config import INTENT_CONFIDENCE_REJECT_THRESHOLD
 _intent_cache = {}
 
 
-def detect_domain_with_llm(question: str, gemini_lite_model, domain_manager) -> str:
+def detect_domain_with_llm(question: str, gemini_lite_model, domain_manager, context: str = None) -> str:
     """
     Use LLM to detect which legal domain a question belongs to
     
@@ -22,6 +22,7 @@ def detect_domain_with_llm(question: str, gemini_lite_model, domain_manager) -> 
         question: Sub-question to classify
         gemini_lite_model: Gemini lite model instance
         domain_manager: DomainManager instance
+        context: Original question or context (optional)
     
     Returns:
         domain_id (str) or None if cannot detect
@@ -40,9 +41,11 @@ def detect_domain_with_llm(question: str, gemini_lite_model, domain_manager) -> 
         
         domains_list = "\n".join(domains_info)
         
+        context_str = f"NGỮ CẢNH: {context}\n" if context else ""
+        
         prompt = f"""Bạn là chuyên gia phân loại câu hỏi pháp luật.
 
-CÂU HỎI: "{question}"
+{context_str}CÂU HỎI CẦN PHÂN LOẠI: "{question}"
 
 CÁC LĨNH VỰC PHÁP LUẬT:
 {domains_list}
@@ -51,10 +54,11 @@ NHIỆM VỤ: Xác định câu hỏi thuộc lĩnh vực pháp luật nào.
 
 QUY TẮC:
 1. Chỉ trả về MỘT domain_id phù hợp nhất
-2. Nếu không rõ ràng, trả về "NONE"
-3. Chỉ trả về domain_id, KHÔNG giải thích
+2. Nếu câu hỏi không rõ ràng nhưng có NGỮ CẢNH, hãy dùng ngữ cảnh để suy luận.
+3. Nếu vẫn không xác định được, trả về "NONE"
+4. Chỉ trả về domain_id, KHÔNG giải thích
 
-FORMAT TRẢLỜI:
+FORMAT TRẢ LỜI:
 DOMAIN: <domain_id hoặc NONE>
 
 BẮT ĐẦU PHÂN LOẠI:"""
@@ -292,8 +296,14 @@ Trả lời JSON:
         
         # Detect domain for sub-question
         if domain_manager:
-            # Use LLM to detect domain (more accurate than keywords)
-            detected_domain = detect_domain_with_llm(sub_query, gemini_lite_model, domain_manager)
+            # ✅ Use LLM to detect domain WITH CONTEXT (original question)
+            detected_domain = detect_domain_with_llm(
+                sub_query, 
+                gemini_lite_model, 
+                domain_manager, 
+                context=question  # ✅ Pass original question as context
+            )
+            
             if detected_domain:
                 sub_q_obj['domain'] = detected_domain
                 print(f'🎯 [DOMAIN-LLM] "{sub_query}" → {detected_domain}', flush=True)
@@ -303,6 +313,11 @@ Trả lời JSON:
                 if detected_domain:
                     sub_q_obj['domain'] = detected_domain
                     print(f'🔑 [DOMAIN-KEYWORD] "{sub_query}" → {detected_domain}', flush=True)
+                else:
+                    # ✅ FINAL FALLBACK: Use original domain if available
+                    if original_domain:
+                        sub_q_obj['domain'] = original_domain
+                        print(f'🔄 [DOMAIN-FALLBACK] "{sub_query}" → {original_domain} (inherited)', flush=True)
         
         sub_questions.append(sub_q_obj)
     

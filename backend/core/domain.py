@@ -82,7 +82,8 @@ class Domain:
                 self._tokenized_chunks = pickle.load(f)
         
         self._loaded = True
-        print(f"✅ Domain '{self.domain_id}' loaded: {self.metadata.get('chunk_count', 0)} chunks", flush=True)
+        self._loaded = True
+        print(f"✅ Domain '{self.domain_id}' loaded: {self.metadata.get('total_chunks', 0)} chunks", flush=True)
     
     @property
     def bm25_index(self):
@@ -131,12 +132,14 @@ class Domain:
         if needed_indices:
             # Read JSONL and cache needed chunks
             chunks_path = self.domain_dir / "chunks.jsonl"
+            found_count = 0
             with open(chunks_path, 'r', encoding='utf-8') as f:
                 for i, line in enumerate(f):
                     if i in needed_indices:
                         chunk = json.loads(line)
                         self._chunks_cache[i] = chunk
-                        if len(self._chunks_cache) >= len(indices):
+                        found_count += 1
+                        if found_count == len(needed_indices):
                             break
         
         return [self._chunks_cache[i] for i in indices if i in self._chunks_cache]
