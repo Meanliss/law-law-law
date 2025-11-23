@@ -194,7 +194,7 @@ TRẢ LỜI (Nhớ dùng Markdown thoáng mắt):'''
         return 'Xin lỗi, không thể tạo câu trả lời lúc này.'
 
 
-def generate_suggested_questions(question: str, answer: str, gemini_model, max_questions: int = 3) -> List[str]:
+def generate_suggested_questions(question: str, answer: str, gemini_model, max_questions: int = 2) -> List[str]:
     """
     Generate suggested follow-up questions based on the answer
     
@@ -202,23 +202,29 @@ def generate_suggested_questions(question: str, answer: str, gemini_model, max_q
         question: Original user question
         answer: Generated answer
         gemini_model: Gemini model instance
-        max_questions: Maximum number of questions to suggest (default 3)
+        max_questions: Maximum number of questions to suggest (default 2)
     
     Returns:
         List of suggested questions
     """
     try:
-        prompt = f"""Dựa trên câu hỏi và câu trả lời về pháp luật sau, hãy gợi ý {max_questions} câu hỏi tiếp theo mà người dùng có thể quan tâm.
+        prompt = f"""Dựa trên câu hỏi và câu trả lời về pháp luật sau, hãy gợi ý {max_questions} câu hỏi tiếp theo sâu hơn, cụ thể hơn mà người dùng có thể muốn tìm hiểu.
 
 CÂU HỎI GỐC: {question}
 
 CÂU TRẢ LỜI: {answer[:500]}...
 
 YÊU CẦU:
-- Gợi ý {max_questions} câu hỏi liên quan hoặc mở rộng vấn đề
-- Mỗi câu hỏi trên 1 dòng
-- Format: "💭 Có lẽ bạn sẽ quan tâm đến [vấn đề], có cần tôi trả lời cho bạn không?"
-- Ngắn gọn, dễ hiểu, liên quan trực tiếp
+- Gợi ý {max_questions} câu hỏi cụ thể, tự nhiên như người thật đang hỏi
+- Mỗi câu hỏi phải đi sâu vào chi tiết của vấn đề người dùng đang hỏi
+- Câu hỏi phải ngắn gọn, rõ ràng, mang tính ứng dụng thực tế
+- Đặt câu hỏi trực tiếp, KHÔNG dùng format "Có lẽ bạn sẽ quan tâm..."
+- Mỗi câu hỏi trên 1 dòng, bắt đầu bằng emoji 💭
+
+VÍ DỤ TỐT:
+💭 Mức phạt cụ thể là bao nhiêu nếu vi phạm quy định này?
+💭 Thủ tục khiếu nại khi bị xử phạt không đúng thực hiện như thế nào?
+💭 Trường hợp nào được miễn trách nhiệm theo quy định pháp luật?
 
 CHỈ TRẢ LỜI CÁC CÂU HỎI, KHÔNG GIẢI THÍCH:"""
         
@@ -237,6 +243,7 @@ CHỈ TRẢ LỜI CÁC CÂU HỎI, KHÔNG GIẢI THÍCH:"""
     except Exception as e:
         print(f'[ERROR] Failed to generate suggested questions: {e}')
         return []
+
 
 
 def get_rejection_message() -> str:
