@@ -40,7 +40,7 @@ interface ChatInterfaceProps {
 
 const formatLawName = (jsonFile: string | undefined): string => {
   if (!jsonFile) return 'Văn bản pháp luật';
-  
+
   const nameMap: Record<string, string> = {
     'luat_lao_donghopnhat.json': 'Bộ luật Lao động',
     'luat_so_huu_tri_tue_hopnhat.json': 'Bộ luật Sở hữu trí tuệ',
@@ -55,7 +55,7 @@ const formatLawName = (jsonFile: string | undefined): string => {
     'nghi_dinh_214_2025.json': 'Nghị định 214/2025/NĐ-CP',
     'luat_hinh_su_hopnhat.json': 'Bộ luật Hình sự',
   };
-  
+
   return nameMap[jsonFile] || jsonFile.replace(/_hopnhat\.json|\.json/g, '').replace(/_/g, ' ');
 };
 
@@ -78,7 +78,8 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
     pageNum: undefined,
   });
   const [chatHistory, setChatHistory] = useState<any[]>([]);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const shouldAutoScrollRef = useRef(true);
 
   // Load messages from localStorage when conversationId changes
   useEffect(() => {
@@ -124,11 +125,36 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
     }
   }, [messages, conversationId]);
 
+  // Improved scroll logic - scroll to bottom when new messages arrive
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Use requestAnimationFrame to ensure DOM is updated
+    const timeoutId = setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end'
+        });
+      }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [messages, isTyping]);
+
+  // Track if user is scrolling manually - only auto scroll if near bottom
+  useEffect(() => {
+    const scrollElement = document.querySelector('[data-slot="scroll-area-viewport"]') as HTMLElement;
+
+    if (!scrollElement) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = scrollElement;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 150;
+      shouldAutoScrollRef.current = isNearBottom;
+    };
+
+    scrollElement.addEventListener('scroll', handleScroll);
+    return () => scrollElement.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleOpenPDF = (pdfUrl: string, title: string, articleNum?: string, pageNum?: number) => {
     if (onOpenPDF) {
@@ -324,7 +350,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                 {/* Welcome Screen - Hiển thị khi chỉ có tin nhắn chào mừng */}
                 <AnimatePresence>
                   {messages.length === 1 && messages[0].sender === 'ai' && (
-                    <WelcomeScreen 
+                    <WelcomeScreen
                       isDarkMode={isDarkMode}
                       onSelectQuestion={handleSendMessage}
                     />
@@ -349,9 +375,8 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                           <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: message.feedback ? 0 : 1 }}
-                            className={`flex items-center gap-2 mt-4 ml-14 transition-all duration-500 ${
-                              message.feedback ? 'pointer-events-none' : ''
-                            }`}
+                            className={`flex items-center gap-2 mt-4 ml-14 transition-all duration-500 ${message.feedback ? 'pointer-events-none' : ''
+                              }`}
                           >
                             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                               <Button
@@ -387,11 +412,10 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                                 className="mt-4 ml-14"
                               >
                                 <div
-                                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl backdrop-blur-xl border ${
-                                    message.feedback === 'up'
-                                      ? 'bg-green-500/20 border-green-500/50 text-green-700 dark:text-green-400'
-                                      : 'bg-red-500/20 border-red-500/50 text-red-700 dark:text-red-400'
-                                  }`}
+                                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl backdrop-blur-xl border ${message.feedback === 'up'
+                                    ? 'bg-green-500/20 border-green-500/50 text-green-700 dark:text-green-400'
+                                    : 'bg-red-500/20 border-red-500/50 text-red-700 dark:text-red-400'
+                                    }`}
                                 >
                                   {message.feedback === 'up' ? (
                                     <>
@@ -459,7 +483,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
                   )}
                 </AnimatePresence>
 
-                <div ref={scrollRef} />
+                <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
           </div>
