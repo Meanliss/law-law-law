@@ -13,45 +13,51 @@ interface PDFViewerProps {
 }
 
 export function PDFViewer({ isOpen, url, title, articleNum, pageNum, onClose }: PDFViewerProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [pdfUrlState, setPdfUrlState] = useState('');
   const [pdfLoaded, setPdfLoaded] = useState(false);
 
-  // ✅ Build PDF URL with page number and timestamp to bypass IDM
-  const pdfUrl = (() => {
-    // Default to page 1 if no pageNum provided
-    const targetPage = pageNum && pageNum > 0 ? pageNum : 1;
-    
-    // Add timestamp query param to bypass IDM detection
-    // IDM ignores URLs with query parameters that look like API calls
-    const timestamp = Date.now();
-    const separator = url.includes('?') ? '&' : '?';
-    const urlWithTimestamp = `${url}${separator}_t=${timestamp}`;
-    
-    // Add #page=X to URL for PDF viewer to jump to specific page
-    const urlWithPage = `${urlWithTimestamp}#page=${targetPage}`;
-    
-    console.log('[PDFViewer] Built URL:', { 
-      originalUrl: url,
-      pageNum,
-      targetPage,
-      finalUrl: urlWithPage
-    });
-    
-    return urlWithPage;
-  })();
-
-  // ✅ Log for debugging
+  // ✅ Fetch page number from backend if missing
   useEffect(() => {
+    const fetchPageNumber = async () => {
+      if (isOpen && articleNum && (!pageNum || pageNum === 0)) {
+        try {
+          // Extract domain_id from URL: /api/pdf-file/{domain_id}/{filename}
+          const match = url.match(/\/api\/pdf-file\/([^\/]+)\//);
+          const domainId = match ? match[1] : null;
+
+          if (domainId) {
+            console.log(`[PDFViewer] Fetching page for Article ${articleNum} in domain ${domainId}...`);
+            const res = await fetch(`http://localhost:7860/api/pdf/find-page/${domainId}/${articleNum}`);
+            const data = await res.json();
+
+            if (data.found && data.page) {
+              console.log(`[PDFViewer] Found Article ${articleNum} on page ${data.page}`);
+              // Force reload with new page
+              const timestamp = Date.now();
+              const separator = url.includes('?') ? '&' : '?';
+              const newUrl = `${url}${separator}_t=${timestamp}#page=${data.page}`;
+              setPdfUrlState(newUrl);
+              return;
+            }
+          }
+        } catch (err) {
+          console.error('[PDFViewer] Error fetching page:', err);
+        }
+      }
+
+      // Fallback: Use default URL construction
+      const targetPage = pageNum && pageNum > 0 ? pageNum : 1;
+      const timestamp = Date.now();
+      const separator = url.includes('?') ? '&' : '?';
+      const searchParam = articleNum ? `&search="Điều ${articleNum}"` : '';
+      const newUrl = `${url}${separator}_t=${timestamp}#page=${targetPage}${searchParam}`;
+      setPdfUrlState(newUrl);
+    };
+
     if (isOpen) {
-      console.log('[PDFViewer] Opening PDF:', { 
-        url, 
-        title,
-        articleNum, 
-        pageNum,
-        pdfUrl
-      });
+      fetchPageNumber();
     }
-  }, [isOpen, url, title, articleNum, pageNum, pdfUrl]);
+  }, [isOpen, url, articleNum, pageNum]);
 
   return (
     <AnimatePresence>
@@ -77,7 +83,7 @@ export function PDFViewer({ isOpen, url, title, articleNum, pageNum, onClose }: 
             {/* Header with Glass Effect */}
             <div className="flex-shrink-0 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-teal-500/10 dark:from-blue-500/5 dark:via-cyan-500/5 dark:to-teal-500/5" />
-              
+
               <div className="relative z-10 p-6 border-b border-gray-200/50 dark:border-gray-700/50">
                 {/* Tiêu đề và nút đóng */}
                 <div className="flex items-center justify-between mb-4">
@@ -124,15 +130,15 @@ export function PDFViewer({ isOpen, url, title, articleNum, pageNum, onClose }: 
             <div className="flex-1 overflow-hidden bg-gray-100 dark:bg-gray-950">
               {/* ✅ Use iframe for better search support */}
               <iframe
-                src={pdfUrl}
+                src={pdfUrlState}
                 className="w-full h-full border-0"
                 title={title}
               />
-              
+
               {/* ✅ Open in new tab button */}
               <div className="absolute bottom-4 right-4 z-10">
                 <Button
-                  onClick={() => window.open(pdfUrl, '_blank')}
+                  onClick={() => window.open(pdfUrlState, '_blank')}
                   className="gap-2 bg-blue-600 hover:bg-blue-700 shadow-lg"
                   size="sm"
                 >

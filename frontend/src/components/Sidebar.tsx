@@ -143,11 +143,10 @@ export function ConversationSidebar({
                           transition={{ delay: index * 0.05 }}
                         >
                           <div
-                            className={`group relative overflow-hidden rounded-2xl backdrop-blur-xl border transition-all duration-300 ${
-                              activeConversationId === conversation.id
+                            className={`group relative overflow-hidden rounded-2xl backdrop-blur-xl border transition-all duration-300 ${activeConversationId === conversation.id
                                 ? 'bg-gradient-to-br from-blue-500/20 via-cyan-500/20 to-teal-500/20 border-blue-400/50 dark:border-cyan-500/50 shadow-lg shadow-blue-500/20'
                                 : 'bg-white/60 dark:bg-gray-800/60 border-white/50 dark:border-gray-700/50 hover:bg-white/80 dark:hover:bg-gray-800/80 hover:scale-[1.02]'
-                            }`}
+                              }`}
                           >
                             {/* Hover Gradient Effect */}
                             <motion.div
@@ -166,10 +165,10 @@ export function ConversationSidebar({
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 truncate mb-1">
+                                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mb-1 text-sm leading-snug">
                                     {conversation.title}
                                   </h4>
-                                  <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
+                                  <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
                                     {conversation.preview}
                                   </p>
                                   <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
@@ -241,6 +240,6 @@ function formatRelativeTime(date: Date): string {
   if (diffInMinutes < 60) return `${diffInMinutes} phút trước`;
   if (diffInHours < 24) return `${diffInHours} giờ trước`;
   if (diffInDays < 7) return `${diffInDays} ngày trước`;
-  
+
   return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
 }
