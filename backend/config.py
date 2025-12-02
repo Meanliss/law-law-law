@@ -18,7 +18,8 @@ GEMINI_LITE_MODEL = 'gemini-2.5-flash-lite'  # Intent detection, decomposition
 # Embedding Model
 # PhoBERT requires special handling, use multilingual model optimized for Vietnamese
 # EMBEDDING_MODEL = 'vinai/phobert-base'  # PhoBERT (not compatible with SentenceTransformers directly)
-EMBEDDING_MODEL = 'keepitreal/vietnamese-sbert'  # Vietnamese-optimized SBERT (768-dim, better than MiniLM)
+# EMBEDDING_MODEL = 'keepitreal/vietnamese-sbert'  # Vietnamese-optimized SBERT (768-dim, better than MiniLM)
+EMBEDDING_MODEL = 'models/embedding-001'  # Gemini Embedding (768-dim)
 
 # Search Parameters
 DEFAULT_TOP_K = 8
