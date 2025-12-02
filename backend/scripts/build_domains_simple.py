@@ -187,7 +187,9 @@ def build_domain(domain_id: str):
     # ===== STEP 5: Build FAISS index =====
     print("\n🧠 Building FAISS index...")
     print(f"  Loading embedder: {EMBEDDING_MODEL}...")
-    embedder = SentenceTransformer(EMBEDDING_MODEL)
+    # embedder = SentenceTransformer(EMBEDDING_MODEL)
+    from core.embedding import GeminiEmbedder
+    embedder = GeminiEmbedder(EMBEDDING_MODEL)
     
     print(f"  Encoding {len(chunks)} chunks...")
     texts = [chunk['content'] for chunk in chunks]

@@ -95,7 +95,9 @@ async def lifespan(app: FastAPI):
     
     # 3. Load embedding model
     print(f'[INFO] Loading embedding model: {EMBEDDING_MODEL}...', flush=True)
-    embedder = SentenceTransformer(EMBEDDING_MODEL)
+    # embedder = SentenceTransformer(EMBEDDING_MODEL)
+    from core.embedding import GeminiEmbedder
+    embedder = GeminiEmbedder(EMBEDDING_MODEL)
     print(f'[OK] Embedding model ready', flush=True)
     
     # 4. Initialize Domain Manager (lazy loading)
