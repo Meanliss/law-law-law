@@ -346,7 +346,7 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
         <div className="flex-1 relative" key={conversationId}>
           <div className="absolute inset-0">
             <ScrollArea className="h-full">
-              <div className="max-w-4xl mx-auto p-6 space-y-6">
+              <div className="max-w-4xl w-full mx-auto p-6 space-y-6">
                 {/* Welcome Screen - Hiển thị khi chỉ có tin nhắn chào mừng */}
                 <AnimatePresence>
                   {messages.length === 1 && messages[0].sender === 'ai' && (
