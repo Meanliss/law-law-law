@@ -12,6 +12,6 @@
     "luat_dau_thau.pdf",
     "Nghị định-214-2025-NĐ-CP.pdf"
   ],
-  "embedding_model": "keepitreal/vietnamese-sbert",
+  "embedding_model": "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base",
   "embedding_dim": 768
 }

@@ -24,9 +24,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from utils.tokenizer import tokenize_vi as tokenize_vietnamese
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
+from utils.embedding import load_embedding_model
 
 # ===== CONFIG =====
-EMBEDDING_MODEL = "keepitreal/vietnamese-sbert"
+from config import EMBEDDING_MODEL
 
 # Load domain registry
 with open("data/domain_registry.json", "r", encoding="utf-8") as f:
@@ -187,7 +188,7 @@ def build_domain(domain_id: str):
     # ===== STEP 5: Build FAISS index =====
     print("\n🧠 Building FAISS index...")
     print(f"  Loading embedder: {EMBEDDING_MODEL}...")
-    embedder = SentenceTransformer(EMBEDDING_MODEL)
+    embedder = load_embedding_model()
     
     print(f"  Encoding {len(chunks)} chunks...")
     texts = [chunk['content'] for chunk in chunks]
