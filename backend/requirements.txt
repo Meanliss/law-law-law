@@ -11,3 +11,4 @@ google-generativeai
 numpy
 python-dotenv
 scikit-learn  # For cosine_similarity in reranking
+pypdf

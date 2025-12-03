@@ -470,6 +470,39 @@ async def get_pdf_info(domain_id: str, article_num: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/api/pdf/find-page/{domain_id}/{article_num}")
+async def find_pdf_page(domain_id: str, article_num: str):
+    """
+    Find the page number for a specific article in the PDF
+    """
+    try:
+        from core.pdf_utils import find_article_page
+        
+        domain_dir = Path(f"data/domains/{domain_id}")
+        pdfs_dir = domain_dir / "pdfs"
+        pdf_files = list(pdfs_dir.glob("*.pdf")) if pdfs_dir.exists() else []
+        
+        if not pdf_files:
+            raise HTTPException(status_code=404, detail="PDF not found")
+        
+        pdf_file = pdf_files[0]
+        
+        # Find page number
+        page_num = find_article_page(str(pdf_file), article_num)
+        
+        if page_num:
+            print(f"[PDF] Found Article {article_num} on page {page_num}")
+            return {"page": page_num, "found": True}
+        else:
+            print(f"[PDF] Article {article_num} not found in PDF")
+            return {"page": None, "found": False}
+            
+    except Exception as e:
+        print(f"[ERROR] find_pdf_page: {e}")
+        # Don't fail the request, just return not found
+        return {"page": None, "found": False, "error": str(e)}
+
+
 @app.get("/api/pdf-file/{domain_id}/{filename}")
 async def serve_pdf(domain_id: str, filename: str):
     """Serve PDF file with CORS headers and allow iframe embedding"""
