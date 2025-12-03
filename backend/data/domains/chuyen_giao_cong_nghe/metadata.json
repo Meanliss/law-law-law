@@ -8,6 +8,6 @@
   "pdf_files": [
     "luat_chuyen_giao_cong_nghe.pdf"
   ],
-  "embedding_model": "keepitreal/vietnamese-sbert",
+  "embedding_model": "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base",
   "embedding_dim": 768
 }

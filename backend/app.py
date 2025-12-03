@@ -37,6 +37,8 @@ from faiss import logger
 # Import utilities
 from utils.cache import get_data_hash, build_or_load_bm25, build_or_load_faiss
 from utils.tokenizer import tokenize_vi
+from utils.tokenizer import tokenize_vi
+from utils.embedding import load_embedding_model
 from config import EMBEDDING_MODEL, GEMINI_FLASH_MODEL, GEMINI_PRO_MODEL, GEMINI_LITE_MODEL  # Import model names
 
 
@@ -95,9 +97,9 @@ async def lifespan(app: FastAPI):
     
     # 3. Load embedding model
     print(f'[INFO] Loading embedding model: {EMBEDDING_MODEL}...', flush=True)
-    # embedder = SentenceTransformer(EMBEDDING_MODEL)
-    from core.embedding import GeminiEmbedder
-    embedder = GeminiEmbedder(EMBEDDING_MODEL)
+    print(f'[INFO] Loading embedding model: {EMBEDDING_MODEL}...', flush=True)
+    embedder = load_embedding_model()
+    print(f'[OK] Embedding model ready', flush=True)
     print(f'[OK] Embedding model ready', flush=True)
     
     # 4. Initialize Domain Manager (lazy loading)

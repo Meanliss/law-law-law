@@ -5,7 +5,9 @@ import json
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from sentence_transformers import SentenceTransformer
+from utils.embedding import load_embedding_model
 from .domain import Domain
+from config import EMBEDDING_MODEL
 
 
 class DomainManager:
@@ -17,7 +19,7 @@ class DomainManager:
         # Load embedder
         if embedder is None:
             print("🧠 Loading embedder model...", flush=True)
-            self.embedder = SentenceTransformer('keepitreal/vietnamese-sbert')
+            self.embedder = load_embedding_model()
         else:
             self.embedder = embedder
         
