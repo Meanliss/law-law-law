@@ -1,13 +1,21 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, MessageSquare, Trash2, ChevronLeft, Menu } from 'lucide-react';
+import { Plus, MessageSquare, ChevronLeft, Menu, MoreVertical, Pin, Edit3, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
+import { useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 export interface Conversation {
   id: string;
   title: string;
   preview: string;
   timestamp: Date;
+  isPinned?: boolean;
 }
 
 interface ConversationSidebarProps {
@@ -16,9 +24,161 @@ interface ConversationSidebarProps {
   onNewConversation: () => void;
   onSelectConversation: (id: string) => void;
   onDeleteConversation: (id: string) => void;
+  onPinConversation?: (id: string) => void;
+  onRenameConversation?: (id: string, newTitle: string) => void;
   isDarkMode: boolean;
   isOpen: boolean;
   onToggle: () => void;
+}
+
+interface SidebarItemProps {
+  conversation: Conversation;
+  isActive: boolean;
+  onSelect: () => void;
+  onRename?: (id: string, newTitle: string) => void;
+  onPin?: (id: string) => void;
+  onDelete: (id: string) => void;
+  isRenaming: boolean;
+  onRenameStart: () => void;
+  onRenameCancel: () => void;
+  renameValue: string;
+  setRenameValue: (value: string) => void;
+  index: number;
+}
+
+function SidebarItem({
+  conversation,
+  isActive,
+  onSelect,
+  onRename,
+  onPin,
+  onDelete,
+  isRenaming,
+  onRenameStart,
+  onRenameCancel,
+  renameValue,
+  setRenameValue,
+  index,
+}: SidebarItemProps) {
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ delay: index * 0.05 }}
+      className="mb-2 last:mb-0 px-4"
+    >
+      <div
+        className={`group relative overflow-visible rounded-full transition-all duration-200 ${isActive
+          ? 'bg-blue-100/80 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100'
+          : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
+          }`}
+      >
+        <div className="flex items-center gap-3 px-4 py-3.5 cursor-pointer" onClick={onSelect}>
+          {/* Icon */}
+          <div className="flex-shrink-0">
+            <MessageSquare size={18} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-400'} />
+          </div>
+
+          {/* Title */}
+          {isRenaming ? (
+            <input
+              type="text"
+              value={renameValue}
+              onChange={(e) => setRenameValue(e.target.value)}
+              onBlur={() => {
+                if (onRename && renameValue.trim()) {
+                  onRename(conversation.id, renameValue.trim());
+                }
+                onRenameCancel();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  if (onRename && renameValue.trim()) {
+                    onRename(conversation.id, renameValue.trim());
+                  }
+                  onRenameCancel();
+                } else if (e.key === 'Escape') {
+                  onRenameCancel();
+                }
+              }}
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+              className="flex-1 min-w-0 text-sm bg-transparent border-b border-blue-500 focus:outline-none"
+            />
+          ) : (
+            <div className="flex-1 min-w-0">
+              <h4 className={`text-sm font-medium truncate ${isActive ? 'text-blue-900 dark:text-blue-100' : ''}`}>
+                {conversation.title}
+              </h4>
+              <p className="text-xs text-gray-500 dark:text-gray-500 truncate mt-0.5 opacity-80">
+                {conversation.preview || 'Không có bản xem trước'}
+              </p>
+            </div>
+          )}
+
+          {/* Pin indicator */}
+          {conversation.isPinned && !isActive && (
+            <Pin size={14} className="text-gray-400 flex-shrink-0" />
+          )}
+
+          {/* Dropdown Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                onClick={(e) => e.stopPropagation()}
+                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-opacity ${isActive ? 'opacity-100 hover:bg-blue-200/50 dark:hover:bg-blue-800/50' : 'opacity-0 group-hover:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700'} data-[state=open]:opacity-100`}
+              >
+                <MoreVertical size={16} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              sideOffset={5}
+              className="w-48 rounded-2xl bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 shadow-2xl p-1.5"
+            >
+              {/* Pin Option */}
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onPin) onPin(conversation.id);
+                }}
+                className="px-3 py-2.5 text-sm font-medium text-gray-200 hover:bg-white/10 dark:hover:bg-white/10 hover:text-white rounded-xl flex items-center gap-3 cursor-pointer focus:bg-white/10 dark:focus:bg-white/10 focus:text-white transition-colors"
+              >
+                <Pin size={16} className="text-blue-400" />
+                <span>{conversation.isPinned ? 'Bỏ ghim' : 'Ghim'}</span>
+              </DropdownMenuItem>
+
+              {/* Rename Option */}
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRenameStart();
+                }}
+                className="px-3 py-2.5 text-sm font-medium text-gray-200 hover:bg-white/10 dark:hover:bg-white/10 hover:text-white rounded-xl flex items-center gap-3 cursor-pointer focus:bg-white/10 dark:focus:bg-white/10 focus:text-white transition-colors"
+              >
+                <Edit3 size={16} className="text-gray-400" />
+                <span>Đổi tên</span>
+              </DropdownMenuItem>
+
+              {/* Delete Option */}
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(conversation.id);
+                }}
+                className="px-3 py-2.5 text-sm font-medium text-red-400 hover:bg-red-500/20 dark:hover:bg-red-500/20 hover:text-red-300 rounded-xl flex items-center gap-3 cursor-pointer focus:bg-red-500/20 dark:focus:bg-red-500/20 focus:text-red-300 transition-colors"
+              >
+                <Trash2 size={16} />
+                <span>Xóa</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+    </motion.div>
+  );
 }
 
 export function ConversationSidebar({
@@ -27,10 +187,23 @@ export function ConversationSidebar({
   onNewConversation,
   onSelectConversation,
   onDeleteConversation,
+  onPinConversation,
+  onRenameConversation,
   isDarkMode,
   isOpen,
   onToggle,
 }: ConversationSidebarProps) {
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState('');
+
+  const handleRename = (id: string) => {
+    if (onRenameConversation && renameValue.trim()) {
+      onRenameConversation(id, renameValue.trim());
+    }
+    setRenamingId(null);
+    setRenameValue('');
+  };
+
   return (
     <>
       {/* Mobile Toggle Button */}
@@ -117,7 +290,7 @@ export function ConversationSidebar({
               </motion.div>
 
               <ScrollArea className="h-[calc(100%-2rem)]">
-                <div className="space-y-2 pr-2">
+                <div className="space-y-1.5 pr-2">
                   <AnimatePresence mode="popLayout">
                     {conversations.length === 0 ? (
                       <motion.div
@@ -133,72 +306,71 @@ export function ConversationSidebar({
                         </p>
                       </motion.div>
                     ) : (
-                      conversations.map((conversation, index) => (
-                        <motion.div
-                          key={conversation.id}
-                          layout
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -20 }}
-                          transition={{ delay: index * 0.05 }}
-                        >
-                          <div
-                            className={`group relative overflow-hidden rounded-2xl backdrop-blur-xl border transition-all duration-300 ${activeConversationId === conversation.id
-                                ? 'bg-gradient-to-br from-blue-500/20 via-cyan-500/20 to-teal-500/20 border-blue-400/50 dark:border-cyan-500/50 shadow-lg shadow-blue-500/20'
-                                : 'bg-white/60 dark:bg-gray-800/60 border-white/50 dark:border-gray-700/50 hover:bg-white/80 dark:hover:bg-gray-800/80 hover:scale-[1.02]'
-                              }`}
-                          >
-                            {/* Hover Gradient Effect */}
-                            <motion.div
-                              initial={{ opacity: 0 }}
-                              whileHover={{ opacity: 1 }}
-                              className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-transparent pointer-events-none"
-                            />
-
-                            <button
-                              onClick={() => onSelectConversation(conversation.id)}
-                              className="relative z-10 w-full text-left p-4"
-                            >
-                              <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-md">
-                                  <MessageSquare size={16} className="text-white" />
-                                </div>
-
-                                <div className="flex-1 min-w-0">
-                                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mb-1 text-sm leading-snug">
-                                    {conversation.title}
-                                  </h4>
-                                  <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
-                                    {conversation.preview}
-                                  </p>
-                                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                                    {formatRelativeTime(conversation.timestamp)}
-                                  </p>
-                                </div>
-                              </div>
-                            </button>
-
-                            {/* Delete Button */}
-                            <motion.div
-                              initial={{ opacity: 0, x: 10 }}
-                              whileHover={{ opacity: 1, x: 0 }}
-                              className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <motion.button
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onDeleteConversation(conversation.id);
+                      <>
+                        {/* Pinned Conversations */}
+                        {conversations.some(c => c.isPinned) && (
+                          <div className="mb-6">
+                            <h3 className="text-xs font-medium text-blue-500 dark:text-cyan-400 px-4 mb-2 uppercase tracking-wider">
+                              Đã ghim
+                            </h3>
+                            {conversations.filter(c => c.isPinned).map((conversation, index) => (
+                              <SidebarItem
+                                key={conversation.id}
+                                conversation={conversation}
+                                isActive={activeConversationId === conversation.id}
+                                onSelect={() => onSelectConversation(conversation.id)}
+                                onRename={onRenameConversation ? (id, title) => onRenameConversation(id, title) : undefined}
+                                onPin={onPinConversation ? (id) => onPinConversation(id) : undefined}
+                                onDelete={(id) => onDeleteConversation(id)}
+                                isRenaming={renamingId === conversation.id}
+                                onRenameStart={() => {
+                                  setRenamingId(conversation.id);
+                                  setRenameValue(conversation.title);
                                 }}
-                                className="w-8 h-8 rounded-xl backdrop-blur-xl bg-red-500/80 hover:bg-red-600/90 text-white flex items-center justify-center shadow-lg"
-                              >
-                                <Trash2 size={14} />
-                              </motion.button>
-                            </motion.div>
+                                onRenameCancel={() => {
+                                  setRenamingId(null);
+                                  setRenameValue('');
+                                }}
+                                renameValue={renameValue}
+                                setRenameValue={setRenameValue}
+                                index={index}
+                              />
+                            ))}
                           </div>
-                        </motion.div>
-                      ))
+                        )}
+
+                        {/* Recent Conversations */}
+                        <div>
+                          {conversations.some(c => c.isPinned) && (
+                            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-500 px-4 mb-2 uppercase tracking-wider">
+                              Gần đây
+                            </h3>
+                          )}
+                          {conversations.filter(c => !c.isPinned).map((conversation, index) => (
+                            <SidebarItem
+                              key={conversation.id}
+                              conversation={conversation}
+                              isActive={activeConversationId === conversation.id}
+                              onSelect={() => onSelectConversation(conversation.id)}
+                              onRename={onRenameConversation ? (id, title) => onRenameConversation(id, title) : undefined}
+                              onPin={onPinConversation ? (id) => onPinConversation(id) : undefined}
+                              onDelete={(id) => onDeleteConversation(id)}
+                              isRenaming={renamingId === conversation.id}
+                              onRenameStart={() => {
+                                setRenamingId(conversation.id);
+                                setRenameValue(conversation.title);
+                              }}
+                              onRenameCancel={() => {
+                                setRenamingId(null);
+                                setRenameValue('');
+                              }}
+                              renameValue={renameValue}
+                              setRenameValue={setRenameValue}
+                              index={index}
+                            />
+                          ))}
+                        </div>
+                      </>
                     )}
                   </AnimatePresence>
                 </div>
@@ -226,20 +398,4 @@ export function ConversationSidebar({
       </motion.div>
     </>
   );
-}
-
-// Helper function to format relative time
-function formatRelativeTime(date: Date): string {
-  const now = new Date();
-  const diffInMs = now.getTime() - date.getTime();
-  const diffInMinutes = Math.floor(diffInMs / 60000);
-  const diffInHours = Math.floor(diffInMs / 3600000);
-  const diffInDays = Math.floor(diffInMs / 86400000);
-
-  if (diffInMinutes < 1) return 'Vừa xong';
-  if (diffInMinutes < 60) return `${diffInMinutes} phút trước`;
-  if (diffInHours < 24) return `${diffInHours} giờ trước`;
-  if (diffInDays < 7) return `${diffInDays} ngày trước`;
-
-  return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
 }

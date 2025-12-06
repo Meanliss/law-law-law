@@ -121,7 +121,23 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
   // Save messages to localStorage whenever they change
   useEffect(() => {
     if (messages.length > 0) {
-      localStorage.setItem(`messages_${conversationId}`, JSON.stringify(messages));
+      try {
+        localStorage.setItem(`messages_${conversationId}`, JSON.stringify(messages));
+      } catch (error) {
+        if (error instanceof DOMException &&
+          (error.name === 'QuotaExceededError' || error.name === 'NS_ERROR_DOM_QUOTA_REACHED')) {
+          console.warn('Storage quota exceeded. Attempting to clear old messages...');
+          try {
+            // Try enabling a "safe mode" - only save the last 20 messages
+            const recentMessages = messages.slice(-20);
+            localStorage.setItem(`messages_${conversationId}`, JSON.stringify(recentMessages));
+          } catch (retryError) {
+            console.error('Failed to save messages even after trimming:', retryError);
+          }
+        } else {
+          console.error('Error saving messages:', error);
+        }
+      }
     }
   }, [messages, conversationId]);
 

@@ -12,7 +12,7 @@ export default function App() {
   useEffect(() => {
     const savedMode = localStorage.getItem('darkMode');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     if (savedMode === 'true' || (!savedMode && prefersDark)) {
       setIsDarkMode(true);
       document.documentElement.classList.add('dark');
@@ -49,7 +49,11 @@ export default function App() {
   // Save conversations to localStorage when they change
   useEffect(() => {
     if (conversations.length > 0) {
-      localStorage.setItem('conversations', JSON.stringify(conversations));
+      try {
+        localStorage.setItem('conversations', JSON.stringify(conversations));
+      } catch (error) {
+        console.error('Failed to save conversations to localStorage:', error);
+      }
     }
   }, [conversations]);
 
@@ -57,13 +61,13 @@ export default function App() {
     setIsDarkMode((prev: boolean) => {
       const newMode = !prev;
       localStorage.setItem('darkMode', String(newMode));
-      
+
       if (newMode) {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
       }
-      
+
       return newMode;
     });
   };
@@ -76,10 +80,10 @@ export default function App() {
       preview: 'Bắt đầu đặt câu hỏi...',
       timestamp: new Date(),
     };
-    
+
     setConversations([newConversation, ...conversations]);
     setActiveConversationId(newId);
-    
+
     // Close sidebar on mobile after creating new conversation
     if (window.innerWidth < 1024) {
       setIsSidebarOpen(false);
@@ -88,7 +92,7 @@ export default function App() {
 
   const handleSelectConversation = (id: string) => {
     setActiveConversationId(id);
-    
+
     // Close sidebar on mobile after selecting
     if (window.innerWidth < 1024) {
       setIsSidebarOpen(false);
@@ -97,7 +101,7 @@ export default function App() {
 
   const handleDeleteConversation = (id: string) => {
     setConversations(conversations.filter((c: Conversation) => c.id !== id));
-    
+
     if (activeConversationId === id) {
       // Switch to default or first conversation
       const remaining = conversations.filter((c: Conversation) => c.id !== id);
@@ -110,12 +114,28 @@ export default function App() {
       prev.map((c: Conversation) =>
         c.id === id
           ? {
-              ...c,
-              title: firstMessage.slice(0, 50),
-              preview: firstMessage.slice(0, 80),
-              timestamp: new Date(),
-            }
+            ...c,
+            title: firstMessage.slice(0, 50),
+            preview: firstMessage.slice(0, 80),
+            timestamp: new Date(),
+          }
           : c
+      )
+    );
+  };
+
+  const handlePinConversation = (id: string) => {
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === id ? { ...c, isPinned: !c.isPinned } : c
+      )
+    );
+  };
+
+  const handleRenameConversation = (id: string, newTitle: string) => {
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === id ? { ...c, title: newTitle } : c
       )
     );
   };
@@ -129,6 +149,8 @@ export default function App() {
         onNewConversation={handleNewConversation}
         onSelectConversation={handleSelectConversation}
         onDeleteConversation={handleDeleteConversation}
+        onPinConversation={handlePinConversation}
+        onRenameConversation={handleRenameConversation}
         isDarkMode={isDarkMode}
         isOpen={isSidebarOpen}
         onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
