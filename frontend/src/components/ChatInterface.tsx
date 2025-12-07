@@ -6,7 +6,7 @@ import { DarkModeToggle } from './DarkModeToggle';
 import { PDFViewer } from './PDFViewer';
 import { ScrollArea } from './ui/scroll-area';
 import { Button } from './ui/button';
-import { ThumbsUp, ThumbsDown, Zap, Clock, Scale } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Zap, Clock, Scale, LogOut, User as UserIcon } from 'lucide-react';
 import { WelcomeScreen } from './WelcomeScreen';
 import { LoadingDots } from './LoadingDots';
 import { askQuestion, submitFeedback as apiSubmitFeedback, suggestQuestions } from '../services/api';
@@ -27,7 +27,14 @@ interface Message {
   context?: Array<{ source: string; content: string }>;
   feedback?: 'up' | 'down' | null;
   timing_ms?: number;
+  timing_ms?: number;
   search_method?: string;
+}
+
+interface User {
+  username: string;
+  email?: string;
+  full_name?: string;
 }
 
 interface ChatInterfaceProps {
@@ -36,6 +43,8 @@ interface ChatInterfaceProps {
   onToggleDarkMode: () => void;
   onOpenPDF?: (pdfUrl: string, title: string, articleNum?: string, pageNum?: number) => void;
   onUpdateConversation?: (id: string, firstMessage: string) => void;
+  user?: User | null;
+  onLogout?: () => void;
 }
 
 const formatLawName = (jsonFile: string | undefined): string => {
@@ -59,7 +68,15 @@ const formatLawName = (jsonFile: string | undefined): string => {
   return nameMap[jsonFile] || jsonFile.replace(/_hopnhat\.json|\.json/g, '').replace(/_/g, ' ');
 };
 
-export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, onOpenPDF, onUpdateConversation }: ChatInterfaceProps) {
+export function ChatInterface({
+  conversationId,
+  isDarkMode,
+  onToggleDarkMode,
+  onOpenPDF,
+  onUpdateConversation,
+  user,
+  onLogout
+}: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [mode, setMode] = useState<'summary' | 'detail'>('summary');
@@ -354,7 +371,27 @@ export function ChatInterface({ conversationId, isDarkMode, onToggleDarkMode, on
               </div>
             </div>
 
-            <DarkModeToggle isDark={isDarkMode} onToggle={onToggleDarkMode} />
+            <div className="flex items-center gap-3">
+              <DarkModeToggle isDark={isDarkMode} onToggle={onToggleDarkMode} />
+
+              {user && onLogout && (
+                <div className="flex items-center gap-3 border-l border-gray-200 dark:border-gray-700 pl-3 ml-1">
+                  <div className="hidden md:flex flex-col items-end mr-1">
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{user.username}</span>
+                  </div>
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onLogout}
+                    title="Đăng xuất"
+                    className="p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors"
+                  >
+                    <LogOut size={18} />
+                  </motion.button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

@@ -2,10 +2,50 @@
 Pydantic Models for API
 """
 
-from pydantic import BaseModel
+
+from pydantic import BaseModel, EmailStr
 from typing import List, Dict, Optional
 
 
+# ============================================================================
+# Auth Models
+# ============================================================================
+
+class UserBase(BaseModel):
+    username: str
+    email: Optional[EmailStr] = None
+    full_name: Optional[str] = None
+
+    import re
+    from pydantic import validator
+
+    @validator('username')
+    def username_must_be_english(cls, v):
+        if not re.match(r'^[a-zA-Z0-9]+$', v):
+            raise ValueError('Username must contain only English letters and numbers')
+        return v
+    
+class UserCreate(UserBase):
+    password: str
+
+class User(UserBase):
+    id: int
+    is_active: bool
+
+    class Config:
+        from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
+
+# ============================================================================
+# Q&A Models
+# ============================================================================
 class QuestionRequest(BaseModel):
     question: str
     use_advanced: bool = True

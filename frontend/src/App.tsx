@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import { ChatInterface } from './components/ChatInterface';
 import { ConversationSidebar, type Conversation } from './components/Sidebar';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
-export default function App() {
+function AuthenticatedApp() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversationId, setActiveConversationId] = useState<string>('default');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { logout, user } = useAuth();
 
   // Initialize dark mode and conversations from localStorage
   useEffect(() => {
@@ -141,30 +145,67 @@ export default function App() {
   };
 
   return (
-    <div className="w-full h-screen overflow-hidden flex">
-      {/* Sidebar */}
-      <ConversationSidebar
-        conversations={conversations}
-        activeConversationId={activeConversationId}
-        onNewConversation={handleNewConversation}
-        onSelectConversation={handleSelectConversation}
-        onDeleteConversation={handleDeleteConversation}
-        onPinConversation={handlePinConversation}
-        onRenameConversation={handleRenameConversation}
-        isDarkMode={isDarkMode}
-        isOpen={isSidebarOpen}
-        onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-      />
+    <div className="w-full h-screen overflow-hidden flex flex-col">
+      {/* Top Bar with User Info */}
 
-      {/* Main Chat Area */}
-      <div className="flex-1 overflow-hidden">
-        <ChatInterface
-          conversationId={activeConversationId}
+
+      <div className="flex-1 overflow-hidden flex">
+        {/* Sidebar */}
+        <ConversationSidebar
+          conversations={conversations}
+          activeConversationId={activeConversationId}
+          onNewConversation={handleNewConversation}
+          onSelectConversation={handleSelectConversation}
+          onDeleteConversation={handleDeleteConversation}
+          onPinConversation={handlePinConversation}
+          onRenameConversation={handleRenameConversation}
           isDarkMode={isDarkMode}
-          onToggleDarkMode={handleToggleDarkMode}
-          onUpdateConversation={handleUpdateConversation}
+          isOpen={isSidebarOpen}
+          onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
         />
+
+        {/* Main Chat Area */}
+        <div className="flex-1 overflow-hidden">
+          <ChatInterface
+            conversationId={activeConversationId}
+            isDarkMode={isDarkMode}
+            onToggleDarkMode={handleToggleDarkMode}
+            onUpdateConversation={handleUpdateConversation}
+            user={user}
+            onLogout={logout}
+          />
+        </div>
       </div>
     </div>
+  );
+}
+
+function AppContent() {
+  const { isAuthenticated } = useAuth();
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  if (isAuthenticated) {
+    return <AuthenticatedApp />;
+  }
+
+  if (isRegistering) {
+    return <Register onRegisterSuccess={() => setIsRegistering(false)} />;
+  }
+
+  return (
+    <div className="flex flex-col h-screen">
+      <Login
+        onLoginSuccess={() => { }}
+        onRegisterClick={() => setIsRegistering(true)}
+      />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }

@@ -8,7 +8,9 @@ if sys.platform == 'win32':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
-from fastapi import FastAPI, HTTPException, Response, Request
+from fastapi import FastAPI, HTTPException, Response, Request, Depends, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.exceptions import RequestValidationError
@@ -19,12 +21,7 @@ from typing import Optional
 import os
 import json
 import time  # For performance timing
-import google.generativeai as genai
-from sentence_transformers import SentenceTransformer
-from dotenv import load_dotenv
-from pathlib import Path
-# Import models
-from models import QuestionRequest, AnswerResponse, HealthResponse, PDFSource, FeedbackRequest, FeedbackResponse, SuggestQuestionsRequest, SuggestQuestionsResponse
+from core.auth import SECRET_KEY, ALGORITHM
 
 # Import core functions
 from core.document_processor import xu_ly_van_ban_phap_luat_json
@@ -57,6 +54,32 @@ embedder = None
 gemini_flash_model = None  # Flash model for fast mode answer
 gemini_pro_model = None    # Pro model for quality mode answer
 gemini_lite_model = None   # Lite model for intent detection
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    
+    user = db.query(models_db.User).filter(models_db.User.username == username).first()
+    if user is None:
+        raise credentials_exception
+    return user
+
+async def get_current_active_user(current_user: models_db.User = Depends(get_current_user)):
+    if not current_user.is_active:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
 
 
 # ============================================================================
@@ -645,9 +668,52 @@ async def get_document_endpoint(filename: str):
         print(f"[PDF] ❌ Error loading PDF: {str(e)}", flush=True)
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# ============================================================================
+# Auth Endpoints
+# ============================================================================
+
+@app.post("/register", response_model=User)
+def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(models_db.User).filter(models_db.User.username == user.username).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    
+    hashed_password = get_password_hash(user.password)
+    db_user = models_db.User(
+        username=user.username,
+        email=user.email,
+        full_name=user.full_name,
+        hashed_password=hashed_password
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+@app.post("/token", response_model=Token)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = db.query(models_db.User).filter(models_db.User.username == form_data.username).first()
+    if not user or not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/users/me", response_model=User)
+async def read_users_me(current_user: models_db.User = Depends(get_current_active_user)):
+    return current_user
+
+
 # ...existing code...
 if __name__ == '__main__':
     import uvicorn
     import os
-    port = int(os.getenv('PORT', 7860))  # Support both 8000 (local) and 7860 (HF Spaces)
+    port = int(os.getenv('PORT', 7860))  # Default to 7860 for local dev
     uvicorn.run('app:app', host='0.0.0.0', port=port, reload=False)

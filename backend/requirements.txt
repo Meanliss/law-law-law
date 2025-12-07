@@ -12,3 +12,8 @@ numpy
 python-dotenv
 scikit-learn  # For cosine_similarity in reranking
 pypdf
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+sqlalchemy
+email-validator
