@@ -3,8 +3,9 @@ Pydantic Models for API
 """
 
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, validator
 from typing import List, Dict, Optional
+import re
 
 
 # ============================================================================
@@ -15,9 +16,6 @@ class UserBase(BaseModel):
     username: str
     email: Optional[EmailStr] = None
     full_name: Optional[str] = None
-
-    import re
-    from pydantic import validator
 
     @validator('username')
     def username_must_be_english(cls, v):

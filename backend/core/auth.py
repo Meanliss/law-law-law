@@ -1,3 +1,9 @@
+import os
+import bcrypt
+import jwt
+from datetime import datetime, timedelta
+from typing import Optional
+
 # Configuration
 SECRET_KEY = os.getenv("SECRET_KEY", "your-super-secret-key-change-this")
 ALGORITHM = "HS256"

@@ -21,7 +21,28 @@ from typing import Optional
 import os
 import json
 import time  # For performance timing
-from core.auth import SECRET_KEY, ALGORITHM
+from pathlib import Path
+
+# Import database and models
+from database import get_db
+from models import user as models_db
+
+# Import schemas
+from schemas.auth import (
+    QuestionRequest, AnswerResponse, PDFSource, HealthResponse,
+    SuggestQuestionsRequest, SuggestQuestionsResponse,
+    FeedbackRequest, FeedbackResponse,
+    User, UserCreate, Token
+)
+
+# Import auth utilities
+from core.auth import SECRET_KEY, ALGORITHM, verify_password, get_password_hash, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from jose import JWTError, jwt
+from datetime import timedelta
+
+# Import Google AI
+import google.generativeai as genai
+from dotenv import load_dotenv
 
 # Import core functions
 from core.document_processor import xu_ly_van_ban_phap_luat_json

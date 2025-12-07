@@ -14,6 +14,8 @@ scikit-learn  # For cosine_similarity in reranking
 pypdf
 python-jose[cryptography]
 passlib[bcrypt]
+bcrypt
+pyjwt[crypto]
 python-multipart
 sqlalchemy
 email-validator
