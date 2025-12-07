@@ -1,4 +1,9 @@
 # Configuration
+import os
+from typing import Optional
+from datetime import datetime, timedelta
+from jose import jwt
+import bcrypt
 SECRET_KEY = os.getenv("SECRET_KEY", "your-super-secret-key-change-this")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
