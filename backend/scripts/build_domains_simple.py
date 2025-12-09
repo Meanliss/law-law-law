@@ -72,12 +72,12 @@ def build_domain(domain_id: str):
             
             # Import converter (FIX: use correct module)
             try:
-                from scripts.pdf_converter import PDFConverter  # ✅ Đổi từ pdf_to_json
+                from scripts.pdf_to_json import PDFToJSONConverter
                 
                 raw_dir.mkdir(parents=True, exist_ok=True)
                 json_output = raw_dir / f"{pdf_files[0].stem}_hopnhat.json"  # ✅ Thêm _hopnhat
                 
-                converter = PDFConverter()
+                converter = PDFToJSONConverter()
                 converter.convert(str(pdf_files[0]), str(json_output))
                 
                 json_files = [json_output]

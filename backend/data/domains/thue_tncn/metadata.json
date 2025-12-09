@@ -1,0 +1,13 @@
+{
+  "domain_id": "thue_tncn",
+  "domain_name": "Luật Thuế Thu nhập cá nhân",
+  "total_chunks": 124,
+  "json_files": [
+    "thue_tncn_hopnhat.json"
+  ],
+  "pdf_files": [
+    "thue_tncn.pdf"
+  ],
+  "embedding_model": "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base",
+  "embedding_dim": 768
+}
