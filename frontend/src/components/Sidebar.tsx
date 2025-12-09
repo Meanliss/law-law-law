@@ -67,15 +67,15 @@ function SidebarItem({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
       transition={{ delay: index * 0.05 }}
-      className="mb-2 last:mb-0 px-2"
+      className="mb-2 last:mb-0 px-2 w-full max-w-full"
     >
       <div
-        className={`group relative overflow-visible rounded-xl border transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${isActive
+        className={`group relative overflow-hidden rounded-xl border transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${isActive
           ? 'bg-blue-100/90 dark:bg-blue-900/50 text-blue-900 dark:text-blue-100 border-blue-200 dark:border-blue-700/50 shadow-sm'
           : 'bg-gray-50/50 dark:bg-gray-800/40 hover:bg-white dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200/60 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm'
           }`}
       >
-        <div className="flex items-center gap-3 px-3 py-3 cursor-pointer" onClick={onSelect}>
+        <div className="flex items-center gap-3 px-3 py-3 cursor-pointer w-full" onClick={onSelect}>
           {/* Icon */}
           <div className="flex-shrink-0">
             <MessageSquare size={18} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-400'} />
@@ -109,11 +109,18 @@ function SidebarItem({
             />
           ) : (
             <div className="flex-1 min-w-0">
-              <h4 className={`text-sm font-medium truncate ${isActive ? 'text-blue-900 dark:text-blue-100' : ''}`}>
-                {conversation.title}
+              <h4
+                className={`text-sm font-medium ${isActive ? 'text-blue-900 dark:text-blue-100' : ''}`}
+                title={conversation.title}
+              >
+                {conversation.title.length > 20
+                  ? conversation.title.slice(0, 20) + '...'
+                  : conversation.title}
               </h4>
-              <p className="text-xs text-gray-500 dark:text-gray-500 truncate mt-0.5 opacity-80">
-                {conversation.preview || 'Không có bản xem trước'}
+              <p className="text-xs text-gray-500 dark:text-gray-500 mt-0.5 opacity-80">
+                {(conversation.preview || 'Không có bản xem trước').length > 25
+                  ? (conversation.preview || 'Không có bản xem trước').slice(0, 25) + '...'
+                  : (conversation.preview || 'Không có bản xem trước')}
               </p>
             </div>
           )}
@@ -234,7 +241,8 @@ export function ConversationSidebar({
         initial={{ x: -320 }}
         animate={{ x: isOpen ? 0 : -320 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed lg:relative top-0 left-0 h-full w-80 z-40 lg:z-0 flex flex-col"
+        className="fixed lg:relative top-0 left-0 h-full z-40 lg:z-0 flex flex-col flex-shrink-0"
+        style={{ width: '20rem', minWidth: '20rem', maxWidth: '20rem' }}
       >
         {/* Glass Container */}
         <div className="h-full backdrop-blur-2xl bg-white/70 dark:bg-gray-900/70 border-r border-white/50 dark:border-gray-700/50 shadow-2xl relative overflow-hidden">
@@ -289,8 +297,8 @@ export function ConversationSidebar({
                 </h3>
               </motion.div>
 
-              <ScrollArea className="h-[calc(100%-2rem)]">
-                <div className="space-y-1.5 pr-2">
+              <ScrollArea className="h-[calc(100%-2rem)] w-full overflow-x-hidden">
+                <div className="space-y-1.5 pr-2 w-full">
                   <AnimatePresence mode="popLayout">
                     {conversations.length === 0 ? (
                       <motion.div

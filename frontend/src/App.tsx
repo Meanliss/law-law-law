@@ -28,6 +28,8 @@ function AuthenticatedApp() {
       const parsed = JSON.parse(savedConversations);
       setConversations(parsed.map((c: any) => ({
         ...c,
+        // Truncate title if it's too long (for backwards compatibility)
+        title: c.title && c.title.length > 30 ? c.title.slice(0, 30) + '...' : c.title,
         timestamp: new Date(c.timestamp),
       })));
     } else {
@@ -119,8 +121,8 @@ function AuthenticatedApp() {
         c.id === id
           ? {
             ...c,
-            title: firstMessage.slice(0, 50),
-            preview: firstMessage.slice(0, 80),
+            title: firstMessage.slice(0, 30) + (firstMessage.length > 30 ? '...' : ''),
+            preview: firstMessage.slice(0, 60),
             timestamp: new Date(),
           }
           : c
@@ -139,7 +141,7 @@ function AuthenticatedApp() {
   const handleRenameConversation = (id: string, newTitle: string) => {
     setConversations((prev) =>
       prev.map((c) =>
-        c.id === id ? { ...c, title: newTitle } : c
+        c.id === id ? { ...c, title: newTitle.slice(0, 30) } : c
       )
     );
   };
