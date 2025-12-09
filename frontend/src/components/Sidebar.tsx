@@ -67,15 +67,15 @@ function SidebarItem({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
       transition={{ delay: index * 0.05 }}
-      className="mb-2 last:mb-0 px-4"
+      className="mb-2 last:mb-0 px-2"
     >
       <div
-        className={`group relative overflow-visible rounded-full transition-all duration-200 ${isActive
-          ? 'bg-blue-100/80 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100'
-          : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
+        className={`group relative overflow-visible rounded-xl border transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${isActive
+          ? 'bg-blue-100/90 dark:bg-blue-900/50 text-blue-900 dark:text-blue-100 border-blue-200 dark:border-blue-700/50 shadow-sm'
+          : 'bg-gray-50/50 dark:bg-gray-800/40 hover:bg-white dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200/60 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm'
           }`}
       >
-        <div className="flex items-center gap-3 px-4 py-3.5 cursor-pointer" onClick={onSelect}>
+        <div className="flex items-center gap-3 px-3 py-3 cursor-pointer" onClick={onSelect}>
           {/* Icon */}
           <div className="flex-shrink-0">
             <MessageSquare size={18} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-400'} />
@@ -119,8 +119,8 @@ function SidebarItem({
           )}
 
           {/* Pin indicator */}
-          {conversation.isPinned && !isActive && (
-            <Pin size={14} className="text-gray-400 flex-shrink-0" />
+          {conversation.isPinned && (
+            <Pin size={14} className={`flex-shrink-0 ${isActive ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400'}`} />
           )}
 
           {/* Dropdown Menu */}
@@ -259,7 +259,7 @@ export function ConversationSidebar({
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Button
                   onClick={onNewConversation}
-                  className="w-full h-auto py-4 rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-600 hover:via-cyan-600 hover:to-teal-600 text-white border-0 shadow-xl shadow-blue-500/30 relative overflow-hidden group"
+                  className="w-full h-auto py-3 rounded-lg bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-600 hover:via-cyan-600 hover:to-teal-600 text-white border-0 shadow-xl shadow-blue-500/30 relative overflow-hidden group"
                 >
                   {/* Shimmer Effect */}
                   <motion.div
