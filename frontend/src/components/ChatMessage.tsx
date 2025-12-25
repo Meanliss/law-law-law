@@ -30,8 +30,8 @@ export function ChatMessage({ message, isDarkMode, onOpenPDF }: ChatMessageProps
         animate={{ scale: 1 }}
         transition={{ delay: 0.1, type: 'spring', stiffness: 200, damping: 15 }}
         className={`relative w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden ${isUser
-            ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500'
-            : 'bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500'
+          ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500'
+          : 'bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500'
           } shadow-lg`}
       >
         <div className="absolute inset-0 bg-white/20 backdrop-blur-sm" />
@@ -52,15 +52,15 @@ export function ChatMessage({ message, isDarkMode, onOpenPDF }: ChatMessageProps
         {/* Glassmorphic Container */}
         <div
           className={`relative overflow-hidden rounded-3xl p-4 backdrop-blur-xl border ${isUser
-              ? 'bg-gradient-to-br from-purple-500/90 via-pink-500/90 to-orange-500/90 border-white/30 text-white shadow-xl shadow-purple-500/25'
-              : 'bg-white/70 dark:bg-gray-800/70 border-gray-200/50 dark:border-gray-700/50 text-gray-900 dark:text-gray-100 shadow-xl shadow-gray-500/10 dark:shadow-gray-900/30'
+            ? 'bg-gradient-to-br from-purple-500/90 via-pink-500/90 to-orange-500/90 border-white/30 text-white shadow-xl shadow-purple-500/25'
+            : 'bg-white/70 dark:bg-gray-800/70 border-gray-200/50 dark:border-gray-700/50 text-gray-900 dark:text-gray-100 shadow-xl shadow-gray-500/10 dark:shadow-gray-900/30'
             }`}
         >
           {/* Animated Gradient Overlay */}
           <div
             className={`absolute inset-0 opacity-30 ${isUser
-                ? 'bg-gradient-to-br from-white/40 via-transparent to-transparent'
-                : 'bg-gradient-to-br from-blue-500/20 via-cyan-500/20 to-transparent dark:from-blue-400/10 dark:via-cyan-400/10'
+              ? 'bg-gradient-to-br from-white/40 via-transparent to-transparent'
+              : 'bg-gradient-to-br from-blue-500/20 via-cyan-500/20 to-transparent dark:from-blue-400/10 dark:via-cyan-400/10'
               }`}
           />
 
@@ -84,12 +84,12 @@ export function ChatMessage({ message, isDarkMode, onOpenPDF }: ChatMessageProps
           />
 
           {/* Message Content */}
-          <div className="relative z-10 whitespace-pre-wrap break-words overflow-hidden">
+          <div className={`relative z-10 break-words overflow-hidden ${isUser ? 'whitespace-pre-wrap' : ''}`}>
             {isUser ? (
-              // User message: render as plain text
+              // User message: render as plain text (keep whitespace-pre-wrap)
               message.text
             ) : (
-              // AI message: render with hyperlinks for articles
+              // AI message: render with Markdown (ReactMarkdown handles spacing)
               <MessageContent
                 text={message.text}
                 pdfSources={message.pdf_sources}

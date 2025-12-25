@@ -47,12 +47,15 @@ const domainInfoMap: Record<string, { displayName: string }> = {
 };
 
 export function MessageContent({ text, pdfSources, onOpenPDF }: MessageContentProps) {
-  // 1. CLEANUP: Remove .json references
+  // 1. CLEANUP: Remove .json references and normalize newlines
   let cleanText = text
     .replace(/\[[\d,\s]*\]\s*[\w_\-\.]*\.json\b/gi, '')
     .replace(/\[\s*[\w_\-\.]+\.json\s*\]/gi, '')
     .replace(/\bcủa\s+[\w_\-\.]+\.json\b/gi, '')
-    .replace(/[\w_\-\.]+\.json\b(?=[\s,.);\n]|$)/gi, '')
+    .replace(/[\w_\-\.]+\.json\b(?=[\s,.);\\n]|$)/gi, '')
+    .replace(/^\n+/, '')                    // Remove leading newlines
+    .replace(/\n{3,}/g, '\n\n')             // Normalize 3+ newlines to 2
+    .replace(/\*\*([^*]+)\*\*\n{2,}/g, '**$1**\n')  // Remove extra newlines after bold headers
     .trim();
 
   // 2. PRE-PROCESS: Convert "Điều X" to Markdown links [Điều X](article:X)
