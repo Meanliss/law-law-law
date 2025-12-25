@@ -10,7 +10,7 @@ interface SuggestedQuestionsProps {
 }
 
 export function SuggestedQuestions({ questions, onSelectQuestion, onClear, isDarkMode }: SuggestedQuestionsProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);  // Start expanded, user can collapse
 
   if (!questions || questions.length === 0) return null;
 
@@ -19,18 +19,17 @@ export function SuggestedQuestions({ questions, onSelectQuestion, onClear, isDar
 
   return (
     <div
-      className={`rounded-lg overflow-hidden transition-all duration-300 ease-in-out ${
-        isDarkMode
+      className={`rounded-lg overflow-hidden transition-all duration-300 ease-in-out ${isDarkMode
           ? 'bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-800/30'
           : 'bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200'
-      }`}
-      style={{ 
+        }`}
+      style={{
         maxHeight: isExpanded ? '400px' : '48px',
         opacity: 1,
         transform: 'scale(1)'
       }}
     >
-      <div 
+      <div
         className="flex items-center justify-between p-3 cursor-pointer hover:opacity-80 transition-opacity"
         onClick={() => setIsExpanded(!isExpanded)}
       >
@@ -65,16 +64,15 @@ export function SuggestedQuestions({ questions, onSelectQuestion, onClear, isDar
           {displayQuestions.map((question, index) => {
             // Extract question text (remove emoji if present)
             const cleanQuestion = question.replace(/^💭\s*/, '').trim();
-            
+
             return (
               <button
                 key={index}
                 onClick={() => onSelectQuestion(cleanQuestion)}
-                className={`w-full text-left p-3 rounded-md text-sm transition-all ${
-                  isDarkMode
+                className={`w-full text-left p-3 rounded-md text-sm transition-all ${isDarkMode
                     ? 'bg-gray-800/50 hover:bg-gray-700 text-gray-200 hover:border-blue-500'
                     : 'bg-white hover:bg-blue-50 text-gray-800 hover:border-blue-400'
-                } border border-transparent hover:shadow-md`}
+                  } border border-transparent hover:shadow-md`}
               >
                 <div className="flex items-start gap-2">
                   <span className="text-blue-500 mt-0.5">💭</span>
