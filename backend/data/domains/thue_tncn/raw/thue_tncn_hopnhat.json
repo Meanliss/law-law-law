@@ -1,0 +1,916 @@
+{
+  "nguon": "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM Độc lập - Tự do - Hạnh phúc LUẬT THUẾ THU NHẬP CÁ NHÂN Luật Thuế thu nhập cá nhân số 04/2007/QH12 ngày 21 tháng 11 năm 2007 của Quốc hội, có hiệu lực kể từ ngày 01 tháng 01 năm 2009, được sửa đổi, bổ sung bởi: 1. Luật số 26/2012/QH13 ngày 22 tháng 11 năm 2012 của Quốc hội sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013; 2. Luật số 71/2014/QH13 ngày 26 tháng 11 năm 2014 của Quốc hội sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015; 3. Luật Đất đai số 31/2024/QH15 ngày 18 tháng 01 năm 2024 của Quốc hội, có hiệu lực kể từ ngày 01 tháng 8 năm 20241; 4. Luật số 43/2024/QH15 ngày 29 tháng 6 năm 2024 của Quốc hội sửa đổi, bổ sung một số điều của Luật Đất đai số 31/2024/QH15, Luật Nhà ở số 27/2023/QH15, Luật Kinh doanh bất động sản số 29/2023/QH15 và Luật Các tổ chức tín dụng số 32/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024; 5. Luật Thuế giá trị gia tăng số 48/2024/QH15 ngày 26 tháng 11 năm 2024 của Quốc hội, có hiệu lực kể từ ngày 01 tháng 7 năm 2025; 6. Luật số 56/2024/QH15 ngày 29 tháng 11 năm 2024 của Quốc hội sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, Luật Thuế tiêu thụ cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực kể từ ngày 01 tháng 01 năm 2025; 7. Luật Công nghiệp công nghệ số số 71/2025/QH15 ngày 14 tháng 6 năm 2025 của Quốc hội, có hiệu lực kể từ ngày 01 tháng 01 năm 2026; 8. Luật Khoa học, công nghệ và đổi mới sáng tạo số 93/2025/QH15 ngày 27 tháng 6 năm 2025 của Quốc hội, có hiệu lực kể từ ngày 01 tháng 10 năm 2025. 1 Luật Đất đai số 31/2024/QH15 có hiệu lực kể từ ngày 01 tháng 01 năm 2025 được sửa đổi hiệu lực thành từ ngày 01 tháng 8 năm 2024 theo quy định tại khoản 2 Điều 1 của Luật số 43/2024/QH15 sửa đổi, bổ sung một số điều của Luật Đất đai số 31/2024/QH15, Luật Nhà ở số 27/2023/QH15, Luật Kinh doanh bất động sản số 29/2023/QH15 và Luật Các tổ chức tín dụng số 32/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024. [BẢNG 1] | Luật Thuế thu nhập cá nhân số 04/2007/QH12 ngày 21 tháng 11 năm 2007 | |---| | của Quốc hội, có hiệu lực kể từ ngày 01 tháng 01 năm 2009, được sửa đổi, bổ | | sung bởi: | | 1. Luật số 26/2012/QH13 ngày 22 tháng 11 năm 2012 của Quốc hội sửa đổi, | | bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 | | tháng 7 năm 2013; | | 2. Luật số 71/2014/QH13 ngày 26 tháng 11 năm 2014 của Quốc hội sửa đổi, bổ | | sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015; | | 3. Luật Đất đai số 31/2024/QH15 ngày 18 tháng 01 năm 2024 của Quốc hội, | | có hiệu lực kể từ ngày 01 tháng 8 năm 20241; | [BẢNG 2] | 7. Luật Công nghiệp công nghệ số số 71/2025/QH15 ngày 14 tháng 6 năm | |---| | 2025 của Quốc hội, có hiệu lực kể từ ngày 01 tháng 01 năm 2026; | | 8. Luật Khoa học, công nghệ và đổi mới sáng tạo số 93/2025/QH15 ngày 27 | | tháng 6 năm 2025 của Quốc hội, có hiệu lực kể từ ngày 01 tháng 10 năm 2025. | Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam năm 1992 đã được sửa đổi, bổ sung một số điều theo Nghị quyết số 51/2001/QH10; Quốc hội ban hành Luật Thuế thu nhập cá nhân2. 2 Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân có căn cứ ban hành như sau: “Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam năm 1992 đã được sửa đổi, bổ sung một số điều theo Nghị quyết số 51/2001/QH10; Quốc hội ban hành Luật sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân số 04/2007/QH12.”. Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế có căn cứ ban hành như sau: “Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam; Quốc hội ban hành Luật sửa đổi, bổ sung một số điều của Luật Thuế thu nhập doanh nghiệp số 14/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 32/2013/QH13, Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13, Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 31/2013/QH13, Luật Thuế tài nguyên số 45/2009/QH12, Luật Quản lý thuế số 78/2006/QH11 đã được sửa đổi, bổ sung một số điều theo Luật số 21/2012/QH13, Luật Thuế tiêu thụ đặc biệt số 27/2008/QH12, Luật Thuế xuất khẩu, thuế nhập khẩu số 45/2005/QH11, Luật Hải quan số 54/2014/QH13.”. Luật Đất đai số 31/2024/QH15 có căn cứ ban hành như sau: “Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam; Quốc hội ban hành Luật Đất đai.”. Luật số 43/2024/QH15 sửa đổi, bổ sung một số điều của Luật Đất đai số 31/2024/QH15, Luật Nhà ở số 27/2023/QH15, Luật Kinh doanh bất động sản số 29/2023/QH15 và Luật Các tổ chức tín dụng số 32/2024/QH15 có căn cứ ban hành như sau: “Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam; Quốc hội ban hành Luật sửa đổi, bổ sung một số điều của Luật Đất đai số 31/2024/QH15, Luật Nhà ở số 27/2023/QH15, Luật Kinh doanh bất động sản số 29/2023/QH15 và Luật Các tổ chức tín dụng số 32/2024/QH15.”. Luật Thuế giá trị gia tăng số 48/2024/QH15 có căn cứ ban hành như sau: “Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam; Quốc hội ban hành Luật Thuế giá trị gia tăng.”. Luật số 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, Luật Thuế tiêu thụ cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính có căn cứ ban hành như sau: “Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam; Quốc hội ban hành Luật sửa đổi, bổ sung một số điều của Luật Chứng khoán số 54/2019/QH14, Luật Kế toán số 88/2015/QH13 đã được sửa đổi, bổ sung một số điều theo Luật số 38/2019/QH14, Luật Kiểm toán độc lập số 67/2011/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 97/2015/QH13, Luật Ngân sách nhà nước số 83/2015/QH13 đã được sửa đổi, bổ sung một số điều theo Luật số 59/2020/QH14, Luật Quản lý, sử dụng tài sản công số 15/2017/QH14 đã được sửa đổi, bổ sung một số điều theo Luật số 64/2020/QH14, Luật số 07/2022/QH15, Luật số 24/2023/QH15, Luật số 31/2024/QH15 và Luật số 43/2024/QH15, Luật Quản lý thuế số 38/2019/QH14, Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13, Luật số 71/2014/QH13, Luật số 31/2024/QH15 và Luật số 43/2024/QH15, Luật Dự trữ quốc gia số 22/2012/QH13 đã được sửa đổi, bổ sung một số điều theo số 21/2017/QH14, Luật Xử lý vi phạm hành chính số [BẢNG 3] | Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam năm 1992 đã | |---| | được sửa đổi, bổ sung một số điều theo Nghị quyết số 51/2001/QH10; | | Quốc hội ban hành Luật Thuế thu nhập cá nhân2. | [BẢNG 4] | 2 Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân | |---| | có căn cứ ban hành như sau: | | “Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam năm 1992 đã được sửa | | đổi, bổ sung một số điều theo Nghị quyết số 51/2001/QH10; | | Quốc hội ban hành Luật sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân | | số 04/2007/QH12.”. | | Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế có căn cứ ban | | hành như sau: | | “Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam; | | Quốc hội ban hành Luật sửa đổi, bổ sung một số điều của Luật Thuế thu nhập doanh | | nghiệp số 14/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 32/2013/QH13, | | Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật | | số 26/2012/QH13, Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ sung một | | số điều theo Luật số 31/2013/QH13, Luật Thuế tài nguyên số 45/2009/QH12, Luật Quản lý | | thuế số 78/2006/QH11 đã được sửa đổi, bổ sung một số điều theo Luật số 21/2012/QH13, Luật | | Thuế tiêu thụ đặc biệt số 27/2008/QH12, Luật Thuế xuất khẩu, thuế nhập khẩu số | | 45/2005/QH11, Luật Hải quan số 54/2014/QH13.”. | | Luật Đất đai số 31/2024/QH15 có căn cứ ban hành như sau: |",
+  "du_lieu": [
+    {
+      "chuong": "Chương I NHỮNG QUY ĐỊNH CHUNG",
+      "dieu_so": "1",
+      "tieu_de": "Điều 1. Phạm vi điều chỉnh",
+      "mo_ta": "Luật này quy định về đối tượng nộp thuế, thu nhập chịu thuế, thu nhập được miễn thuế, giảm thuế và căn cứ tính thuế thu nhập cá nhân.",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương I NHỮNG QUY ĐỊNH CHUNG",
+      "dieu_so": "2",
+      "tieu_de": "Điều 2. Đối tượng nộp thuế",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Đối tượng nộp thuế thu nhập cá nhân là cá nhân cư trú có thu nhập chịu thuế quy định tại Điều 3 của Luật này phát sinh trong và ngoài lãnh thổ Việt Nam và cá nhân không cư trú có thu nhập chịu thuế quy định tại Điều 3 của Luật này phát sinh trong lãnh thổ Việt Nam."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Cá nhân cư trú là người đáp ứng một trong các điều kiện sau đây: a) Có mặt tại Việt Nam từ 183 ngày trở lên tính trong một năm dương lịch hoặc tính theo 12 tháng liên tục kể từ ngày đầu tiên có mặt tại Việt Nam; b) Có nơi ở thường xuyên tại Việt Nam, bao gồm có nơi ở đăng ký thường trú hoặc có nhà thuê để ở tại Việt Nam theo hợp đồng thuê có thời hạn."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Cá nhân không cư trú là người không đáp ứng điều kiện quy định tại khoản 2 Điều này."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương I NHỮNG QUY ĐỊNH CHUNG",
+      "dieu_so": "3",
+      "tieu_de": "Điều 3. Thu nhập chịu thuế",
+      "mo_ta": "Thu nhập chịu thuế thu nhập cá nhân gồm các loại thu nhập sau đây, trừ thu nhập được miễn thuế quy định tại Điều 4 của Luật này: 1.3 Thu nhập từ kinh doanh, bao gồm: a) Thu nhập từ hoạt động sản xuất, kinh doanh hàng hoá, dịch vụ; b) Thu nhập từ hoạt động hành nghề độc lập của cá nhân có giấy phép hoặc chứng chỉ hành nghề theo quy định của pháp luật. 15/2012/QH13 đã được sửa đổi, bổ sung một số điều theo Luật số 54/2014/QH13, Luật số 18/2017/QH14, Luật số 67/2020/QH14, Luật số 09/2022/QH15 và Luật số 11/2022/QH15.”. Luật Công nghiệp công nghệ số số 71/2025/QH15 có căn cứ ban hành như sau: “Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam; Quốc hội ban hành Luật Công nghiệp công nghệ số.”. Luật Khoa học, công nghệ và đổi mới sáng tạo số 93/2025/QH15 có căn cứ ban hành như sau: “Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam đã được sửa đổi, bổ sung một số điều theo Nghị quyết số 203/2025/QH15; Quốc hội ban hành Luật Khoa học, công nghệ và đổi mới sáng tạo.”. 3 Khoản này được sửa đổi, bổ sung lần thứ nhất theo quy định tại khoản 1 Điều 2 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. Khoản này được sửa đổi, bổ sung lần thứ hai theo quy định tại Điều 17 của Luật Thuế giá trị gia tăng số 48/2024/QH15, có hiệu lực kể từ ngày 01 tháng 7 năm 2025. Quy định về mức doanh thu của hộ, cá nhân sản xuất, kinh doanh thuộc đối tượng không chịu thuế có hiệu lực kể từ ngày 01 tháng 01 năm 2026 theo quy định tại khoản 2 Điều 18 của Luật Thuế Giá trị gia tăng số 48/2024/QH15. [BẢNG 5] |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "1",
+      "tieu_de": "Điều 1. Phạm vi điều chỉnh |",
+      "mo_ta": "| Luật này quy định về đối tượng nộp thuế, thu nhập chịu thuế, thu nhập được | | miễn thuế, giảm thuế và căn cứ tính thuế thu nhập cá nhân. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "2",
+      "tieu_de": "Điều 2. Đối tượng nộp thuế |",
+      "mo_ta": "| 1. Đối tượng nộp thuế thu nhập cá nhân là cá nhân cư trú có thu nhập chịu | | thuế quy định tại Điều 3 của Luật này phát sinh trong và ngoài lãnh thổ Việt Nam | | và cá nhân không cư trú có thu nhập chịu thuế quy định tại Điều 3 của Luật này | | phát sinh trong lãnh thổ Việt Nam. | | 2. Cá nhân cư trú là người đáp ứng một trong các điều kiện sau đây: | | a) Có mặt tại Việt Nam từ 183 ngày trở lên tính trong một năm dương lịch | | hoặc tính theo 12 tháng liên tục kể từ ngày đầu tiên có mặt tại Việt Nam; | | b) Có nơi ở thường xuyên tại Việt Nam, bao gồm có nơi ở đăng ký thường | | trú hoặc có nhà thuê để ở tại Việt Nam theo hợp đồng thuê có thời hạn. | | 3. Cá nhân không cư trú là người không đáp ứng điều kiện quy định tại khoản | | 2 Điều này. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "3",
+      "tieu_de": "Điều 3. Thu nhập chịu thuế |",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Thu nhập từ đầu tư vốn, bao gồm: a) Tiền lãi cho vay; b) Lợi tức cổ phần; c) Thu nhập từ đầu tư vốn dưới các hình thức khác, trừ thu nhập từ lãi trái phiếu Chính phủ."
+        },
+        {
+          "khoan_so": "4",
+          "noi_dung": "4. Thu nhập từ chuyển nhượng vốn, bao gồm: a) Thu nhập từ chuyển nhượng phần vốn trong các tổ chức kinh tế; b) Thu nhập từ chuyển nhượng chứng khoán; c) Thu nhập từ chuyển nhượng vốn dưới các hình thức khác. 5.5 Thu nhập từ chuyển nhượng bất động sản, bao gồm: a) Thu nhập từ chuyển nhượng quyền sử dụng đất và tài sản gắn liền với đất; b) Thu nhập từ chuyển nhượng quyền sở hữu hoặc sử dụng nhà ở; c) Thu nhập từ chuyển nhượng quyền thuê đất, quyền thuê mặt nước; d) Các khoản thu nhập khác nhận được từ chuyển nhượng bất động sản dưới mọi hình thức. 4 Khoản này được sửa đổi, bổ sung theo quy định tại khoản 1 Điều 1 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013. 5 Khoản này được sửa đổi, bổ sung theo quy định tại khoản 1 Điều 1 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013. [BẢNG 8] | Thu nhập từ kinh doanh quy định tại khoản này không bao gồm thu nhập của | |---| | hộ, cá nhân sản xuất, kinh doanh có doanh thu dưới mức quy định tại khoản 25 | | Điều 5 của Luật Thuế giá trị gia tăng. | | 2.4 Thu nhập từ tiền lương, tiền công, bao gồm: | | a) Tiền lương, tiền công và các khoản có tính chất tiền lương, tiền công; | | b) Các khoản phụ cấp, trợ cấp, trừ các khoản: phụ cấp, trợ cấp theo quy định | | của pháp luật về ưu đãi người có công; phụ cấp quốc phòng, an ninh; phụ cấp độc | | hại, nguy hiểm đối với ngành, nghề hoặc công việc ở nơi làm việc có yếu tố độc | | hại, nguy hiểm; phụ cấp thu hút, phụ cấp khu vực theo quy định của pháp luật; trợ | | cấp khó khăn đột xuất, trợ cấp tai nạn lao động, bệnh nghề nghiệp, trợ cấp một | | lần khi sinh con hoặc nhận nuôi con nuôi, trợ cấp do suy giảm khả năng lao động, | | trợ cấp hưu trí một lần, tiền tuất hàng tháng và các khoản trợ cấp khác theo quy | | định của pháp luật về bảo hiểm xã hội; trợ cấp thôi việc, trợ cấp mất việc làm theo | | quy định của Bộ luật Lao động; trợ cấp mang tính chất bảo trợ xã hội và các khoản | | phụ cấp, trợ cấp khác không mang tính chất tiền lương, tiền công theo quy định | | của Chính phủ. | | 3. Thu nhập từ đầu tư vốn, bao gồm: | | a) Tiền lãi cho vay; | | b) Lợi tức cổ phần; | | c) Thu nhập từ đầu tư vốn dưới các hình thức khác, trừ thu nhập từ lãi trái | | phiếu Chính phủ. | | 4. Thu nhập từ chuyển nhượng vốn, bao gồm: | | a) Thu nhập từ chuyển nhượng phần vốn trong các tổ chức kinh tế; | | b) Thu nhập từ chuyển nhượng chứng khoán; | | c) Thu nhập từ chuyển nhượng vốn dưới các hình thức khác. | | 5.5 Thu nhập từ chuyển nhượng bất động sản, bao gồm: | | a) Thu nhập từ chuyển nhượng quyền sử dụng đất và tài sản gắn liền với đất; | | b) Thu nhập từ chuyển nhượng quyền sở hữu hoặc sử dụng nhà ở; | | c) Thu nhập từ chuyển nhượng quyền thuê đất, quyền thuê mặt nước; | | d) Các khoản thu nhập khác nhận được từ chuyển nhượng bất động sản dưới | | mọi hình thức. | [BẢNG 9] | | Khoản này được sửa đổi, bổ sung theo quy định tại khoản 1 Điều 1 của Luật số | |---|---| | 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ | | | ngày 01 tháng 7 năm 2013. | | [BẢNG 10] | | Khoản này được sửa đổi, bổ sung theo quy định tại khoản 1 Điều 1 của Luật số | |---|---| | 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ | | | ngày 01 tháng 7 năm 2013. | |"
+        },
+        {
+          "khoan_so": "6",
+          "noi_dung": "6. Thu nhập từ trúng thưởng, bao gồm: a) Trúng thưởng xổ số; b) Trúng thưởng trong các hình thức khuyến mại; c)6 Trúng thưởng trong các hình thức cá cược; d) Trúng thưởng trong các trò chơi, cuộc thi có thưởng và các hình thức trúng thưởng khác."
+        },
+        {
+          "khoan_so": "7",
+          "noi_dung": "7. Thu nhập từ bản quyền, bao gồm: a) Thu nhập từ chuyển giao, chuyển quyền sử dụng các đối tượng của quyền sở hữu trí tuệ; b) Thu nhập từ chuyển giao công nghệ."
+        },
+        {
+          "khoan_so": "8",
+          "noi_dung": "8. Thu nhập từ nhượng quyền thương mại."
+        },
+        {
+          "khoan_so": "9",
+          "noi_dung": "9. Thu nhập từ nhận thừa kế là chứng khoán, phần vốn trong các tổ chức kinh tế, cơ sở kinh doanh, bất động sản và tài sản khác phải đăng ký sở hữu hoặc đăng ký sử dụng."
+        },
+        {
+          "khoan_so": "10",
+          "noi_dung": "10. Thu nhập từ nhận quà tặng là chứng khoán, phần vốn trong các tổ chức kinh tế, cơ sở kinh doanh, bất động sản và tài sản khác phải đăng ký sở hữu hoặc đăng ký sử dụng. Chính phủ quy định chi tiết và hướng dẫn thi hành Điều này."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "4",
+      "tieu_de": "Điều 4. Thu nhập được miễn thuế",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thu nhập từ chuyển nhượng bất động sản giữa vợ với chồng; cha đẻ, mẹ đẻ với con đẻ; cha nuôi, mẹ nuôi với con nuôi; cha chồng, mẹ chồng với con dâu; cha vợ, mẹ vợ với con rể; ông nội, bà nội với cháu nội; ông ngoại, bà ngoại với cháu ngoại; anh, chị, em ruột với nhau."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thu nhập từ chuyển nhượng nhà ở, quyền sử dụng đất ở và tài sản gắn liền với đất ở của cá nhân trong trường hợp cá nhân chỉ có một nhà ở, đất ở duy nhất."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Thu nhập từ giá trị quyền sử dụng đất của cá nhân được Nhà nước giao đất."
+        },
+        {
+          "khoan_so": "4",
+          "noi_dung": "4. Thu nhập từ nhận thừa kế, quà tặng là bất động sản giữa vợ với chồng; cha đẻ, mẹ đẻ với con đẻ; cha nuôi, mẹ nuôi với con nuôi; cha chồng, mẹ chồng với con dâu; cha vợ, mẹ vợ với con rể; ông nội, bà nội với cháu nội; ông ngoại, bà ngoại với cháu ngoại; anh, chị, em ruột với nhau."
+        },
+        {
+          "khoan_so": "5",
+          "noi_dung": "5. Thu nhập của hộ gia đình, cá nhân trực tiếp sản xuất nông nghiệp, lâm nghiệp, làm muối, nuôi trồng, đánh bắt thủy sản chưa qua chế biến thành các sản phẩm khác hoặc chỉ qua sơ chế thông thường. 6 Điểm này được sửa đổi, bổ sung theo quy định tại khoản 2 Điều 2 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. [BẢNG 11] | 6. Thu nhập từ trúng thưởng, bao gồm: | |---| | a) Trúng thưởng xổ số; | | b) Trúng thưởng trong các hình thức khuyến mại; | | c)6 Trúng thưởng trong các hình thức cá cược; | | d) Trúng thưởng trong các trò chơi, cuộc thi có thưởng và các hình thức trúng | | thưởng khác. | | 7. Thu nhập từ bản quyền, bao gồm: | | a) Thu nhập từ chuyển giao, chuyển quyền sử dụng các đối tượng của quyền | | sở hữu trí tuệ; | | b) Thu nhập từ chuyển giao công nghệ. | | 8. Thu nhập từ nhượng quyền thương mại. | | 9. Thu nhập từ nhận thừa kế là chứng khoán, phần vốn trong các tổ chức kinh | | tế, cơ sở kinh doanh, bất động sản và tài sản khác phải đăng ký sở hữu hoặc đăng | | ký sử dụng. | | 10. Thu nhập từ nhận quà tặng là chứng khoán, phần vốn trong các tổ chức | | kinh tế, cơ sở kinh doanh, bất động sản và tài sản khác phải đăng ký sở hữu hoặc | | đăng ký sử dụng. | | Chính phủ quy định chi tiết và hướng dẫn thi hành Điều này. | |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "4",
+      "tieu_de": "Điều 4. Thu nhập được miễn thuế |",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "6",
+          "noi_dung": "6. Thu nhập từ chuyển đổi đất nông nghiệp của hộ gia đình, cá nhân được Nhà nước giao để sản xuất."
+        },
+        {
+          "khoan_so": "7",
+          "noi_dung": "7. Thu nhập từ lãi tiền gửi tại tổ chức tín dụng, lãi từ hợp đồng bảo hiểm nhân thọ."
+        },
+        {
+          "khoan_so": "8",
+          "noi_dung": "8. Thu nhập từ kiều hối."
+        },
+        {
+          "khoan_so": "9",
+          "noi_dung": "9. Phần tiền lương làm việc ban đêm, làm thêm giờ được trả cao hơn so với tiền lương làm việc ban ngày, làm trong giờ theo quy định của pháp luật. 10.7 Tiền lương hưu do Quỹ Bảo hiểm xã hội chi trả; tiền lương hưu do quỹ hưu trí tự nguyện chi trả hàng tháng."
+        },
+        {
+          "khoan_so": "11",
+          "noi_dung": "11. Thu nhập từ học bổng, bao gồm: a) Học bổng nhận được từ ngân sách nhà nước; b) Học bổng nhận được từ tổ chức trong nước và ngoài nước theo chương trình hỗ trợ khuyến học của tổ chức đó."
+        },
+        {
+          "khoan_so": "12",
+          "noi_dung": "12. Thu nhập từ bồi thường hợp đồng bảo hiểm nhân thọ, phi nhân thọ, tiền bồi thường tai nạn lao động, khoản bồi thường nhà nước và các khoản bồi thường khác theo quy định của pháp luật."
+        },
+        {
+          "khoan_so": "13",
+          "noi_dung": "13. Thu nhập nhận được từ quỹ từ thiện được cơ quan nhà nước có thẩm quyền cho phép thành lập hoặc công nhận, hoạt động vì mục đích từ thiện, nhân đạo, không nhằm mục đích lợi nhuận."
+        },
+        {
+          "khoan_so": "14",
+          "noi_dung": "14. Thu nhập nhận được từ nguồn viện trợ nước ngoài vì mục đích từ thiện, nhân đạo dưới hình thức chính phủ và phi chính phủ được cơ quan nhà nước có thẩm quyền phê duyệt. 15.8 Thu nhập từ tiền lương, tiền công của thuyền viên là người Việt Nam làm việc cho các hãng tàu nước ngoài hoặc các hãng tàu Việt Nam vận tải quốc tế. 16.9 Thu nhập của cá nhân là chủ tàu, cá nhân có quyền sử dụng tàu và cá nhân làm việc trên tàu từ hoạt động cung cấp hàng hóa, dịch vụ trực tiếp phục vụ hoạt động khai thác, đánh bắt thủy sản xa bờ. 17.10 Các khoản thu nhập bao gồm tiền lương, tiền công của nhân lực công 7 Khoản này được sửa đổi, bổ sung theo quy định tại khoản 2 Điều 1 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013. 8 Khoản này được bổ sung theo quy định tại khoản 3 Điều 2 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. 9 Khoản này được bổ sung theo quy định tại khoản 3 Điều 2 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. 10 Khoản này được bổ sung theo quy định tại khoản 3 Điều 49 của Luật Công nghiệp công nghệ số số 71/2025/QH15, có hiệu lực kể từ ngày 01 tháng 01 năm 2026. [BẢNG 13] | 6. Thu nhập từ chuyển đổi đất nông nghiệp của hộ gia đình, cá nhân được | |---| | Nhà nước giao để sản xuất. | | 7. Thu nhập từ lãi tiền gửi tại tổ chức tín dụng, lãi từ hợp đồng bảo hiểm | | nhân thọ. | | 8. Thu nhập từ kiều hối. | | 9. Phần tiền lương làm việc ban đêm, làm thêm giờ được trả cao hơn so với | | tiền lương làm việc ban ngày, làm trong giờ theo quy định của pháp luật. | | 10.7 Tiền lương hưu do Quỹ Bảo hiểm xã hội chi trả; tiền lương hưu do quỹ | | hưu trí tự nguyện chi trả hàng tháng. | | 11. Thu nhập từ học bổng, bao gồm: | | a) Học bổng nhận được từ ngân sách nhà nước; | | b) Học bổng nhận được từ tổ chức trong nước và ngoài nước theo chương | | trình hỗ trợ khuyến học của tổ chức đó. | | 12. Thu nhập từ bồi thường hợp đồng bảo hiểm nhân thọ, phi nhân thọ, tiền | | bồi thường tai nạn lao động, khoản bồi thường nhà nước và các khoản bồi thường | | khác theo quy định của pháp luật. | | 13. Thu nhập nhận được từ quỹ từ thiện được cơ quan nhà nước có thẩm | | quyền cho phép thành lập hoặc công nhận, hoạt động vì mục đích từ thiện, nhân | | đạo, không nhằm mục đích lợi nhuận. | | 14. Thu nhập nhận được từ nguồn viện trợ nước ngoài vì mục đích từ thiện, | | nhân đạo dưới hình thức chính phủ và phi chính phủ được cơ quan nhà nước có | | thẩm quyền phê duyệt. | | 15.8 Thu nhập từ tiền lương, tiền công của thuyền viên là người Việt Nam làm | | việc cho các hãng tàu nước ngoài hoặc các hãng tàu Việt Nam vận tải quốc tế. | | 16.9 Thu nhập của cá nhân là chủ tàu, cá nhân có quyền sử dụng tàu và cá | | nhân làm việc trên tàu từ hoạt động cung cấp hàng hóa, dịch vụ trực tiếp phục vụ | | hoạt động khai thác, đánh bắt thủy sản xa bờ. | | 17.10 Các khoản thu nhập bao gồm tiền lương, tiền công của nhân lực công | [BẢNG 14] | | Khoản này được sửa đổi, bổ sung theo quy định tại khoản 2 Điều 1 của Luật số | |---|---| | 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ | | | ngày 01 tháng 7 năm 2013. | | [BẢNG 15] | | Khoản này được bổ sung theo quy định tại khoản 3 Điều 2 của Luật số 71/2014/QH13 | |---|---| | sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. | | | | Khoản này được bổ sung theo quy định tại khoản 3 Điều 2 của Luật số 71/2014/QH13 | nghiệp công nghệ số chất lượng cao là các khoản thu nhập miễn thuế thu nhập cá nhân trong thời hạn 05 năm kể từ ngày ký hợp đồng đầu tiên với cơ quan, tổ chức, cá nhân Việt Nam thuộc các trường hợp sau: a) Thu nhập từ dự án hoạt động công nghiệp công nghệ số trong khu công nghệ số tập trung; b) Thu nhập từ dự án nghiên cứu và phát triển, sản xuất sản phẩm công nghệ số trọng điểm, chip bán dẫn, hệ thống trí tuệ nhân tạo; c) Thu nhập từ các hoạt động đào tạo nhân lực công nghiệp công nghệ số. 18.11 Thu nhập từ tiền lương, tiền công từ thực hiện nhiệm vụ khoa học, công nghệ và đổi mới sáng tạo. 19.12 Thu nhập từ quyền tác giả của nhiệm vụ khoa học, công nghệ và đổi mới sáng tạo khi kết quả nhiệm vụ được thương mại hóa theo quy định của pháp luật về khoa học, công nghệ và đổi mới sáng tạo, pháp luật về sở hữu trí tuệ. 20.13 Thu nhập của nhà đầu tư cá nhân, chuyên gia làm việc cho dự án khởi nghiệp sáng tạo, sáng lập viên doanh nghiệp khởi nghiệp sáng tạo, nhà đầu tư cá nhân góp vốn vào quỹ đầu tư mạo hiểm."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "5",
+      "tieu_de": "Điều 5. Giảm thuế",
+      "mo_ta": "Đối tượng nộp thuế gặp khó khăn do thiên tai, hỏa hoạn, tai nạn, bệnh hiểm nghèo ảnh hưởng đến khả năng nộp thuế thì được xét giảm thuế tương ứng với mức độ thiệt hại nhưng không vượt quá số thuế phải nộp.",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "6",
+      "tieu_de": "Điều 6. Quy đổi thu nhập chịu thuế ra Đồng Việt Nam",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thu nhập chịu thuế nhận được không bằng tiền phải được quy đổi ra Đồng Việt Nam theo giá thị trường của sản phẩm, dịch vụ đó hoặc sản phẩm, dịch vụ cùng loại hoặc tương đương tại thời điểm phát sinh thu nhập."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "7",
+      "tieu_de": "Điều 7. Kỳ tính thuế",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Kỳ tính thuế đối với cá nhân cư trú được quy định như sau: 11 Khoản này được bổ sung theo quy định tại khoản 3 Điều 71 của Luật Khoa học, công nghệ và đổi mới sáng tạo số 93/2025/QH15, có hiệu lực từ 01 tháng 10 năm 2025. 12 Khoản này được bổ sung theo quy định tại khoản 3 Điều 71 của Luật Khoa học, công nghệ và đổi mới sáng tạo số 93/2025/QH15, có hiệu lực từ 01 tháng 10 năm 2025. 13 Khoản này được bổ sung theo quy định tại khoản 3 Điều 71 của Luật Khoa học, công nghệ và đổi mới sáng tạo số 93/2025/QH15, có hiệu lực từ 01 tháng 10 năm 2025. 14 Bãi bỏ các nội dung quy định về tỷ giá khi xác định doanh thu, chi phí, giá tính thuế, thu nhập tính thuế, thu nhập chịu thuế và thuế nộp ngân sách nhà nước tại khoản này theo quy định tại điểm b khoản 2 Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. [BẢNG 16] | nghiệp công nghệ số chất lượng cao là các khoản thu nhập miễn thuế thu nhập cá | |---| | nhân trong thời hạn 05 năm kể từ ngày ký hợp đồng đầu tiên với cơ quan, tổ chức, | | cá nhân Việt Nam thuộc các trường hợp sau: | | a) Thu nhập từ dự án hoạt động công nghiệp công nghệ số trong khu công | | nghệ số tập trung; | | b) Thu nhập từ dự án nghiên cứu và phát triển, sản xuất sản phẩm công nghệ | | số trọng điểm, chip bán dẫn, hệ thống trí tuệ nhân tạo; | | c) Thu nhập từ các hoạt động đào tạo nhân lực công nghiệp công nghệ số. | | 18.11 Thu nhập từ tiền lương, tiền công từ thực hiện nhiệm vụ khoa học, công | | nghệ và đổi mới sáng tạo. | | 19.12 Thu nhập từ quyền tác giả của nhiệm vụ khoa học, công nghệ và đổi | | mới sáng tạo khi kết quả nhiệm vụ được thương mại hóa theo quy định của pháp | | luật về khoa học, công nghệ và đổi mới sáng tạo, pháp luật về sở hữu trí tuệ. | | 20.13 Thu nhập của nhà đầu tư cá nhân, chuyên gia làm việc cho dự án khởi | | nghiệp sáng tạo, sáng lập viên doanh nghiệp khởi nghiệp sáng tạo, nhà đầu tư cá | | nhân góp vốn vào quỹ đầu tư mạo hiểm. | |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "5",
+      "tieu_de": "Điều 5. Giảm thuế |",
+      "mo_ta": "| Đối tượng nộp thuế gặp khó khăn do thiên tai, hỏa hoạn, tai nạn, bệnh hiểm | | nghèo ảnh hưởng đến khả năng nộp thuế thì được xét giảm thuế tương ứng với | | mức độ thiệt hại nhưng không vượt quá số thuế phải nộp. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "6",
+      "tieu_de": "Điều 6. Quy đổi thu nhập chịu thuế ra Đồng Việt Nam |",
+      "mo_ta": "| 1.14 Thu nhập chịu thuế nhận được bằng ngoại tệ phải được quy đổi ra Đồng | | Việt Nam theo tỷ giá giao dịch bình quân trên thị trường ngoại tệ liên ngân hàng | | do Ngân hàng Nhà nước Việt Nam công bố tại thời điểm phát sinh thu nhập. | | 2. Thu nhập chịu thuế nhận được không bằng tiền phải được quy đổi ra Đồng | | Việt Nam theo giá thị trường của sản phẩm, dịch vụ đó hoặc sản phẩm, dịch vụ | | cùng loại hoặc tương đương tại thời điểm phát sinh thu nhập. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "7",
+      "tieu_de": "Điều 7. Kỳ tính thuế |",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Kỳ tính thuế đối với cá nhân không cư trú được tính theo từng lần phát sinh thu nhập áp dụng đối với tất cả thu nhập chịu thuế."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "8",
+      "tieu_de": "Điều 8. Quản lý thuế và hoàn thuế",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Việc đăng ký thuế, kê khai, khấu trừ thuế, nộp thuế, quyết toán thuế, hoàn thuế, xử lý vi phạm pháp luật về thuế và các biện pháp quản lý thuế được thực hiện theo quy định của pháp luật về quản lý thuế."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Cá nhân được hoàn thuế trong các trường hợp sau đây: a) Số tiền thuế đã nộp lớn hơn số thuế phải nộp; b) Cá nhân đã nộp thuế nhưng có thu nhập tính thuế chưa đến mức phải nộp thuế; c) Các trường hợp khác theo quyết định của cơ quan nhà nước có thẩm quyền."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương I | |---| | NHỮNG QUY ĐỊNH CHUNG | |",
+      "dieu_so": "9",
+      "tieu_de": "Điều 9. Áp dụng điều ước quốc tế",
+      "mo_ta": "Trường hợp điều ước quốc tế mà Cộng hòa xã hội chủ nghĩa Việt Nam là thành viên có quy định về thuế thu nhập cá nhân khác với quy định của Luật này thì áp dụng quy định của điều ước quốc tế đó.",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ Mục 1 XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ",
+      "dieu_so": "10",
+      "tieu_de": "Điều 10. Thuế đối với cá nhân kinh doanh16",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Cá nhân kinh doanh nộp thuế thu nhập cá nhân theo tỷ lệ trên doanh thu đối với từng lĩnh vực, ngành nghề sản xuất, kinh doanh. 15 Điểm này được sửa đổi theo quy định tại khoản 3 Điều 1 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013. 16 Điều này được sửa đổi, bổ sung theo quy định tại khoản 4 Điều 2 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. [BẢNG 18] | a) Kỳ tính thuế theo năm áp dụng đối với thu nhập từ kinh doanh; thu nhập | |---| | từ tiền lương, tiền công; | | b) Kỳ tính thuế theo từng lần phát sinh thu nhập áp dụng đối với thu nhập từ | | đầu tư vốn; thu nhập từ chuyển nhượng vốn, trừ thu nhập từ chuyển nhượng chứng | | khoán; thu nhập từ chuyển nhượng bất động sản; thu nhập từ trúng thưởng; thu | | nhập từ bản quyền; thu nhập từ nhượng quyền thương mại; thu nhập từ thừa kế; | | thu nhập từ quà tặng; | | c)15 Kỳ tính thuế theo từng lần chuyển nhượng hoặc theo năm đối với thu | | nhập từ chuyển nhượng chứng khoán. | | 2. Kỳ tính thuế đối với cá nhân không cư trú được tính theo từng lần phát | | sinh thu nhập áp dụng đối với tất cả thu nhập chịu thuế. | |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ Mục 1 XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ",
+      "dieu_so": "8",
+      "tieu_de": "Điều 8. Quản lý thuế và hoàn thuế |",
+      "mo_ta": "| 1. Việc đăng ký thuế, kê khai, khấu trừ thuế, nộp thuế, quyết toán thuế, hoàn | | thuế, xử lý vi phạm pháp luật về thuế và các biện pháp quản lý thuế được thực | | hiện theo quy định của pháp luật về quản lý thuế. | | 2. Cá nhân được hoàn thuế trong các trường hợp sau đây: | | a) Số tiền thuế đã nộp lớn hơn số thuế phải nộp; | | b) Cá nhân đã nộp thuế nhưng có thu nhập tính thuế chưa đến mức phải nộp thuế; | | c) Các trường hợp khác theo quyết định của cơ quan nhà nước có thẩm quyền. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ Mục 1 XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ",
+      "dieu_so": "9",
+      "tieu_de": "Điều 9. Áp dụng điều ước quốc tế |",
+      "mo_ta": "| Trường hợp điều ước quốc tế mà Cộng hòa xã hội chủ nghĩa Việt Nam là | | thành viên có quy định về thuế thu nhập cá nhân khác với quy định của Luật này | | thì áp dụng quy định của điều ước quốc tế đó. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "10",
+      "tieu_de": "Điều 10. Thuế đối với cá nhân kinh doanh16 |",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Doanh thu là toàn bộ tiền bán hàng, tiền gia công, tiền hoa hồng, tiền cung ứng dịch vụ phát sinh trong kỳ tính thuế từ các hoạt động sản xuất, kinh doanh hàng hóa, dịch vụ. Trường hợp cá nhân kinh doanh không xác định được doanh thu thì cơ quan thuế có thẩm quyền ấn định doanh thu theo quy định của pháp luật về quản lý thuế."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Thuế suất: a) Phân phối, cung cấp hàng hóa: 0,5%; b) Dịch vụ, xây dựng không bao thầu nguyên vật liệu: 2%. Riêng hoạt động cho thuê tài sản, đại lý bảo hiểm, đại lý xổ số, đại lý bán hàng đa cấp: 5%; c) Sản xuất, vận tải, dịch vụ có gắn với hàng hóa, xây dựng có bao thầu nguyên vật liệu: 1,5%; d) Hoạt động kinh doanh khác: 1%."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "11",
+      "tieu_de": "Điều 11. Thu nhập chịu thuế từ tiền lương, tiền công",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thu nhập chịu thuế từ tiền lương, tiền công được xác định bằng tổng số thu nhập quy định tại khoản 2 Điều 3 của Luật này mà đối tượng nộp thuế nhận được trong kỳ tính thuế."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thời điểm xác định thu nhập chịu thuế từ tiền lương, tiền công là thời điểm tổ chức, cá nhân trả thu nhập cho đối tượng nộp thuế hoặc thời điểm đối tượng nộp thuế nhận được thu nhập."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "12",
+      "tieu_de": "Điều 12. Thu nhập chịu thuế từ đầu tư vốn",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thu nhập chịu thuế từ đầu tư vốn là tổng số các khoản thu nhập từ đầu tư vốn quy định tại khoản 3 Điều 3 của Luật này mà đối tượng nộp thuế nhận được trong kỳ tính thuế."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thời điểm xác định thu nhập chịu thuế từ đầu tư vốn là thời điểm tổ chức, cá nhân trả thu nhập cho đối tượng nộp thuế hoặc thời điểm đối tượng nộp thuế nhận được thu nhập."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "13",
+      "tieu_de": "Điều 13. Thu nhập chịu thuế từ chuyển nhượng vốn17",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thu nhập chịu thuế từ chuyển nhượng vốn được xác định bằng giá bán trừ giá mua và các khoản chi phí hợp lý liên quan đến việc tạo ra thu nhập từ chuyển nhượng vốn. Đối với hoạt động chuyển nhượng chứng khoán, thu nhập chịu thuế được xác định là giá chuyển nhượng từng lần. 17 Điều này được sửa đổi, bổ sung theo quy định tại khoản 5 Điều 2 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. [BẢNG 21] | 2. Doanh thu là toàn bộ tiền bán hàng, tiền gia công, tiền hoa hồng, tiền cung | |---| | ứng dịch vụ phát sinh trong kỳ tính thuế từ các hoạt động sản xuất, kinh doanh | | hàng hóa, dịch vụ. | | Trường hợp cá nhân kinh doanh không xác định được doanh thu thì cơ quan | | thuế có thẩm quyền ấn định doanh thu theo quy định của pháp luật về quản lý thuế. | | 3. Thuế suất: | | a) Phân phối, cung cấp hàng hóa: 0,5%; | | b) Dịch vụ, xây dựng không bao thầu nguyên vật liệu: 2%. | | Riêng hoạt động cho thuê tài sản, đại lý bảo hiểm, đại lý xổ số, đại lý bán | | hàng đa cấp: 5%; | | c) Sản xuất, vận tải, dịch vụ có gắn với hàng hóa, xây dựng có bao thầu | | nguyên vật liệu: 1,5%; | | d) Hoạt động kinh doanh khác: 1%. | |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "11",
+      "tieu_de": "Điều 11. Thu nhập chịu thuế từ tiền lương, tiền công |",
+      "mo_ta": "| 1. Thu nhập chịu thuế từ tiền lương, tiền công được xác định bằng tổng số | | thu nhập quy định tại khoản 2 Điều 3 của Luật này mà đối tượng nộp thuế nhận | | được trong kỳ tính thuế. | | 2. Thời điểm xác định thu nhập chịu thuế từ tiền lương, tiền công là thời | | điểm tổ chức, cá nhân trả thu nhập cho đối tượng nộp thuế hoặc thời điểm đối | | tượng nộp thuế nhận được thu nhập. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "12",
+      "tieu_de": "Điều 12. Thu nhập chịu thuế từ đầu tư vốn |",
+      "mo_ta": "| 1. Thu nhập chịu thuế từ đầu tư vốn là tổng số các khoản thu nhập từ đầu tư | | vốn quy định tại khoản 3 Điều 3 của Luật này mà đối tượng nộp thuế nhận được | | trong kỳ tính thuế. | | 2. Thời điểm xác định thu nhập chịu thuế từ đầu tư vốn là thời điểm tổ chức, | | cá nhân trả thu nhập cho đối tượng nộp thuế hoặc thời điểm đối tượng nộp thuế | | nhận được thu nhập. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "13",
+      "tieu_de": "Điều 13. Thu nhập chịu thuế từ chuyển nhượng vốn17 |",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thời điểm xác định thu nhập chịu thuế từ chuyển nhượng vốn là thời điểm giao dịch chuyển nhượng vốn hoàn thành theo quy định của pháp luật. Chính phủ quy định chi tiết và hướng dẫn thi hành Điều này."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "14",
+      "tieu_de": "Điều 14. Thu nhập chịu thuế từ chuyển nhượng bất động sản18",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Chính phủ quy định nguyên tắc, phương pháp xác định giá chuyển nhượng bất động sản."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Thời điểm xác định thu nhập chịu thuế từ chuyển nhượng bất động sản là thời điểm hợp đồng chuyển nhượng có hiệu lực theo quy định của pháp luật."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "15",
+      "tieu_de": "Điều 15. Thu nhập chịu thuế từ trúng thưởng",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thu nhập chịu thuế từ trúng thưởng là phần giá trị giải thưởng vượt trên 10 triệu đồng mà đối tượng nộp thuế nhận được theo từng lần trúng thưởng."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thời điểm xác định thu nhập chịu thuế từ trúng thưởng là thời điểm tổ chức, cá nhân trả thu nhập cho đối tượng nộp thuế."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "16",
+      "tieu_de": "Điều 16. Thu nhập chịu thuế từ bản quyền",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thu nhập chịu thuế từ bản quyền là phần thu nhập vượt trên 10 triệu đồng mà đối tượng nộp thuế nhận được khi chuyển giao, chuyển quyền sử dụng các đối tượng của quyền sở hữu trí tuệ, chuyển giao công nghệ theo từng hợp đồng."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thời điểm xác định thu nhập chịu thuế từ bản quyền là thời điểm tổ chức, cá nhân trả thu nhập cho đối tượng nộp thuế."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "17",
+      "tieu_de": "Điều 17. Thu nhập chịu thuế từ nhượng quyền thương mại",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thu nhập chịu thuế từ nhượng quyền thương mại là phần thu nhập vượt trên 10 triệu đồng mà đối tượng nộp thuế nhận được theo từng hợp đồng nhượng quyền thương mại."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thời điểm xác định thu nhập chịu thuế từ nhượng quyền thương mại là thời điểm tổ chức, cá nhân trả thu nhập cho đối tượng nộp thuế."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "18",
+      "tieu_de": "Điều 18. Thu nhập chịu thuế từ thừa kế, quà tặng",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thu nhập chịu thuế từ thừa kế, quà tặng là phần giá trị tài sản thừa kế, quà tặng vượt trên 10 triệu đồng mà đối tượng nộp thuế nhận được theo từng lần phát sinh. 18 Điều này được sửa đổi, bổ sung theo quy định tại khoản 6 Điều 2 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. 19 Khoản này được sửa đổi, bổ sung theo quy định tại Điều 247 của Luật Đất đai số 31/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024 theo quy định tại khoản 2 Điều 1 của Luật số 43/2024/QH15 sửa đổi, bổ sung một số điều của Luật Đất đai số 31/2024/QH15, Luật Nhà ở số 27/2023/QH15, Luật Kinh doanh bất động sản số 29/2023/QH15 và Luật Các tổ chức tín dụng số 32/2024/QH15. [BẢNG 23] | 2. Thời điểm xác định thu nhập chịu thuế từ chuyển nhượng vốn là thời điểm | |---| | giao dịch chuyển nhượng vốn hoàn thành theo quy định của pháp luật. | | Chính phủ quy định chi tiết và hướng dẫn thi hành Điều này. | |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "14",
+      "tieu_de": "Điều 14. Thu nhập chịu thuế từ chuyển nhượng bất động sản18 |",
+      "mo_ta": "| 1.19 Thu nhập chịu thuế từ chuyển nhượng bất động sản được xác định là giá | | chuyển nhượng từng lần; trường hợp chuyển nhượng quyền sử dụng đất thì thu | | nhập chịu thuế tính theo giá đất trong bảng giá đất. | | 2. Chính phủ quy định nguyên tắc, phương pháp xác định giá chuyển nhượng | | bất động sản. | | 3. Thời điểm xác định thu nhập chịu thuế từ chuyển nhượng bất động sản là | | thời điểm hợp đồng chuyển nhượng có hiệu lực theo quy định của pháp luật. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "15",
+      "tieu_de": "Điều 15. Thu nhập chịu thuế từ trúng thưởng |",
+      "mo_ta": "| 1. Thu nhập chịu thuế từ trúng thưởng là phần giá trị giải thưởng vượt trên | | 10 triệu đồng mà đối tượng nộp thuế nhận được theo từng lần trúng thưởng. | | 2. Thời điểm xác định thu nhập chịu thuế từ trúng thưởng là thời điểm tổ | | chức, cá nhân trả thu nhập cho đối tượng nộp thuế. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "16",
+      "tieu_de": "Điều 16. Thu nhập chịu thuế từ bản quyền |",
+      "mo_ta": "| 1. Thu nhập chịu thuế từ bản quyền là phần thu nhập vượt trên 10 triệu đồng | | mà đối tượng nộp thuế nhận được khi chuyển giao, chuyển quyền sử dụng các đối | | tượng của quyền sở hữu trí tuệ, chuyển giao công nghệ theo từng hợp đồng. | | 2. Thời điểm xác định thu nhập chịu thuế từ bản quyền là thời điểm tổ chức, | | cá nhân trả thu nhập cho đối tượng nộp thuế. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "17",
+      "tieu_de": "Điều 17. Thu nhập chịu thuế từ nhượng quyền thương mại |",
+      "mo_ta": "| 1. Thu nhập chịu thuế từ nhượng quyền thương mại là phần thu nhập vượt | | trên 10 triệu đồng mà đối tượng nộp thuế nhận được theo từng hợp đồng nhượng | | quyền thương mại. | | 2. Thời điểm xác định thu nhập chịu thuế từ nhượng quyền thương mại là | | thời điểm tổ chức, cá nhân trả thu nhập cho đối tượng nộp thuế. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "18",
+      "tieu_de": "Điều 18. Thu nhập chịu thuế từ thừa kế, quà tặng |",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thời điểm xác định thu nhập chịu thuế được quy định như sau: a) Đối với thu nhập từ thừa kế là thời điểm đối tượng nộp thuế nhận được thừa kế; b) Đối với thu nhập từ quà tặng là thời điểm tổ chức, cá nhân tặng cho đối tượng nộp thuế hoặc thời điểm đối tượng nộp thuế nhận được thu nhập."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "19",
+      "tieu_de": "Điều 19. Giảm trừ gia cảnh",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Việc xác định mức giảm trừ gia cảnh đối với người phụ thuộc thực hiện theo nguyên tắc mỗi người phụ thuộc chỉ được tính giảm trừ một lần vào một đối tượng nộp thuế."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Người phụ thuộc là người mà đối tượng nộp thuế có trách nhiệm nuôi dưỡng, bao gồm: a) Con chưa thành niên; con bị tàn tật, không có khả năng lao động; b) Các cá nhân không có thu nhập hoặc có thu nhập không vượt quá mức quy định, bao gồm con thành niên đang học đại học, cao đẳng, trung học chuyên nghiệp hoặc học nghề; vợ hoặc chồng không có khả năng lao động; bố, mẹ đã hết tuổi lao động hoặc không có khả năng lao động; những người khác không nơi nương tựa mà người nộp thuế phải trực tiếp nuôi dưỡng. Chính phủ quy định mức thu nhập, kê khai để xác định người phụ thuộc được tính giảm trừ gia cảnh. 20 Khoản này được sửa đổi, bổ sung lần thứ nhất theo quy định tại khoản 4 Điều 1 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013. Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại khoản này theo quy định tại khoản 4 Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. [BẢNG 25] | 2. Thời điểm xác định thu nhập chịu thuế được quy định như sau: | |---| | a) Đối với thu nhập từ thừa kế là thời điểm đối tượng nộp thuế nhận được | | thừa kế; | | b) Đối với thu nhập từ quà tặng là thời điểm tổ chức, cá nhân tặng cho đối | | tượng nộp thuế hoặc thời điểm đối tượng nộp thuế nhận được thu nhập. | |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "19",
+      "tieu_de": "Điều 19. Giảm trừ gia cảnh |",
+      "mo_ta": "| 1.20 Giảm trừ gia cảnh là số tiền được trừ vào thu nhập chịu thuế trước khi | | tính thuế đối với thu nhập từ kinh doanh, tiền lương, tiền công của đối tượng nộp | | thuế là cá nhân cư trú. Giảm trừ gia cảnh gồm hai phần sau đây: | | a) Mức giảm trừ đối với đối tượng nộp thuế là 9 triệu đồng/tháng (108 triệu | | đồng/năm); | | b) Mức giảm trừ đối với mỗi người phụ thuộc là 3,6 triệu đồng/tháng. | | Trường hợp chỉ số giá tiêu dùng (CPI) biến động trên 20% so với thời điểm | | Luật có hiệu lực thi hành hoặc thời điểm điều chỉnh mức giảm trừ gia cảnh gần | | nhất thì Chính phủ trình Ủy ban thường vụ Quốc hội điều chỉnh mức giảm trừ gia | | cảnh quy định tại khoản này phù hợp với biến động của giá cả để áp dụng cho kỳ | | tính thuế tiếp theo. | | 2. Việc xác định mức giảm trừ gia cảnh đối với người phụ thuộc thực hiện | | theo nguyên tắc mỗi người phụ thuộc chỉ được tính giảm trừ một lần vào một đối | | tượng nộp thuế. | | 3. Người phụ thuộc là người mà đối tượng nộp thuế có trách nhiệm nuôi | | dưỡng, bao gồm: | | a) Con chưa thành niên; con bị tàn tật, không có khả năng lao động; | | b) Các cá nhân không có thu nhập hoặc có thu nhập không vượt quá mức | | quy định, bao gồm con thành niên đang học đại học, cao đẳng, trung học chuyên | | nghiệp hoặc học nghề; vợ hoặc chồng không có khả năng lao động; bố, mẹ đã hết | | tuổi lao động hoặc không có khả năng lao động; những người khác không nơi | | nương tựa mà người nộp thuế phải trực tiếp nuôi dưỡng. | | Chính phủ quy định mức thu nhập, kê khai để xác định người phụ thuộc được | | tính giảm trừ gia cảnh. | [BẢNG 26] | 20 Khoản này được sửa đổi, bổ sung lần thứ nhất theo quy định tại khoản 4 Điều 1 của | |---| | Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu | | lực kể từ ngày 01 tháng 7 năm 2013. | | Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại | | khoản này theo quy định tại khoản 4 Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một | | số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "20",
+      "tieu_de": "Điều 20. Giảm trừ đối với các khoản đóng góp từ thiện, nhân đạo",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Tổ chức, cơ sở và các quỹ quy định tại điểm a và điểm b khoản 1 Điều này phải được cơ quan nhà nước có thẩm quyền cho phép thành lập hoặc công nhận, hoạt động vì mục đích từ thiện, nhân đạo, khuyến học, không nhằm mục đích lợi nhuận."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "21",
+      "tieu_de": "Điều 21. Thu nhập tính thuế",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thu nhập tính thuế đối với thu nhập từ đầu tư vốn, chuyển nhượng vốn, chuyển nhượng bất động sản, trúng thưởng, tiền bản quyền, nhượng quyền thương mại, nhận thừa kế, quà tặng là thu nhập chịu thuế quy định tại các điều 12, 13, 14, 15, 16, 17 và 18 của Luật này. Mục 2 BIỂU THUẾ"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "22",
+      "tieu_de": "Điều 22. Biểu thuế lũy tiến từng phần",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Biểu thuế lũy tiến từng phần áp dụng đối với thu nhập tính thuế quy định tại khoản 1 Điều 21 của Luật này."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Biểu thuế lũy tiến từng phần được quy định như sau: 21 Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại khoản này theo quy định tại khoản 4 Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. 22 Khoản này được sửa đổi, bổ sung lần thứ nhất theo quy định tại khoản 5 Điều 1 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013. Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại khoản này theo quy định tại khoản 4 Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. [BẢNG 27] |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "20",
+      "tieu_de": "Điều 20. Giảm trừ đối với các khoản đóng góp từ thiện, nhân đạo |",
+      "mo_ta": "|---| | 1.21 Các khoản đóng góp từ thiện, nhân đạo được trừ vào thu nhập trước khi | | tính thuế đối với thu nhập từ kinh doanh, tiền lương, tiền công của đối tượng nộp | | thuế là cá nhân cư trú, bao gồm: | | a) Khoản đóng góp vào tổ chức, cơ sở chăm sóc, nuôi dưỡng trẻ em có hoàn | | cảnh đặc biệt khó khăn, người tàn tật, người già không nơi nương tựa; | | b) Khoản đóng góp vào quỹ từ thiện, quỹ nhân đạo, quỹ khuyến học. | | 2. Tổ chức, cơ sở và các quỹ quy định tại điểm a và điểm b khoản 1 Điều này | | phải được cơ quan nhà nước có thẩm quyền cho phép thành lập hoặc công nhận, hoạt | | động vì mục đích từ thiện, nhân đạo, khuyến học, không nhằm mục đích lợi nhuận. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "21",
+      "tieu_de": "Điều 21. Thu nhập tính thuế |",
+      "mo_ta": "| 1.22 Thu nhập tính thuế đối với thu nhập từ kinh doanh, tiền lương, tiền công | | là tổng thu nhập chịu thuế quy định tại Điều 10 và Điều 11 của Luật này, trừ các | | khoản đóng góp bảo hiểm xã hội, bảo hiểm y tế, bảo hiểm thất nghiệp, bảo hiểm | | trách nhiệm nghề nghiệp đối với một số ngành, nghề phải tham gia bảo hiểm bắt | | buộc, quỹ hưu trí tự nguyện, các khoản giảm trừ quy định tại Điều 19 và Điều 20 | | của Luật này. | | Chính phủ quy định mức tối đa được trừ đối với khoản đóng góp quỹ hưu trí | | tự nguyện quy định tại khoản này. | | 2. Thu nhập tính thuế đối với thu nhập từ đầu tư vốn, chuyển nhượng vốn, | | chuyển nhượng bất động sản, trúng thưởng, tiền bản quyền, nhượng quyền thương | | mại, nhận thừa kế, quà tặng là thu nhập chịu thuế quy định tại các điều 12, 13, 14, | | 15, 16, 17 và 18 của Luật này. | | Mục 2 | | BIỂU THUẾ | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "22",
+      "tieu_de": "Điều 22. Biểu thuế lũy tiến từng phần |",
+      "mo_ta": "| 1. Biểu thuế lũy tiến từng phần áp dụng đối với thu nhập tính thuế quy định | | tại khoản 1 Điều 21 của Luật này. | | 2. Biểu thuế lũy tiến từng phần được quy định như sau: | [BẢNG 28] | | Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại | |---|---| | khoản này theo quy định tại khoản 4 Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một | | | số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. | | | 22 Khoản này được sửa đổi, bổ sung lần thứ nhất theo quy định tại khoản 5 Điều 1 của | | | Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu | | | lực kể từ ngày 01 tháng 7 năm 2013. | | | Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại | | | khoản này theo quy định tại khoản 4 Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một | | | số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. | | Bậc Phần thu nhập tính thuế/năm Phần thu nhập tính thuế/tháng Thuế suất thuế (triệu đồng) (triệu đồng) (%) 1 Đến 60 Đến 5 5 2 Trên 60 đến 120 Trên 5 đến 10 10 3 Trên 120 đến 216 Trên 10 đến 18 15 4 Trên 216 đến 384 Trên 18 đến 32 20 5 Trên 384 đến 624 Trên 32 đến 52 25 6 Trên 624 đến 960 Trên 52 đến 80 30 7 Trên 960 Trên 80 35",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "23",
+      "tieu_de": "Điều 23. Biểu thuế toàn phần",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Biểu thuế toàn phần áp dụng đối với thu nhập tính thuế quy định tại khoản 2 Điều 21 của Luật này. 2.23 Biểu thuế toàn phần được quy định như sau: Thu nhập tính thuế Thuế suất (%) a) Thu nhập từ đầu tư vốn 5 b) Thu nhập từ bản quyền, nhượng quyền thương mại 5 c) Thu nhập từ trúng thưởng 10 d) Thu nhập từ thừa kế, quà tặng 10 đ) Thu nhập từ chuyển nhượng vốn quy định tại khoản 20 1 Điều 13 của Luật này Thu nhập từ chuyển nhượng chứng khoán quy định tại 0,1 khoản 1 Điều 13 của Luật này e) Thu nhập từ chuyển nhượng bất động sản 2"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "24",
+      "tieu_de": "Điều 24. Trách nhiệm của tổ chức, cá nhân trả thu nhập, tổ chức là nhà",
+      "mo_ta": "quản lý sàn giao dịch thương mại điện tử, nhà quản lý nền tảng số có chức năng thanh toán, các tổ chức có hoạt động kinh tế số khác; trách nhiệm của đối tượng nộp thuế là cá nhân cư trú24 23 Khoản này được sửa đổi, bổ sung theo quy định tại khoản 7 Điều 2 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015. 24 Điều này được sửa đổi, bổ sung theo quy định tại khoản 6 Điều 1 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013. Tên Điều này được sửa đổi, bổ sung theo quy định tại điểm a khoản 1 Điều 8 của Luật số 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực kể từ ngày 01 tháng 01 năm 2025. [BẢNG 29] | Bậc thuế | Phần thu nhập tính thuế/năm (triệu đồng) | Phần thu nhập tính thuế/tháng (triệu đồng) | Thuế suất (%) | |---|---|---|---| | 1 | Đến 60 | Đến 5 | 5 | | 2 | Trên 60 đến 120 | Trên 5 đến 10 | 10 | | 3 | Trên 120 đến 216 | Trên 10 đến 18 | 15 | | 4 | Trên 216 đến 384 | Trên 18 đến 32 | 20 | | 5 | Trên 384 đến 624 | Trên 32 đến 52 | 25 | | 6 | Trên 624 đến 960 | Trên 52 đến 80 | 30 | | 7 | Trên 960 | Trên 80 | 35 | [BẢNG 30] |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "23",
+      "tieu_de": "Điều 23. Biểu thuế toàn phần | |",
+      "mo_ta": "|---|---| | 1. Biểu thuế toàn phần áp dụng đối với thu nhập tính thuế quy định tại khoản | | | 2 Điều 21 của Luật này. | | | 2.23 Biểu thuế toàn phần được quy định như sau: | | | Thu nhập tính thuế | Thuế suất (%) | | a) Thu nhập từ đầu tư vốn | 5 | | b) Thu nhập từ bản quyền, nhượng quyền thương mại | 5 | | c) Thu nhập từ trúng thưởng | 10 | | d) Thu nhập từ thừa kế, quà tặng | 10 | | đ) Thu nhập từ chuyển nhượng vốn quy định tại khoản 1 Điều 13 của Luật này | 20 | | Thu nhập từ chuyển nhượng chứng khoán quy định tại khoản 1 Điều 13 của Luật này | 0,1 | | e) Thu nhập từ chuyển nhượng bất động sản | 2 | [BẢNG 31] |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương II | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN CƯ TRÚ | | Mục 1 | | XÁC ĐỊNH THU NHẬP CHỊU THUẾ VÀ THU NHẬP TÍNH THUẾ | |",
+      "dieu_so": "24",
+      "tieu_de": "Điều 24. Trách nhiệm của tổ chức, cá nhân trả thu nhập, tổ chức là nhà |",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Trách nhiệm kê khai, khấu trừ, nộp thuế, quyết toán thuế được quy định như sau: a) Tổ chức, cá nhân trả thu nhập có trách nhiệm kê khai, khấu trừ, nộp thuế vào ngân sách nhà nước và quyết toán thuế đối với các loại thu nhập chịu thuế trả cho đối tượng nộp thuế; a1)25 Tổ chức là nhà quản lý sàn giao dịch thương mại điện tử, nhà quản lý nền tảng số có chức năng thanh toán, các tổ chức có hoạt động kinh tế số khác theo quy định của Chính phủ thực hiện khấu trừ, nộp thuế thay, kê khai số thuế đã khấu trừ đối với các giao dịch kinh doanh trên nền tảng thương mại điện tử, nền tảng số của các hộ, cá nhân; b) Cá nhân có thu nhập chịu thuế có trách nhiệm kê khai, nộp thuế vào ngân sách nhà nước và quyết toán thuế theo quy định của pháp luật."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Tổ chức, cá nhân trả thu nhập có trách nhiệm cung cấp thông tin về thu nhập và người phụ thuộc của đối tượng nộp thuế thuộc đơn vị mình quản lý theo quy định của pháp luật."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Chính phủ quy định mức khấu trừ thuế phù hợp với từng loại thu nhập quy định tại điểm a khoản 1 Điều này và việc quyết toán thuế quy định tại khoản 1 Điều này."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương III CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ",
+      "dieu_so": "25",
+      "tieu_de": "Điều 25. Thuế đối với thu nhập từ kinh doanh",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thuế đối với thu nhập từ kinh doanh của cá nhân không cư trú được xác định bằng doanh thu từ hoạt động sản xuất, kinh doanh quy định tại khoản 2 Điều này nhân với thuế suất quy định tại khoản 3 Điều này."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Doanh thu là toàn bộ số tiền phát sinh từ việc cung ứng hàng hóa, dịch vụ bao gồm cả chi phí do bên mua hàng hóa, dịch vụ trả thay cho cá nhân không cư trú mà không được hoàn trả. Trường hợp thỏa thuận hợp đồng không bao gồm thuế thu nhập cá nhân thì doanh thu tính thuế phải quy đổi là toàn bộ số tiền mà cá nhân không cư trú nhận được dưới bất kỳ hình thức nào từ việc cung cấp hàng hóa, dịch vụ tại Việt Nam không phụ thuộc vào địa điểm tiến hành các hoạt động kinh doanh."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Thuế suất đối với thu nhập từ kinh doanh quy định đối với từng lĩnh vực, ngành nghề sản xuất, kinh doanh như sau: 25 Điểm này được bổ sung theo quy định tại điểm b khoản 1 Điều 8 của Luật số 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực kể từ ngày 01 tháng 01 năm 2025. [BẢNG 35] | 1. Trách nhiệm kê khai, khấu trừ, nộp thuế, quyết toán thuế được quy định | |---| | như sau: | | a) Tổ chức, cá nhân trả thu nhập có trách nhiệm kê khai, khấu trừ, nộp thuế | | vào ngân sách nhà nước và quyết toán thuế đối với các loại thu nhập chịu thuế trả | | cho đối tượng nộp thuế; | | a1)25 Tổ chức là nhà quản lý sàn giao dịch thương mại điện tử, nhà quản lý | | nền tảng số có chức năng thanh toán, các tổ chức có hoạt động kinh tế số khác | | theo quy định của Chính phủ thực hiện khấu trừ, nộp thuế thay, kê khai số thuế | | đã khấu trừ đối với các giao dịch kinh doanh trên nền tảng thương mại điện tử, | | nền tảng số của các hộ, cá nhân; | | b) Cá nhân có thu nhập chịu thuế có trách nhiệm kê khai, nộp thuế vào ngân | | sách nhà nước và quyết toán thuế theo quy định của pháp luật. | | 2. Tổ chức, cá nhân trả thu nhập có trách nhiệm cung cấp thông tin về thu | | nhập và người phụ thuộc của đối tượng nộp thuế thuộc đơn vị mình quản lý theo | | quy định của pháp luật. | | 3. Chính phủ quy định mức khấu trừ thuế phù hợp với từng loại thu nhập quy | | định tại điểm a khoản 1 Điều này và việc quyết toán thuế quy định tại khoản 1 | | Điều này. | |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "25",
+      "tieu_de": "Điều 25. Thuế đối với thu nhập từ kinh doanh |",
+      "mo_ta": "| 1. Thuế đối với thu nhập từ kinh doanh của cá nhân không cư trú được xác | | định bằng doanh thu từ hoạt động sản xuất, kinh doanh quy định tại khoản 2 Điều | | này nhân với thuế suất quy định tại khoản 3 Điều này. | | 2. Doanh thu là toàn bộ số tiền phát sinh từ việc cung ứng hàng hóa, dịch vụ | | bao gồm cả chi phí do bên mua hàng hóa, dịch vụ trả thay cho cá nhân không cư | | trú mà không được hoàn trả. | | Trường hợp thỏa thuận hợp đồng không bao gồm thuế thu nhập cá nhân thì | | doanh thu tính thuế phải quy đổi là toàn bộ số tiền mà cá nhân không cư trú nhận | | được dưới bất kỳ hình thức nào từ việc cung cấp hàng hóa, dịch vụ tại Việt Nam | | không phụ thuộc vào địa điểm tiến hành các hoạt động kinh doanh. | | 3. Thuế suất đối với thu nhập từ kinh doanh quy định đối với từng lĩnh vực, | | ngành nghề sản xuất, kinh doanh như sau: | [BẢNG 36] | | Điều 8 của Luật số | |---|---| | 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm | | | toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, | | | Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực | | | kể từ ngày 01 tháng 01 năm 2025. | | a) 1% đối với hoạt động kinh doanh hàng hóa; b) 5% đối với hoạt động kinh doanh dịch vụ; c) 2% đối với hoạt động sản xuất, xây dựng, vận tải và hoạt động kinh doanh khác.",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "26",
+      "tieu_de": "Điều 26. Thuế đối với thu nhập từ tiền lương, tiền công",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thuế đối với thu nhập từ tiền lương, tiền công của cá nhân không cư trú được xác định bằng thu nhập chịu thuế từ tiền lương, tiền công quy định tại khoản 2 Điều này nhân với thuế suất 20%."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thu nhập chịu thuế từ tiền lương, tiền công là tổng số tiền lương, tiền công mà cá nhân không cư trú nhận được do thực hiện công việc tại Việt Nam, không phân biệt nơi trả thu nhập."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "27",
+      "tieu_de": "Điều 27. Thuế đối với thu nhập từ đầu tư vốn",
+      "mo_ta": "Thuế đối với thu nhập từ đầu tư vốn của cá nhân không cư trú được xác định bằng tổng số tiền mà cá nhân không cư trú nhận được từ việc đầu tư vốn vào tổ chức, cá nhân tại Việt Nam nhân với thuế suất 5%.",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "28",
+      "tieu_de": "Điều 28. Thuế đối với thu nhập từ chuyển nhượng vốn",
+      "mo_ta": "Thuế đối với thu nhập từ chuyển nhượng vốn của cá nhân không cư trú được xác định bằng tổng số tiền mà cá nhân không cư trú nhận được từ việc chuyển nhượng phần vốn tại tổ chức, cá nhân Việt Nam nhân với thuế suất 0,1%, không phân biệt việc chuyển nhượng được thực hiện tại Việt Nam hay tại nước ngoài.",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "29",
+      "tieu_de": "Điều 29. Thuế đối với thu nhập từ chuyển nhượng bất động sản",
+      "mo_ta": "Thuế đối với thu nhập từ chuyển nhượng bất động sản tại Việt Nam của cá nhân không cư trú được xác định bằng giá chuyển nhượng bất động sản nhân với thuế suất 2%.",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "30",
+      "tieu_de": "Điều 30. Thuế đối với thu nhập từ bản quyền, nhượng quyền thương mại",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thuế đối với thu nhập từ bản quyền của cá nhân không cư trú được xác định bằng phần thu nhập vượt trên 10 triệu đồng theo từng hợp đồng chuyển giao, chuyển quyền sử dụng các đối tượng quyền sở hữu trí tuệ, chuyển giao công nghệ tại Việt Nam nhân với thuế suất 5%."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thuế đối với thu nhập từ nhượng quyền thương mại của cá nhân không cư trú được xác định bằng phần thu nhập vượt trên 10 triệu đồng theo từng hợp đồng nhượng quyền thương mại tại Việt Nam nhân với thuế suất 5%."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "31",
+      "tieu_de": "Điều 31. Thuế đối với thu nhập từ trúng thưởng, thừa kế, quà tặng",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thuế đối với thu nhập từ trúng thưởng, thừa kế, quà tặng của cá nhân không cư trú được xác định bằng thu nhập chịu thuế quy định tại khoản 2 Điều này nhân với thuế suất 10%."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thu nhập chịu thuế từ trúng thưởng của cá nhân không cư trú là phần giá [BẢNG 37] | a) 1% đối với hoạt động kinh doanh hàng hóa; | |---| | b) 5% đối với hoạt động kinh doanh dịch vụ; | | c) 2% đối với hoạt động sản xuất, xây dựng, vận tải và hoạt động kinh doanh khác. | |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "26",
+      "tieu_de": "Điều 26. Thuế đối với thu nhập từ tiền lương, tiền công |",
+      "mo_ta": "| 1. Thuế đối với thu nhập từ tiền lương, tiền công của cá nhân không cư trú | | được xác định bằng thu nhập chịu thuế từ tiền lương, tiền công quy định tại khoản | | 2 Điều này nhân với thuế suất 20%. | | 2. Thu nhập chịu thuế từ tiền lương, tiền công là tổng số tiền lương, tiền công | | mà cá nhân không cư trú nhận được do thực hiện công việc tại Việt Nam, không | | phân biệt nơi trả thu nhập. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "27",
+      "tieu_de": "Điều 27. Thuế đối với thu nhập từ đầu tư vốn |",
+      "mo_ta": "| Thuế đối với thu nhập từ đầu tư vốn của cá nhân không cư trú được xác định | | bằng tổng số tiền mà cá nhân không cư trú nhận được từ việc đầu tư vốn vào tổ | | chức, cá nhân tại Việt Nam nhân với thuế suất 5%. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "28",
+      "tieu_de": "Điều 28. Thuế đối với thu nhập từ chuyển nhượng vốn |",
+      "mo_ta": "| Thuế đối với thu nhập từ chuyển nhượng vốn của cá nhân không cư trú được | | xác định bằng tổng số tiền mà cá nhân không cư trú nhận được từ việc chuyển | | nhượng phần vốn tại tổ chức, cá nhân Việt Nam nhân với thuế suất 0,1%, không | | phân biệt việc chuyển nhượng được thực hiện tại Việt Nam hay tại nước ngoài. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "29",
+      "tieu_de": "Điều 29. Thuế đối với thu nhập từ chuyển nhượng bất động sản |",
+      "mo_ta": "| Thuế đối với thu nhập từ chuyển nhượng bất động sản tại Việt Nam của cá | | nhân không cư trú được xác định bằng giá chuyển nhượng bất động sản nhân với | | thuế suất 2%. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "30",
+      "tieu_de": "Điều 30. Thuế đối với thu nhập từ bản quyền, nhượng quyền thương mại |",
+      "mo_ta": "| 1. Thuế đối với thu nhập từ bản quyền của cá nhân không cư trú được xác | | định bằng phần thu nhập vượt trên 10 triệu đồng theo từng hợp đồng chuyển giao, | | chuyển quyền sử dụng các đối tượng quyền sở hữu trí tuệ, chuyển giao công nghệ | | tại Việt Nam nhân với thuế suất 5%. | | 2. Thuế đối với thu nhập từ nhượng quyền thương mại của cá nhân không cư | | trú được xác định bằng phần thu nhập vượt trên 10 triệu đồng theo từng hợp đồng | | nhượng quyền thương mại tại Việt Nam nhân với thuế suất 5%. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "31",
+      "tieu_de": "Điều 31. Thuế đối với thu nhập từ trúng thưởng, thừa kế, quà tặng |",
+      "mo_ta": "| 1. Thuế đối với thu nhập từ trúng thưởng, thừa kế, quà tặng của cá nhân | | không cư trú được xác định bằng thu nhập chịu thuế quy định tại khoản 2 Điều | | này nhân với thuế suất 10%. | | 2. Thu nhập chịu thuế từ trúng thưởng của cá nhân không cư trú là phần giá | trị giải thưởng vượt trên 10 triệu đồng theo từng lần trúng thưởng tại Việt Nam; thu nhập từ nhận thừa kế, quà tặng là phần giá trị tài sản thừa kế, quà tặng vượt trên 10 triệu đồng theo từng lần phát sinh thu nhập mà cá nhân không cư trú nhận được tại Việt Nam.",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "32",
+      "tieu_de": "Điều 32. Thời điểm xác định thu nhập chịu thuế",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Thời điểm xác định thu nhập chịu thuế đối với thu nhập quy định tại Điều 25 của Luật này là thời điểm cá nhân không cư trú nhận được thu nhập hoặc thời điểm xuất hóa đơn bán hàng hóa, cung cấp dịch vụ."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Thời điểm xác định thu nhập chịu thuế đối với thu nhập quy định tại các điều 26, 27, 30 và 31 của Luật này là thời điểm tổ chức, cá nhân ở Việt Nam trả thu nhập cho cá nhân không cư trú hoặc thời điểm cá nhân không cư trú nhận được thu nhập từ tổ chức, cá nhân ở nước ngoài."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Thời điểm xác định thu nhập chịu thuế đối với thu nhập quy định tại Điều 28 và Điều 29 của Luật này là thời điểm hợp đồng chuyển nhượng có hiệu lực."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương III | | CĂN CỨ TÍNH THUẾ ĐỐI VỚI CÁ NHÂN KHÔNG CƯ TRÚ | |",
+      "dieu_so": "33",
+      "tieu_de": "Điều 33. Trách nhiệm của tổ chức, cá nhân trả thu nhập, tổ chức là nhà",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Tổ chức, cá nhân trả thu nhập có trách nhiệm khấu trừ và nộp thuế vào ngân sách nhà nước theo từng lần phát sinh đối với các khoản thu nhập chịu thuế trả cho đối tượng nộp thuế."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Tổ chức là nhà quản lý sàn giao dịch thương mại điện tử, nhà quản lý nền tảng số có chức năng thanh toán, các tổ chức có hoạt động kinh tế số khác theo quy định của Chính phủ thực hiện khấu trừ, nộp thuế thay, kê khai số thuế đã khấu trừ đối với các giao dịch kinh doanh trên nền tảng thương mại điện tử, nền tảng số của các hộ, cá nhân."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Đối tượng nộp thuế là cá nhân không cư trú có trách nhiệm kê khai, nộp thuế đối với thu nhập chịu thuế theo quy định của pháp luật về quản lý thuế."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương IV ĐIỀU KHOẢN THI HÀNH27 26 Điều này được sửa đổi, bổ sung theo quy định tại khoản 2 Điều 8 của Luật số 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực kể từ ngày 01 tháng 01 năm 2025. 27 Điều 2 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013 quy định như sau: “Điều 2 [BẢNG 38] | trị giải thưởng vượt trên 10 triệu đồng theo từng lần trúng thưởng tại Việt Nam; | |---| | thu nhập từ nhận thừa kế, quà tặng là phần giá trị tài sản thừa kế, quà tặng vượt | | trên 10 triệu đồng theo từng lần phát sinh thu nhập mà cá nhân không cư trú nhận | | được tại Việt Nam. | |",
+      "dieu_so": "32",
+      "tieu_de": "Điều 32. Thời điểm xác định thu nhập chịu thuế |",
+      "mo_ta": "| 1. Thời điểm xác định thu nhập chịu thuế đối với thu nhập quy định tại Điều | | 25 của Luật này là thời điểm cá nhân không cư trú nhận được thu nhập hoặc thời | | điểm xuất hóa đơn bán hàng hóa, cung cấp dịch vụ. | | 2. Thời điểm xác định thu nhập chịu thuế đối với thu nhập quy định tại các | | điều 26, 27, 30 và 31 của Luật này là thời điểm tổ chức, cá nhân ở Việt Nam trả | | thu nhập cho cá nhân không cư trú hoặc thời điểm cá nhân không cư trú nhận | | được thu nhập từ tổ chức, cá nhân ở nước ngoài. | | 3. Thời điểm xác định thu nhập chịu thuế đối với thu nhập quy định tại Điều | | 28 và Điều 29 của Luật này là thời điểm hợp đồng chuyển nhượng có hiệu lực. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương IV ĐIỀU KHOẢN THI HÀNH27 26 Điều này được sửa đổi, bổ sung theo quy định tại khoản 2 Điều 8 của Luật số 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực kể từ ngày 01 tháng 01 năm 2025. 27 Điều 2 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013 quy định như sau: “Điều 2 [BẢNG 38] | trị giải thưởng vượt trên 10 triệu đồng theo từng lần trúng thưởng tại Việt Nam; | |---| | thu nhập từ nhận thừa kế, quà tặng là phần giá trị tài sản thừa kế, quà tặng vượt | | trên 10 triệu đồng theo từng lần phát sinh thu nhập mà cá nhân không cư trú nhận | | được tại Việt Nam. | |",
+      "dieu_so": "33",
+      "tieu_de": "Điều 33. Trách nhiệm của tổ chức, cá nhân trả thu nhập, tổ chức là nhà |",
+      "mo_ta": "| quản lý sàn giao dịch thương mại điện tử, nhà quản lý nền tảng số có chức | | năng thanh toán, các tổ chức có hoạt động kinh tế số khác; trách nhiệm của | | đối tượng nộp thuế là cá nhân không cư trú26 | | 1. Tổ chức, cá nhân trả thu nhập có trách nhiệm khấu trừ và nộp thuế vào ngân | | sách nhà nước theo từng lần phát sinh đối với các khoản thu nhập chịu thuế trả cho | | đối tượng nộp thuế. | | 2. Tổ chức là nhà quản lý sàn giao dịch thương mại điện tử, nhà quản lý nền | | tảng số có chức năng thanh toán, các tổ chức có hoạt động kinh tế số khác theo quy | | định của Chính phủ thực hiện khấu trừ, nộp thuế thay, kê khai số thuế đã khấu trừ | | đối với các giao dịch kinh doanh trên nền tảng thương mại điện tử, nền tảng số của | | các hộ, cá nhân. | | 3. Đối tượng nộp thuế là cá nhân không cư trú có trách nhiệm kê khai, nộp | | thuế đối với thu nhập chịu thuế theo quy định của pháp luật về quản lý thuế. | |",
+      "khoan": []
+    },
+    {
+      "chuong": "Chương IV | | ĐIỀU KHOẢN THI HÀNH27 | [BẢNG 39] | | Điều 8 của Luật số | |---|---| | 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm | | | toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, | | | Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực | | | kể từ ngày 01 tháng 01 năm 2025. | | | 27 Điều 2 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu | | | nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013 quy định như sau: | | | “Điều 2 | | 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2013. 2. Chính phủ quy định chi tiết, hướng dẫn thi hành các điều, khoản được giao trong Luật.”. Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015 quy định như sau: “Điều 6 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2015. 2. Bãi bỏ các nội dung quy định về tỷ giá khi xác định doanh thu, chi phí, giá tính thuế, thu nhập tính thuế, thu nhập chịu thuế và thuế nộp ngân sách nhà nước tại: a) Điều 8 và khoản 3 Điều 9 của Luật Thuế thu nhập doanh nghiệp số 14/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 32/2013/QH13; b) Khoản 1 Điều 6 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13; c) Khoản 3 Điều 7 của Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 31/2013/QH13; d) Điều 6 của Luật Thuế tiêu thụ đặc biệt số 27/2008/QH12; đ) Khoản 3 Điều 9 và Điều 14 của Luật Thuế xuất khẩu, thuế nhập khẩu số 45/2005/QH11; e) Khoản 4 Điều 86 của Luật Hải quan số 54/2014/QH13. 3. Bãi bỏ điểm c khoản 1 Điều 49 của Luật Quản lý thuế số 78/2006/QH11 đã được sửa đổi, bổ sung một số điều theo Luật số 21/2012/QH13. 4. Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại khoản 1 Điều 19, khoản 1 Điều 20 và khoản 1 Điều 21 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13. 5. Chính phủ, cơ quan có thẩm quyền quy định chi tiết các điều, khoản được giao trong Luật.”. Điều 252 và Điều 253 của Luật Đất đai số 31/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024 quy định như sau: “",
+      "dieu_so": "252",
+      "tieu_de": "Điều 252. Hiệu lực thi hành",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2025, trừ trường hợp quy định tại khoản 2 và khoản 3 Điều này."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Điều 190 và Điều 248 của Luật này có hiệu lực thi hành từ ngày 01 tháng 4 năm 2024."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Việc lập, phê duyệt quy hoạch sử dụng đất được tiếp tục thực hiện theo quy định của Nghị quyết số 61/2022/QH15 ngày 16 tháng 6 năm 2022 của Quốc hội về tiếp tục tăng cường hiệu lực, hiệu quả thực hiện chính sách, pháp luật về quy hoạch và một số giải pháp tháo gỡ khó khăn, vướng mắc, đẩy nhanh tiến độ lập và nâng cao chất lượng quy hoạch thời kỳ 2021 - 2030. Khoản 9 Điều 60 của Luật này có hiệu lực thi hành từ ngày Nghị quyết số 61/2022/QH15 hết hiệu lực."
+        },
+        {
+          "khoan_so": "4",
+          "noi_dung": "4. Luật Đất đai số 45/2013/QH13 đã được sửa đổi, bổ sung một số điều theo Luật số 35/2018/QH14 (sau đây gọi là Luật Đất đai số 45/2013/QH13) hết hiệu lực kể từ ngày Luật này có hiệu lực thi hành."
+        }
+      ]
+    },
+    {
+      "chuong": "Chương IV | | ĐIỀU KHOẢN THI HÀNH27 | [BẢNG 39] | | Điều 8 của Luật số | |---|---| | 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm | | | toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, | | | Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực | | | kể từ ngày 01 tháng 01 năm 2025. | | | 27 Điều 2 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu | | | nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013 quy định như sau: | | | “Điều 2 | | 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2013. 2. Chính phủ quy định chi tiết, hướng dẫn thi hành các điều, khoản được giao trong Luật.”. Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015 quy định như sau: “Điều 6 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2015. 2. Bãi bỏ các nội dung quy định về tỷ giá khi xác định doanh thu, chi phí, giá tính thuế, thu nhập tính thuế, thu nhập chịu thuế và thuế nộp ngân sách nhà nước tại: a) Điều 8 và khoản 3 Điều 9 của Luật Thuế thu nhập doanh nghiệp số 14/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 32/2013/QH13; b) Khoản 1 Điều 6 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13; c) Khoản 3 Điều 7 của Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 31/2013/QH13; d) Điều 6 của Luật Thuế tiêu thụ đặc biệt số 27/2008/QH12; đ) Khoản 3 Điều 9 và Điều 14 của Luật Thuế xuất khẩu, thuế nhập khẩu số 45/2005/QH11; e) Khoản 4 Điều 86 của Luật Hải quan số 54/2014/QH13. 3. Bãi bỏ điểm c khoản 1 Điều 49 của Luật Quản lý thuế số 78/2006/QH11 đã được sửa đổi, bổ sung một số điều theo Luật số 21/2012/QH13. 4. Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại khoản 1 Điều 19, khoản 1 Điều 20 và khoản 1 Điều 21 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13. 5. Chính phủ, cơ quan có thẩm quyền quy định chi tiết các điều, khoản được giao trong Luật.”. Điều 252 và Điều 253 của Luật Đất đai số 31/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024 quy định như sau: “",
+      "dieu_so": "253",
+      "tieu_de": "Điều 253. Quy định chuyển tiếp về quy hoạch, kế hoạch sử dụng đất khi Luật này có",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Quy hoạch, kế hoạch sử dụng đất đã được cơ quan nhà nước có thẩm quyền quyết định, phê duyệt trước ngày Luật này có hiệu lực thi hành thì được tiếp tục thực hiện và được điều chỉnh khi rà soát quy hoạch, kế hoạch sử dụng đất theo quy định tại Điều 73 của Luật này."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Đối với địa phương đã được phê duyệt quy hoạch tỉnh thời kỳ 2021 - 2030 theo quy định của pháp luật về quy hoạch trước ngày Luật này có hiệu lực thi hành thì được tiếp tục sử dụng phương án phân bổ và khoanh vùng đất đai trong quy hoạch tỉnh để thực hiện công tác quản lý đất đai cho đến hết kỳ quy hoạch. Việc điều chỉnh quy hoạch tỉnh thực hiện theo quy định của Luật Quy hoạch số 21/2017/QH14.”. Điều 5 của Luật số 43/2024/QH15 sửa đổi, bổ sung một số điều của Luật Đất đai số 31/2024/QH15, Luật Nhà ở số 27/2023/QH15, Luật Kinh doanh bất động sản số 29/2023/QH15 [BẢNG 40] | 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2013. | |---| | 2. Chính phủ quy định chi tiết, hướng dẫn thi hành các điều, khoản được giao trong Luật.”. | | Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có | | hiệu lực kể từ ngày 01 tháng 01 năm 2015 quy định như sau: | | “Điều 6 | | 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2015. | | 2. Bãi bỏ các nội dung quy định về tỷ giá khi xác định doanh thu, chi phí, giá tính thuế, | | thu nhập tính thuế, thu nhập chịu thuế và thuế nộp ngân sách nhà nước tại: | | a) Điều 8 và khoản 3 Điều 9 của Luật Thuế thu nhập doanh nghiệp số 14/2008/QH12 đã | | được sửa đổi, bổ sung một số điều theo Luật số 32/2013/QH13; | | b) Khoản 1 Điều 6 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, | | bổ sung một số điều theo Luật số 26/2012/QH13; | | c) Khoản 3 Điều 7 của Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ | | sung một số điều theo Luật số 31/2013/QH13; | | d) Điều 6 của Luật Thuế tiêu thụ đặc biệt số 27/2008/QH12; | | đ) Khoản 3 Điều 9 và Điều 14 của Luật Thuế xuất khẩu, thuế nhập khẩu số 45/2005/QH11; | | e) Khoản 4 Điều 86 của Luật Hải quan số 54/2014/QH13. | | 3. Bãi bỏ điểm c khoản 1 Điều 49 của Luật Quản lý thuế số 78/2006/QH11 đã được sửa | | đổi, bổ sung một số điều theo Luật số 21/2012/QH13. | | 4. Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại | | khoản 1 Điều 19, khoản 1 Điều 20 và khoản 1 Điều 21 của Luật Thuế thu nhập cá nhân số | | 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13. | | 5. Chính phủ, cơ quan có thẩm quyền quy định chi tiết các điều, khoản được giao trong Luật.”. |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương IV | | ĐIỀU KHOẢN THI HÀNH27 | [BẢNG 39] | | Điều 8 của Luật số | |---|---| | 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm | | | toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, | | | Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực | | | kể từ ngày 01 tháng 01 năm 2025. | | | 27 Điều 2 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu | | | nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013 quy định như sau: | | | “Điều 2 | | 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2013. 2. Chính phủ quy định chi tiết, hướng dẫn thi hành các điều, khoản được giao trong Luật.”. Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015 quy định như sau: “Điều 6 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2015. 2. Bãi bỏ các nội dung quy định về tỷ giá khi xác định doanh thu, chi phí, giá tính thuế, thu nhập tính thuế, thu nhập chịu thuế và thuế nộp ngân sách nhà nước tại: a) Điều 8 và khoản 3 Điều 9 của Luật Thuế thu nhập doanh nghiệp số 14/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 32/2013/QH13; b) Khoản 1 Điều 6 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13; c) Khoản 3 Điều 7 của Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 31/2013/QH13; d) Điều 6 của Luật Thuế tiêu thụ đặc biệt số 27/2008/QH12; đ) Khoản 3 Điều 9 và Điều 14 của Luật Thuế xuất khẩu, thuế nhập khẩu số 45/2005/QH11; e) Khoản 4 Điều 86 của Luật Hải quan số 54/2014/QH13. 3. Bãi bỏ điểm c khoản 1 Điều 49 của Luật Quản lý thuế số 78/2006/QH11 đã được sửa đổi, bổ sung một số điều theo Luật số 21/2012/QH13. 4. Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại khoản 1 Điều 19, khoản 1 Điều 20 và khoản 1 Điều 21 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13. 5. Chính phủ, cơ quan có thẩm quyền quy định chi tiết các điều, khoản được giao trong Luật.”. Điều 252 và Điều 253 của Luật Đất đai số 31/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024 quy định như sau: “",
+      "dieu_so": "34",
+      "tieu_de": "Điều 34. Hiệu lực thi hành",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2009."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Bãi bỏ các văn bản, quy định sau đây: a) Pháp lệnh Thuế thu nhập đối với người có thu nhập cao số 35/2001/PL- UBTVQH10 đã được sửa đổi, bổ sung một số điều theo Pháp lệnh số 14/2004/PL- UBTVQH11; và Luật Các tổ chức tín dụng số 32/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024 quy định như sau: “Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.”. Điều 18 của Luật Thuế giá trị gia tăng số 48/2024/QH15, có hiệu lực kể từ ngày 01 tháng 7 năm 2025 quy định như sau: “"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương IV | | ĐIỀU KHOẢN THI HÀNH27 | [BẢNG 39] | | Điều 8 của Luật số | |---|---| | 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm | | | toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, | | | Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực | | | kể từ ngày 01 tháng 01 năm 2025. | | | 27 Điều 2 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu | | | nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013 quy định như sau: | | | “Điều 2 | | 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2013. 2. Chính phủ quy định chi tiết, hướng dẫn thi hành các điều, khoản được giao trong Luật.”. Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015 quy định như sau: “Điều 6 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2015. 2. Bãi bỏ các nội dung quy định về tỷ giá khi xác định doanh thu, chi phí, giá tính thuế, thu nhập tính thuế, thu nhập chịu thuế và thuế nộp ngân sách nhà nước tại: a) Điều 8 và khoản 3 Điều 9 của Luật Thuế thu nhập doanh nghiệp số 14/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 32/2013/QH13; b) Khoản 1 Điều 6 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13; c) Khoản 3 Điều 7 của Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 31/2013/QH13; d) Điều 6 của Luật Thuế tiêu thụ đặc biệt số 27/2008/QH12; đ) Khoản 3 Điều 9 và Điều 14 của Luật Thuế xuất khẩu, thuế nhập khẩu số 45/2005/QH11; e) Khoản 4 Điều 86 của Luật Hải quan số 54/2014/QH13. 3. Bãi bỏ điểm c khoản 1 Điều 49 của Luật Quản lý thuế số 78/2006/QH11 đã được sửa đổi, bổ sung một số điều theo Luật số 21/2012/QH13. 4. Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại khoản 1 Điều 19, khoản 1 Điều 20 và khoản 1 Điều 21 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13. 5. Chính phủ, cơ quan có thẩm quyền quy định chi tiết các điều, khoản được giao trong Luật.”. Điều 252 và Điều 253 của Luật Đất đai số 31/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024 quy định như sau: “",
+      "dieu_so": "18",
+      "tieu_de": "Điều 18. Hiệu lực thi hành",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2025, trừ trường hợp quy định tại khoản 2 Điều này."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Quy định về mức doanh thu của hộ, cá nhân sản xuất, kinh doanh thuộc đối tượng không chịu thuế tại khoản 25 Điều 5 của Luật này và Điều 17 của Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2026."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 31/2013/QH13, Luật số 71/2014/QH13 và Luật số 106/2016/QH13 hết hiệu lực kể từ ngày Luật này có hiệu lực thi hành.”. Khoản 1 Điều 10 của Luật số 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực kể từ ngày 01 tháng 01 năm 2025 quy định như sau: “1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2025, trừ trường hợp quy định tại các khoản 2, 3, 4 và 5 Điều này.”. Điều 50 của Luật Công nghiệp công nghệ số số 71/2025/QH15, có hiệu lực kể từ ngày 01 tháng 01 năm 2026 quy định như sau: “"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương IV | | ĐIỀU KHOẢN THI HÀNH27 | [BẢNG 39] | | Điều 8 của Luật số | |---|---| | 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm | | | toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, | | | Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực | | | kể từ ngày 01 tháng 01 năm 2025. | | | 27 Điều 2 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu | | | nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013 quy định như sau: | | | “Điều 2 | | 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2013. 2. Chính phủ quy định chi tiết, hướng dẫn thi hành các điều, khoản được giao trong Luật.”. Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015 quy định như sau: “Điều 6 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2015. 2. Bãi bỏ các nội dung quy định về tỷ giá khi xác định doanh thu, chi phí, giá tính thuế, thu nhập tính thuế, thu nhập chịu thuế và thuế nộp ngân sách nhà nước tại: a) Điều 8 và khoản 3 Điều 9 của Luật Thuế thu nhập doanh nghiệp số 14/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 32/2013/QH13; b) Khoản 1 Điều 6 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13; c) Khoản 3 Điều 7 của Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 31/2013/QH13; d) Điều 6 của Luật Thuế tiêu thụ đặc biệt số 27/2008/QH12; đ) Khoản 3 Điều 9 và Điều 14 của Luật Thuế xuất khẩu, thuế nhập khẩu số 45/2005/QH11; e) Khoản 4 Điều 86 của Luật Hải quan số 54/2014/QH13. 3. Bãi bỏ điểm c khoản 1 Điều 49 của Luật Quản lý thuế số 78/2006/QH11 đã được sửa đổi, bổ sung một số điều theo Luật số 21/2012/QH13. 4. Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại khoản 1 Điều 19, khoản 1 Điều 20 và khoản 1 Điều 21 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13. 5. Chính phủ, cơ quan có thẩm quyền quy định chi tiết các điều, khoản được giao trong Luật.”. Điều 252 và Điều 253 của Luật Đất đai số 31/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024 quy định như sau: “",
+      "dieu_so": "50",
+      "tieu_de": "Điều 50. Hiệu lực thi hành",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2026, trừ trường hợp quy định tại khoản 2 Điều này."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Các điều 11, 28 và 29 của Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2025."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Trường hợp có quy định khác nhau về cùng một vấn đề giữa Luật này với luật, nghị quyết khác của Quốc hội thì áp dụng quy định của Luật này. Trừ trường hợp văn bản quy phạm pháp luật khác có quy định cơ chế, chính sách ưu đãi hoặc thuận lợi hơn Luật này thì đối tượng được ưu đãi được áp dụng mức ưu đãi có lợi nhất.”. Điều 72 của Luật Khoa học, Công nghệ và Đổi mới sáng tạo số 93/2025/QH15, có hiệu lực kể từ ngày 01 tháng 10 năm 2025 có quy định như sau: “"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương IV | | ĐIỀU KHOẢN THI HÀNH27 | [BẢNG 39] | | Điều 8 của Luật số | |---|---| | 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm | | | toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, | | | Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực | | | kể từ ngày 01 tháng 01 năm 2025. | | | 27 Điều 2 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu | | | nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013 quy định như sau: | | | “Điều 2 | | 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2013. 2. Chính phủ quy định chi tiết, hướng dẫn thi hành các điều, khoản được giao trong Luật.”. Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015 quy định như sau: “Điều 6 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2015. 2. Bãi bỏ các nội dung quy định về tỷ giá khi xác định doanh thu, chi phí, giá tính thuế, thu nhập tính thuế, thu nhập chịu thuế và thuế nộp ngân sách nhà nước tại: a) Điều 8 và khoản 3 Điều 9 của Luật Thuế thu nhập doanh nghiệp số 14/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 32/2013/QH13; b) Khoản 1 Điều 6 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13; c) Khoản 3 Điều 7 của Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 31/2013/QH13; d) Điều 6 của Luật Thuế tiêu thụ đặc biệt số 27/2008/QH12; đ) Khoản 3 Điều 9 và Điều 14 của Luật Thuế xuất khẩu, thuế nhập khẩu số 45/2005/QH11; e) Khoản 4 Điều 86 của Luật Hải quan số 54/2014/QH13. 3. Bãi bỏ điểm c khoản 1 Điều 49 của Luật Quản lý thuế số 78/2006/QH11 đã được sửa đổi, bổ sung một số điều theo Luật số 21/2012/QH13. 4. Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại khoản 1 Điều 19, khoản 1 Điều 20 và khoản 1 Điều 21 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13. 5. Chính phủ, cơ quan có thẩm quyền quy định chi tiết các điều, khoản được giao trong Luật.”. Điều 252 và Điều 253 của Luật Đất đai số 31/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024 quy định như sau: “",
+      "dieu_so": "72",
+      "tieu_de": "Điều 72. Hiệu lực thi hành",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "1",
+          "noi_dung": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 10 năm 2025, trừ trường hợp quy định tại khoản 2 Điều này."
+        },
+        {
+          "khoan_so": "2",
+          "noi_dung": "2. Các điều 15, 61, 62, 63, 64, 65 và 66 của Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2025."
+        },
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Luật Khoa học và công nghệ số 29/2013/QH13 đã được sửa đổi, bổ sung một số điều theo Luật số 28/2018/QH14 và Luật số 07/2022/QH15 (sau đây gọi chung là Luật Khoa học và Công nghệ số 29/2013/QH13) hết hiệu lực kể từ ngày Luật này có hiệu lực thi hành, trừ trường hợp quy định tại các khoản 1, 2, 3, 6, 8 và 9 Điều 73 của Luật này.”. [BẢNG 41] |"
+        }
+      ]
+    },
+    {
+      "chuong": "Chương IV | | ĐIỀU KHOẢN THI HÀNH27 | [BẢNG 39] | | Điều 8 của Luật số | |---|---| | 56/2024/QH15 sửa đổi, bổ sung một số điều của Luật Chứng khoán, Luật Kế toán, Luật Kiểm | | | toán độc lập, Luật Ngân sách nhà nước, Luật Quản lý, sử dụng tài sản công, Luật Quản lý thuế, | | | Luật Thuế thu nhập cá nhân, Luật Dự trữ quốc gia, Luật Xử lý vi phạm hành chính, có hiệu lực | | | kể từ ngày 01 tháng 01 năm 2025. | | | 27 Điều 2 của Luật số 26/2012/QH13 sửa đổi, bổ sung một số điều của Luật Thuế thu | | | nhập cá nhân, có hiệu lực kể từ ngày 01 tháng 7 năm 2013 quy định như sau: | | | “Điều 2 | | 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 7 năm 2013. 2. Chính phủ quy định chi tiết, hướng dẫn thi hành các điều, khoản được giao trong Luật.”. Điều 6 của Luật số 71/2014/QH13 sửa đổi, bổ sung một số điều của các luật về thuế, có hiệu lực kể từ ngày 01 tháng 01 năm 2015 quy định như sau: “Điều 6 1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2015. 2. Bãi bỏ các nội dung quy định về tỷ giá khi xác định doanh thu, chi phí, giá tính thuế, thu nhập tính thuế, thu nhập chịu thuế và thuế nộp ngân sách nhà nước tại: a) Điều 8 và khoản 3 Điều 9 của Luật Thuế thu nhập doanh nghiệp số 14/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 32/2013/QH13; b) Khoản 1 Điều 6 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13; c) Khoản 3 Điều 7 của Luật Thuế giá trị gia tăng số 13/2008/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 31/2013/QH13; d) Điều 6 của Luật Thuế tiêu thụ đặc biệt số 27/2008/QH12; đ) Khoản 3 Điều 9 và Điều 14 của Luật Thuế xuất khẩu, thuế nhập khẩu số 45/2005/QH11; e) Khoản 4 Điều 86 của Luật Hải quan số 54/2014/QH13. 3. Bãi bỏ điểm c khoản 1 Điều 49 của Luật Quản lý thuế số 78/2006/QH11 đã được sửa đổi, bổ sung một số điều theo Luật số 21/2012/QH13. 4. Bãi bỏ các quy định liên quan đến việc xác định thuế đối với cá nhân kinh doanh tại khoản 1 Điều 19, khoản 1 Điều 20 và khoản 1 Điều 21 của Luật Thuế thu nhập cá nhân số 04/2007/QH12 đã được sửa đổi, bổ sung một số điều theo Luật số 26/2012/QH13. 5. Chính phủ, cơ quan có thẩm quyền quy định chi tiết các điều, khoản được giao trong Luật.”. Điều 252 và Điều 253 của Luật Đất đai số 31/2024/QH15, có hiệu lực kể từ ngày 01 tháng 8 năm 2024 quy định như sau: “",
+      "dieu_so": "34",
+      "tieu_de": "Điều 34. Hiệu lực thi hành |",
+      "mo_ta": "",
+      "khoan": [
+        {
+          "khoan_so": "3",
+          "noi_dung": "3. Nhfrng khoan thu nh~p cua ca nhan duqc uu dai ve thue quy dinh t~i cac , van ban quy ph~ phap lu~t tru&c ngay Lu~t nay c6 hieu Ive thi hanh thi-tiep t\\lc duqc huong uu dai. lli~u 35. Htrang din thi hanh Chinh phu quy dinh chi ti~t va hu&ng dful thi hanh Lu~t nay. VAN PHONG QUOC H()I xAc THT/C VAN BAN H(}P NIIAT S6: NBHN-VPQH Ha N9i, ngay thang nam 2025 Nl1i nh9n: CHUNHIEM -Van phong Chinh phu (d ~ dang Cong bao ); • xu -C\\lc KTVB va Quan ly ly VPHC, B(> TP (dB dang tren CSDLQG v~ PL); - Y\\I Thong tin, VPQH (d~ dang tren C3ng thong tin di~n tu cua QH); -Y\\I ChuyBn d3i s6, VPQH (d~ dang tren trang thong_ tin n(>i b(> Intran;t) ; -Luu. HC, TH~~ Le Quang Tung"
+        }
+      ]
+    }
+  ],
+  "file_name": "thue_tncn.pdf"
+}

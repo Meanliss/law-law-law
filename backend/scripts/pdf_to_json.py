@@ -1,12 +1,13 @@
 """
-PDF to JSON Converter
+PDF to JSON Converter (with Table Support)
 Converts legal PDF documents to structured JSON format
+Supports extraction of tables and converts them to Markdown format
 
 Usage:
     python scripts/pdf_to_json.py <domain_id>
     
 Example:
-    python scripts/pdf_to_json.py hinh_su
+    python scripts/pdf_to_json.py thue_tncn
     
 Prerequisites:
     - PDF file must exist in: data/domains/{domain_id}/pdfs/*.pdf
@@ -19,11 +20,13 @@ import json
 import re
 from pathlib import Path
 
-# Force UTF-8 on Windows
+# Force UTF-8 on Windows (only if not already wrapped)
 if sys.platform == 'win32':
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+    if hasattr(sys.stdout, 'buffer'):
+        sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    if hasattr(sys.stderr, 'buffer'):
+        sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
     os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 try:
@@ -37,17 +40,105 @@ except ImportError:
 
 
 class PDFToJSONConverter:
-    """Convert legal PDF to structured JSON"""
+    """Convert legal PDF to structured JSON with table support"""
+    
+    def table_to_markdown(self, table: list) -> str:
+        """Convert a table (list of rows) to Markdown format"""
+        if not table or len(table) < 1:
+            return ""
+        
+        # Clean cells - replace None with empty string
+        cleaned_table = []
+        for row in table:
+            if row:
+                cleaned_row = [str(cell).strip() if cell else "" for cell in row]
+                # Skip empty rows
+                if any(cleaned_row):
+                    cleaned_table.append(cleaned_row)
+        
+        if len(cleaned_table) < 1:
+            return ""
+        
+        # Find max columns
+        max_cols = max(len(row) for row in cleaned_table)
+        
+        # Normalize all rows to same length
+        normalized = []
+        for row in cleaned_table:
+            normalized.append(row + [""] * (max_cols - len(row)))
+        
+        # Build markdown table
+        lines = []
+        
+        # Header row
+        header = normalized[0]
+        lines.append("| " + " | ".join(header) + " |")
+        
+        # Separator
+        lines.append("|" + "|".join(["---"] * max_cols) + "|")
+        
+        # Data rows
+        for row in normalized[1:]:
+            lines.append("| " + " | ".join(row) + " |")
+        
+        return "\n".join(lines)
+    
+    def extract_text_with_tables(self, pdf_path: str) -> str:
+        """Extract text from PDF, converting tables to Markdown"""
+        parts = []
+        table_count = 0
+        
+        with pdfplumber.open(pdf_path) as pdf:
+            for page_num, page in enumerate(pdf.pages, 1):
+                page_parts = []
+                
+                # Extract tables from this page
+                tables = page.extract_tables()
+                
+                if tables:
+                    # Get text without table areas
+                    table_bboxes = []
+                    if hasattr(page, 'find_tables'):
+                        found_tables = page.find_tables()
+                        for t in found_tables:
+                            table_bboxes.append(t.bbox)
+                    
+                    # Extract text outside tables
+                    if table_bboxes:
+                        # Create page without table regions
+                        filtered_page = page
+                        for bbox in table_bboxes:
+                            # Crop out table area by getting text from non-table regions
+                            pass
+                    
+                    # Get full text first
+                    text = page.extract_text()
+                    if text:
+                        page_parts.append(text)
+                    
+                    # Append tables as markdown
+                    for table in tables:
+                        md_table = self.table_to_markdown(table)
+                        if md_table:
+                            table_count += 1
+                            page_parts.append(f"\n[BẢNG {table_count}]\n{md_table}\n")
+                else:
+                    # No tables, just extract text
+                    text = page.extract_text()
+                    if text:
+                        page_parts.append(text)
+                
+                if page_parts:
+                    parts.append("\n".join(page_parts))
+        
+        if table_count > 0:
+            print(f"  📊 Found {table_count} table(s), converted to Markdown")
+        
+        return "\n".join(parts)
     
     def extract_text(self, pdf_path: str) -> str:
-        """Extract raw text from PDF"""
-        parts = []
-        with pdfplumber.open(pdf_path) as pdf:
-            for page in pdf.pages:
-                text = page.extract_text()
-                if text:
-                    parts.append(text)
-        return "\n".join(parts)
+        """Extract raw text from PDF (legacy, now uses table-aware version)"""
+        return self.extract_text_with_tables(pdf_path)
     
     def normalize_text(self, text: str) -> str:
         """Clean and normalize text"""

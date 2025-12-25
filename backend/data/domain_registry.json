@@ -152,5 +152,23 @@
     "pdf_files": [
       "luat_hinh_su.pdf"
     ]
+  },
+  "thue_tncn": {
+    "name": "Luật Thuế Thu nhập cá nhân",
+    "description": "Quy định về thuế thu nhập cá nhân, biểu thuế, thuế suất, miễn giảm thuế TNCN",
+    "keywords": [
+      "thuế",
+      "thuế tncn",
+      "thu nhập cá nhân",
+      "thuế suất",
+      "biểu thuế",
+      "thuế đầu tư vốn",
+      "thuế bản quyền",
+      "thuế trúng thưởng",
+      "thuế thừa kế",
+      "thuế chuyển nhượng",
+      "miễn thuế",
+      "giảm thuế"
+    ]
   }
 }
